@@ -288,19 +288,19 @@ namespace cuts
         }
 
     /**
-     * @brief Apply a cut to select interactions with multiple primary protons.
+     * @brief Apply a cut to select interactions with nonzero primary protons.
      * @details This function applies a cut to select interactions with
-     * multiple primary protons in the final state as defined by the
+     * nonzero primary protons in the final state as defined by the
      * @ref utilities::count_primaries function.
      * @tparam T the type of interaction (true or reco).
      * @param obj the interaction to select on.
-     * @return true if the interaction has multiple primary protons.
+     * @return true if the interaction has nonzero primary protons.
      */
     template<class T>
-        bool has_multiple_protons(const T & obj)
+        bool has_nonzero_protons(const T & obj)
         {
             std::vector<uint32_t> c(utilities::count_primaries(obj));
-            return c[4] > 1;
+            return c[4] > 0;
         }
 }
 #endif
