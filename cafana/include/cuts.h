@@ -14,6 +14,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "utilities.h"
+
 /**
  * @namespace cuts
  * @brief Namespace for organizing generic cuts which act on interactions.
@@ -220,5 +222,85 @@ namespace cuts
      * within the fiducial volume.
      */
     bool fiducial_containment_neutrino_cut(const caf::SRInteractionTruthDLPProxy & obj) { return fiducial_cut(obj) && containment_cut(obj) && neutrino(obj); }
+
+    /**
+     * @brief Apply a cut to select interactions with no primary charged pions.
+     * @details This function applies a cut to select interactions with no
+     * primary charged pions in the final state as defined by the
+     * @ref utilities::count_primaries function.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to select on.
+     * @return true if the interaction has zero charged pions.
+     */
+    template<class T>
+        bool no_charged_pions(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::count_primaries(obj));
+            return c[3] == 0;
+        }
+
+    /**
+     * @brief Apply a cut to select interactions with no primary showers.
+     * @details This function applies a cut to select interactions with no
+     * primary showers in the final state as defined by the
+     * @ref utilities::count_primaries function.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to select on.
+     * @return true if the interaction has zero showers.
+     */
+    template<class T>
+        bool no_showers(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::count_primaries(obj));
+            return c[0] == 0 && c[1] == 0;
+        }
+
+    /**
+     * @brief Apply a cut to select interactions with a single primary muon.
+     * @details This function applies a cut to select interactions with a
+     * single primary muon in the final state as defined by the
+     * @ref utilities::count_primaries function.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to select on.
+     * @return true if the interaction has a single primary muon.
+     */
+    template<class T>
+        bool has_single_muon(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::count_primaries(obj));
+            return c[2] == 1;
+        }
+
+    /**
+     * @brief Apply a cut to select interactions with a single primary proton.
+     * @details This function applies a cut to select interactions with a
+     * single primary proton in the final state as defined by the
+     * @ref utilities::count_primaries function.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to select on.
+     * @return true if the interaction has a single primary proton.
+     */
+    template<class T>
+        bool has_single_proton(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::count_primaries(obj));
+            return c[4] == 1;
+        }
+
+    /**
+     * @brief Apply a cut to select interactions with multiple primary protons.
+     * @details This function applies a cut to select interactions with
+     * multiple primary protons in the final state as defined by the
+     * @ref utilities::count_primaries function.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to select on.
+     * @return true if the interaction has multiple primary protons.
+     */
+    template<class T>
+        bool has_multiple_protons(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::count_primaries(obj));
+            return c[4] > 1;
+        }
 }
 #endif
