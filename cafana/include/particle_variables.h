@@ -70,25 +70,33 @@ namespace pvars
      * @return the starting kinetic energy of the particle.
      */
     template<class T>
-        double ke_init(const T & p)
+        double ke(const T & p)
         {
-            double energy(p.energy_init);
-            switch(p.pid)
+            double energy(0);
+            if constexpr (std::is_same_v<T, caf::SRParticleTruthDLPProxy>)
             {
-                case 1:
-                    energy -= ELECTRON_MASS;
-                    break;
-                case 2:
-                    energy -= MUON_MASS;
-                    break;
-                case 3:
-                    energy -= PION_MASS;
-                    break;
-                case 4:
-                    energy -= PROTON_MASS;
-                    break;
-                default:
-                    break;
+                energy = p.energy_init;
+                switch(p.pid)
+                {
+                    case 1:
+                        energy -= ELECTRON_MASS;
+                        break;
+                    case 2:
+                        energy -= MUON_MASS;
+                        break;
+                    case 3:
+                        energy -= PION_MASS;
+                        break;
+                    case 4:
+                        energy -= PROTON_MASS;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                energy = pvars::energy(p);
             }
             return energy;
         }
@@ -147,5 +155,137 @@ namespace pvars
             else
                 return std::acos(p.start_dir[0] / std::sqrt(std::pow(p.start_dir[0], 2) + std::pow(p.start_dir[1], 2)));
         }
+
+    /**
+     * @brief Variable for the x-coordinate of the particle end point.
+     * @details The end point is predicted upstream in the SPINE reconstruction.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the x-coordinate of the particle end point.
+     */
+    template<class T>
+        double end_x(const T & p)
+        {
+            return p.end_point[0];
+        }
+
+    /**
+     * @brief Variable for the y-coordinate of the particle end point.
+     * @details The end point is predicted upstream in the SPINE reconstruction.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the y-coordinate of the particle end point.
+     */
+    template<class T>
+        double end_y(const T & p)
+        {
+            return p.end_point[1];
+        }
+    
+    /**
+     * @brief Variable for the z-coordinate of the particle end point.
+     * @details The end point is predicted upstream in the SPINE reconstruction.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the z-coordinate of the particle end point.
+     */
+    template<class T>
+        double end_z(const T & p)
+        {
+            return p.end_point[2];
+        }
+    
+    /**
+     * @brief Variable for the muon softmax score of the particle.
+     * @details The muon softmax score represents the confidence that the
+     * network has in the particle being a muon. The score is between 0 and 1,
+     * with 1 being the most confident that the particle is a muon.
+     * @param p the particle to apply the variable on.
+     * @return the muon softmax score of the particle.
+     */
+    double muon_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.pid_scores[2];
+    }
+
+    /**
+     * @brief Variable for the pion softmax score of the particle.
+     * @details The pion softmax score represents the confidence that the
+     * network has in the particle being a pion. The score is between 0 and 1,
+     * with 1 being the most confident that the particle is a pion.
+     * @param p the particle to apply the variable on.
+     * @return the pion softmax score of the particle.
+     */
+    double pion_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.pid_scores[3];
+    }
+
+    /**
+     * @brief Variable for the proton softmax score of the particle.
+     * @details The proton softmax score represents the confidence that the
+     * network has in the particle being a proton. The score is between 0 and 1,
+     * with 1 being the most confident that the particle is a proton.
+     * @param p the particle to apply the variable on.
+     * @return the proton softmax score of the particle.
+     */
+    double proton_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.pid_scores[4];
+    }
+
+    /**
+     * @brief Variable for the "MIP" softmax score of the particle.
+     * @details The "MIP" softmax score is calculated as the sum of the softmax
+     * scores for the muon and pion. The score represents the confidence that
+     * the network has in the particle being a minimum ionizing particle.
+     * @param p the particle to apply the variable on.
+     * @return the "MIP" softmax score of the particle.
+     */
+    double mip_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.pid_scores[2] + p.pid_scores[3];
+    }
+
+    /**
+     * @brief Variable for the "hadron" softmax score of the particle.
+     * @details The "hadron" softmax score is calculated as the sum of the softmax
+     * scores for the pion and proton. The score represents the confidence that
+     * the network has in the particle being a hadron.
+     * @param p the particle to apply the variable on.
+     * @return the "hadron" softmax score of the particle.
+     */
+    double hadron_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.pid_scores[3] + p.pid_scores[4];
+    }
+
+    /**
+     * @brief Variable for the primary softmax score of the particle.
+     * @details The primary softmax score represents the confidence that the
+     * network has in the particle being a primary particle. The score is between
+     * 0 and 1, with 1 being the most confident that the particle is a primary
+     * particle.
+     * @param p the particle to apply the variable on.
+     * @return the primary softmax score of the particle.
+     */
+    double primary_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.primary_scores[1];
+    }
+
+    /**
+     * @brief Variable for the secondary softmax score of the particle.
+     * @details The secondary softmax score represents the confidence that the
+     * network has in the particle being a secondary particle. The score is between
+     * 0 and 1, with 1 being the most confident that the particle is a secondary
+     * particle.
+     * @param p the particle to apply the variable on.
+     * @return the secondary softmax score of the particle.
+     */
+    double secondary_softmax(const caf::SRParticleDLPProxy & p)
+    {
+        return p.primary_scores[0];
+    }
 }
 #endif // PARTICLE_VARIABLES_H

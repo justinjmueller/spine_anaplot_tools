@@ -1,10 +1,10 @@
 /**
- * @file muon2024mc.C
- * @brief The main analysis macro for the muon2024 analysis on Monte Carlo.
- * @details This macro drives the analysis by configuring the variables, cuts,
- * and samples to be used in the analysis. This is accomplished through the use
- * of the Analysis class, which containerizes the configuration of the analysis
- * and reduces the amount of boilerplate code needed to run the analysis.
+ * @file example_sbnd.C
+ * @brief A basic example analysis macro for demonstrating the use of the
+ * spine_anaplot_tools/cafana package on SBND simulation
+ * @details This macro demonstrates how to use the spine_anaplot_tools/cafana
+ * package to perform a basic analysis of a CAFAna file. The macro configures
+ * some basic variables and cuts, then runs the analysis over a single sample.
  * @author mueller@fnal.gov
 */
 #include "include/variables.h"
@@ -21,13 +21,32 @@
 #include "TDirectory.h"
 #include "TFile.h"
 
-void muon2024mc()
+void example_sbnd()
 {
-    ana::Analysis analysis("muon2024_1muNp_mc");
+    /**
+     * @brief Create an instance of the Analysis class.
+     * @details This creates an instance of the Analysis class, which is used
+     * to run the analysis on the specified samples. The name of the analysis,
+     * and therefore the name of the output file, is specified as an argument
+     * to the constructor.
+     */
+    ana::Analysis analysis("nuexample_sbnd_1muX");
 
-    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spinereco2024/allplanes/mc_v09_84_00_01/flat/*.root");
+    /**
+     * @brief Add a sample to the analysis.
+     * @details This adds a sample to the analysis by creating a SpectrumLoader
+     * object and adding it to the Analysis class. The SpectrumLoader object
+     * represents the sample in the analysis, and is used to load the data from
+     * the ROOT file and apply the cuts and variables. The name passed to the
+     * AddLoader function is used to create a directory in the output ROOT file
+     * to store the results of the analysis.
+     */
+    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine.flat.root");
     analysis.AddLoader("mc", &mc, true);
 
+    ana::SpectrumLoader intime("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_intime_spine.flat.root");
+    analysis.AddLoader("intime", &intime, true);
+    
     /**
      * @brief Add a set of variables for selected interactions to the analysis.
      * @details This adds a set of variables to the analysis by creating a
@@ -210,7 +229,7 @@ void muon2024mc()
      * to calculate the variables. These names are used in the TTree that is
      * created by the Tree class to store the results of the analysis.
      */
-    #define SIGCUT cuts::muon2024::signal_1muNp
+    #define SIGCUT cuts::muon2024::signal_1muX
     std::map<std::string, ana::SpillMultiVar> vars_signal;
     vars_signal.insert({"nu_id", SpineVar<TTYPE,TTYPE>(&vars::neutrino_id, &SIGCUT, &SIGCUT)});
     vars_signal.insert({"baseline", SpineVar<TTYPE,TTYPE>(&vars::true_neutrino_baseline, &SIGCUT, &SIGCUT)});

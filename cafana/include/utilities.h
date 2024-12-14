@@ -72,7 +72,7 @@ namespace utilities
                 const auto & p = obj.particles[i];
                 double energy(p.csda_ke);
                 if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
-                    energy = pvars::ke_init(p);
+                    energy = pvars::ke(p);
                 if(p.pid == pid && energy > leading_ke)
                 {
                     leading_ke = energy;
@@ -80,6 +80,36 @@ namespace utilities
                 }
             }
             return index;
+        }
+
+    /**
+     * @brief Finds the index corresponding to the leading muon.
+     * @details The leading muon is defined as the muon with the highest
+     * kinetic energy. If the interaction is a true interaction, the initial
+     * kinetic energy is used instead of the CSDA kinetic energy.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to operate on.
+     * @return the index of the leading muon (highest KE).
+     */
+    template<class T>
+        size_t leading_muon_index(const T & obj)
+        {
+            return leading_particle_index(obj, 2);
+        }
+    
+    /**
+     * @brief Finds the index corresponding to the leading proton.
+     * @details The leading proton is defined as the proton with the highest
+     * kinetic energy. If the interaction is a true interaction, the initial
+     * kinetic energy is used instead of the CSDA kinetic energy.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to operate on.
+     * @return the index of the leading proton (highest KE).
+     */
+    template<class T>
+        size_t leading_proton_index(const T & obj)
+        {
+            return leading_particle_index(obj, 4);
         }
 }
 #endif // UTILITIES_H

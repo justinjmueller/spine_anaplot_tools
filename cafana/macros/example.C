@@ -11,7 +11,7 @@
 #include "include/muon2024/variables_muon2024.h"
 #include "include/cuts.h"
 #include "include/muon2024/cuts_muon2024.h"
-#include "include/preprocessor.h"
+#include "include/spinevar.h"
 #include "include/analysis.h"
 
 #include "sbnana/CAFAna/Core/SpectrumLoader.h"
@@ -54,35 +54,35 @@ void example()
     #define CUT cuts::fiducial_containment_flash_cut_bnb
     #define TCUT cuts::neutrino
     std::map<std::string, ana::SpillMultiVar> vars_selected_nu;
-    vars_selected_nu.insert({"nu_id", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::neutrino_id, CUT, TCUT))});
-    vars_selected_nu.insert({"baseline", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_baseline, CUT, TCUT))});
-    vars_selected_nu.insert({"pdg", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_pdg, CUT, TCUT))});
-    vars_selected_nu.insert({"cc", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_cc, CUT, TCUT))});
-    vars_selected_nu.insert({"category", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::neutrino_interaction_mode, CUT, TCUT))});
-    vars_selected_nu.insert({"true_edep", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_energy, CUT, TCUT))});
-    vars_selected_nu.insert({"reco_edep", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::visible_energy, CUT, TCUT))});
-    vars_selected_nu.insert({"flash_time", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::flash_time, CUT, TCUT))});
-    vars_selected_nu.insert({"flash_total", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::flash_total_pe, CUT, TCUT))});
-    vars_selected_nu.insert({"flash_hypothesis", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::flash_hypothesis, CUT, TCUT))});
+    vars_selected_nu.insert({"nu_id", SpineVar<TTYPE,RTYPE>(&vars::neutrino_id, &CUT, &TCUT)});
+    vars_selected_nu.insert({"baseline", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_baseline, &CUT, &TCUT)});
+    vars_selected_nu.insert({"pdg", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_pdg, &CUT, &TCUT)});
+    vars_selected_nu.insert({"cc", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_cc, &CUT, &TCUT)});
+    vars_selected_nu.insert({"category", SpineVar<TTYPE,RTYPE>(&vars::muon2024::category, &CUT, &TCUT)});
+    vars_selected_nu.insert({"true_edep", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_energy, &CUT, &TCUT)});
+    vars_selected_nu.insert({"reco_edep", SpineVar<RTYPE,RTYPE>(&vars::visible_energy, &CUT, &TCUT)});
+    vars_selected_nu.insert({"flash_time", SpineVar<RTYPE,RTYPE>(&vars::flash_time, &CUT, &TCUT)});
+    vars_selected_nu.insert({"flash_total", SpineVar<RTYPE,RTYPE>(&vars::flash_total_pe, &CUT, &TCUT)});
+    vars_selected_nu.insert({"flash_hypothesis", SpineVar<RTYPE,RTYPE>(&vars::flash_hypothesis, &CUT, &TCUT)});
 
     analysis.AddTree("selectedNu", vars_selected_nu, true);
 
     #undef TCUT
     #define TCUT cuts::cosmic
     std::map<std::string, ana::SpillMultiVar> vars_selected_cos;
-    vars_selected_cos.insert({"nu_id", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::neutrino_id, CUT, TCUT))});
-    vars_selected_cos.insert({"baseline", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_baseline, CUT, TCUT))});
-    vars_selected_cos.insert({"pdg", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_pdg, CUT, TCUT))});
-    vars_selected_cos.insert({"cc", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_cc, CUT, TCUT))});
-    vars_selected_cos.insert({"category", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::neutrino_interaction_mode, CUT, TCUT))});
-    vars_selected_cos.insert({"true_edep", ana::SpillMultiVar(SPINEVAR_RT_TCAT(vars::true_neutrino_energy, CUT, TCUT))});
-    vars_selected_cos.insert({"reco_edep", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::visible_energy, CUT, TCUT))});
-    vars_selected_cos.insert({"flash_time", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::flash_time, CUT, TCUT))});
-    vars_selected_cos.insert({"flash_total", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::flash_total_pe, CUT, TCUT))});
-    vars_selected_cos.insert({"flash_hypothesis", ana::SpillMultiVar(SPINEVAR_RR_TCAT(vars::flash_hypothesis, CUT, TCUT))});
-
+    vars_selected_cos.insert({"nu_id", SpineVar<TTYPE,RTYPE>(&vars::neutrino_id, &CUT, &TCUT)});
+    vars_selected_cos.insert({"baseline", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_baseline, &CUT, &TCUT)});
+    vars_selected_cos.insert({"pdg", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_pdg, &CUT, &TCUT)});
+    vars_selected_cos.insert({"cc", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_cc, &CUT, &TCUT)});
+    vars_selected_cos.insert({"category", SpineVar<TTYPE,RTYPE>(&vars::muon2024::category, &CUT, &TCUT)});
+    vars_selected_cos.insert({"true_edep", SpineVar<TTYPE,RTYPE>(&vars::true_neutrino_energy, &CUT, &TCUT)});
+    vars_selected_cos.insert({"reco_edep", SpineVar<RTYPE,RTYPE>(&vars::visible_energy, &CUT, &TCUT)});
+    vars_selected_cos.insert({"flash_time", SpineVar<RTYPE,RTYPE>(&vars::flash_time, &CUT, &TCUT)});
+    vars_selected_cos.insert({"flash_total", SpineVar<RTYPE,RTYPE>(&vars::flash_total_pe, &CUT, &TCUT)});
+    vars_selected_cos.insert({"flash_hypothesis", SpineVar<RTYPE,RTYPE>(&vars::flash_hypothesis, &CUT, &TCUT)});
+    
     analysis.AddTree("selectedCos", vars_selected_cos, true);
-
+    
     /**
      * @brief Add a set of variables for signal interactions to the analysis.
      * @details This adds a set of variables to the analysis by creating a
@@ -92,8 +92,11 @@ void example()
      */
     #define SIGCUT cuts::fiducial_containment_neutrino_cut
     std::map<std::string, ana::SpillMultiVar> vars_signal;
-    vars_signal.insert({"nu_id", ana::SpillMultiVar(SPINEVAR_TT(vars::neutrino_id, SIGCUT))});
-    vars_signal.insert({"category", ana::SpillMultiVar(SPINEVAR_TT(vars::neutrino_interaction_mode, SIGCUT))});
+    vars_signal.insert({"nu_id", SpineVar<TTYPE,TTYPE>(&vars::neutrino_id, &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"category", SpineVar<TTYPE,TTYPE>(&vars::muon2024::category, &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"fiducial_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::fiducial_cut), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"containment_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::containment_cut), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"flash_cut_bnb", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::flash_cut_bnb), &SIGCUT, &SIGCUT)});
     analysis.AddTree("signalNu", vars_signal, true);
 
     /**
