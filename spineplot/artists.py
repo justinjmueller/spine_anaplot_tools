@@ -56,4 +56,9 @@ class SpineArtist(ABC):
         -------
         None.
         """
-        pass
+        if is_ordinate:
+            self._exposure_type = sample._exposure_type
+            if self._exposure_type == 'pot':
+                self._exposure = sample._exposure_pot
+            else:
+                self._exposure = sample._exposure_livetime
