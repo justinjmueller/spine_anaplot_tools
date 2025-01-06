@@ -39,7 +39,7 @@ class SpineArtist(ABC):
         pass
 
     @abstractmethod
-    def add_sample(self, sample):
+    def add_sample(self, sample, is_ordinate):
         """
         Add a sample to the artist. Each artist is assumed to render a
         collection of samples, so this method is intended to enforce
@@ -49,6 +49,8 @@ class SpineArtist(ABC):
         ----------
         sample : Sample
             The sample to add to the artist.
+        is_ordinate : bool
+            A flag to indicate if the sample is the ordinate sample.
 
         Returns
         -------
