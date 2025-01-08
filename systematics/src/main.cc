@@ -17,6 +17,7 @@
 
 #include "configuration.h"
 #include "trees.h"
+#include "detsys.h"
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -80,6 +81,21 @@ int main(int argc, char * argv[])
     TFile * output = TFile::Open(config.get_string_field("output.path").c_str(), "RECREATE");
 
     /**
+     * @brief Load the DetsysCalculator, if configured.
+     * @details This block loads the DetsysCalculator if it is configured in
+     * the configuration file. The DetsysCalculator is used to calculate the
+     * detector systematics weights using a spline interpolation of the ratio
+     * of the nominal and sample histograms.
+     * @see sys::detsys::DetsysCalculator
+     */
+    sys::detsys::DetsysCalculator calc;
+    if(config.has_field("variations"))
+    {
+        calc = sys::detsys::DetsysCalculator(config, output, input);
+        calc.write();
+    }
+
+    /**
      * @brief Begin main loop over trees in the configuration file.
      * @details This block begins the main loop over the trees in the
      * configuration file. Each tree is a sub-table in the configuration file,
@@ -89,15 +105,30 @@ int main(int argc, char * argv[])
      * @see sys::cfg::get_subtables()
      * @see sys::cfg::ConfigurationTable
      */
-    std::vector<sys::cfg::ConfigurationTable> tables = config.get_subtables("tree");
+    std::vector<sys::cfg::ConfigurationTable> tables;
+    try
+    {
+       tables = config.get_subtables("tree");
+    }
+    catch(const sys::cfg::ConfigurationError & e)
+    {
+        /**
+         * @TODO reconsider if this should cause the code to exit.
+         */
+        std::cout << "No trees found in the configuration file." << std::endl;
+    }
+
     for(sys::cfg::ConfigurationTable & table : tables)
     {
+        std::cout << "Processing tree: " << table.get_string_field("origin") << std::endl;
         std::string type(table.get_string_field("action"));
         if(type == "copy")
             sys::trees::copy_tree(table, output, input);
         else if(type == "add_weights")
-            sys::trees::copy_with_weight_systematics(config, table, output, input);
+            sys::trees::copy_with_weight_systematics(config, table, output, input, calc);
     }
+
+    input->Close();
     output->Close();
 
     return 0;

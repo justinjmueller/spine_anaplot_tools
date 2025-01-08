@@ -13,6 +13,7 @@
 #define TREES_H
 #include <iostream>
 
+#include "detsys.h"
 #include "utilities.h"
 #include "configuration.h"
 
@@ -64,6 +65,7 @@ namespace sys::trees
          */
         TDirectory * directory = (TDirectory *) output;
         directory = create_directory(directory, table.get_string_field("destination").c_str());
+        directory->cd();
         
         /**
          * @brief Create the output TTree with the name specified in the
@@ -132,7 +134,7 @@ namespace sys::trees
      * @param input The input TFile.
      * @return void
      */
-    void copy_with_weight_systematics(sys::cfg::ConfigurationTable & config, sys::cfg::ConfigurationTable & table, TFile * output, TFile * input)
+    void copy_with_weight_systematics(sys::cfg::ConfigurationTable & config, sys::cfg::ConfigurationTable & table, TFile * output, TFile * input, sys::detsys::DetsysCalculator & calc)
     {
         /**
          * @brief Create the output subdirectory following the nesting outlined
@@ -140,6 +142,7 @@ namespace sys::trees
          */
         TDirectory * directory = (TDirectory *) output;
         directory = create_directory(directory, table.get_string_field("destination").c_str());
+        directory->cd();
         
         /**
          * @brief Connect to the input TTree and associated branches.
@@ -152,11 +155,15 @@ namespace sys::trees
          * "nu_id" branch in the input TTree directly.
          */
         TTree * input_tree = (TTree *) input->Get(table.get_string_field("origin").c_str());
-        double br[input_tree->GetNbranches()-3];
+        std::map<std::string, double> brs;
         double nu_id;
         Int_t run, subrun, event;
         for(int i(0); i < input_tree->GetNbranches()-3; ++i)
-            input_tree->SetBranchAddress(input_tree->GetListOfBranches()->At(i)->GetName(), br+i);
+        {
+            std::string brname = input_tree->GetListOfBranches()->At(i)->GetName();
+            brs[brname] = 0;
+            input_tree->SetBranchAddress(brname.c_str(), &brs[brname]);
+        }
         input_tree->SetBranchAddress("nu_id", &nu_id);
         input_tree->SetBranchAddress("Run", &run);
         input_tree->SetBranchAddress("Subrun", &subrun);
@@ -175,8 +182,8 @@ namespace sys::trees
          * the output TTree.
          */
         TTree * output_tree = new TTree(table.get_string_field("name").c_str(), table.get_string_field("name").c_str());
-        for (int i(0); i < input_tree->GetNbranches()-3; ++i)
-            output_tree->Branch(input_tree->GetListOfBranches()->At(i)->GetName(), br+i);
+        for(auto & br : brs)
+            output_tree->Branch(br.first.c_str(), &br.second);
         output_tree->Branch("Run", &run);
         output_tree->Branch("Subrun", &subrun);
         output_tree->Branch("Evt", &event);
@@ -228,10 +235,19 @@ namespace sys::trees
          * loop is used to load and configure the systematics of each type in
          * sequential order.
          */
-        for(std::string & s : table.get_string_vector("table"))
+        std::vector<std::string> tables = table.get_string_vector("table");
+        std::vector<std::string> table_types = table.get_string_vector("table_type");
+        int64_t variation_counter(-1);
+        for(size_t si(0); si < tables.size(); ++si)
         {
+            std::string & s = tables[si];
+            std::string & type = table_types[si];
+
             systables.push_back(config.get_subtables(s));
             systrees[s] = new TTree((s+"Tree").c_str(), (s+"Tree").c_str());
+            systrees[s]->Branch("Run", &run);
+            systrees[s]->Branch("Subrun", &subrun);
+            systrees[s]->Branch("Evt", &event);
 
             /**
              * @brief Loop over the systematics of this type.
@@ -244,9 +260,19 @@ namespace sys::trees
              */
             for(sys::cfg::ConfigurationTable & t : systables.back())
             {
-                systs.insert(std::make_pair<std::string, int64_t>(t.get_string_field("name"), t.get_int_field("index")));
-                weights.insert(std::make_pair<int64_t, std::vector<double>*>(t.get_int_field("index"), new std::vector<double>));
-                systrees[s]->Branch(t.get_string_field("name").c_str(), &weights[t.get_int_field("index")]);
+                if(type != "variation")
+                {
+                    systs.insert(std::make_pair<std::string, int64_t>(t.get_string_field("name"), t.get_int_field("index")));
+                    weights.insert(std::make_pair<int64_t, std::vector<double>*>(t.get_int_field("index"), new std::vector<double>));
+                    systrees[s]->Branch(t.get_string_field("name").c_str(), &weights[t.get_int_field("index")]);
+                }
+                else if(type == "variation")
+                {
+                    systs.insert(std::make_pair<std::string, int64_t>(t.get_string_field("name"), std::move(variation_counter)));
+                    weights.insert(std::make_pair<int64_t, std::vector<double>*>(std::move(variation_counter), new std::vector<double>));
+                    systrees[s]->Branch(t.get_string_field("name").c_str(), &weights[variation_counter]);
+                    --variation_counter;
+                }
             }
         }
 
@@ -320,6 +346,7 @@ namespace sys::trees
                     index_t index(*rrun, *rsubrun, *revt, nu.index);
                     if(candidates.find(index) != candidates.end())
                     {
+                        calc.increment_nominal_count(1.0);
                         /**
                          * @brief Retrieve the selected signal candidate and copy
                          * the values to the output TTree.
@@ -340,9 +367,19 @@ namespace sys::trees
                          */
                         for(auto & [key, value] : systs)
                         {
-                            weights[value]->clear();
-                            for(size_t u(0); u < nu.wgt[value].univ.size(); ++u)
-                                weights[value]->push_back(nu.wgt[value].univ[u]);
+                            if(value >= 0)
+                            {
+                                weights[value]->clear();
+                                for(size_t u(0); u < nu.wgt[value].univ.size(); ++u)
+                                    weights[value]->push_back(nu.wgt[value].univ[u]);
+                            }
+                            else
+                            {
+                                weights[value]->clear();
+                                for(double & z : calc.get_zscores(key))
+                                    weights[value]->push_back(calc.get_weight(key, brs[calc.get_variable()], z));
+                                calc.add_value(key, brs[calc.get_variable()]);
+                            }
                         } // End of loop over the configured systematics.
                         for(auto & [key, value] : systrees)
                             value->Fill();
@@ -352,10 +389,12 @@ namespace sys::trees
             caf->Close();
             nprocessed++;
         } // End of loop over the input CAF files.
-        input->Close();
         directory->WriteObject(output_tree, table.get_string_field("name").c_str());
         for(auto & [key, value] : systrees)
             directory->WriteObject(value, (key+"Tree").c_str());
-    }   
+        
+        // Write detector systematic histograms to the output file.
+        calc.write_results();
+    }
 }
 #endif
