@@ -104,6 +104,17 @@ namespace sys::cfg
         void check_field(const std::string & field);
 
         /**
+         * @brief Check that the requested field is present in the configuration
+         * file.
+         * @details This function checks that the requested field is present in the
+         * configuration file. It returns a boolean value indicating whether the
+         * field is present and does not throw an exception.
+         * @param field The field that is requested.
+         * @return A boolean value indicating whether the field is present.
+         */
+        bool has_field(const std::string & field);
+
+        /**
          * @brief Get the requested string field from the ConfigurationTable.
          * @details This function gets the requested string field from the
          * ConfigurationTable. If the field is not present, the function throws

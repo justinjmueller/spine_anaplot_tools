@@ -44,6 +44,12 @@ namespace sys::cfg
             throw ConfigurationError("Field " + field + " not found in the configuration file.");
     }
 
+    // Check that the requested field is present in the configuration file.
+    bool ConfigurationTable::has_field(const std::string & field)
+    {
+        return config.contains(field);
+    }
+
     // Retrieve the requested string field from the configuration table.
     std::string ConfigurationTable::get_string_field(const std::string & field)
     {
