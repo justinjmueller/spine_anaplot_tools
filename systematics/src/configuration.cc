@@ -63,7 +63,7 @@ namespace sys::cfg
     std::vector<std::string> ConfigurationTable::get_string_vector(const std::string & field)
     {
         std::vector<std::string> values;
-        toml::array * elements = config[field].as_array();
+        toml::array * elements = config.at_path(field).as_array();
         for(auto & e : *elements)
             values.push_back(*e.value<std::string>());
         return values;
@@ -109,11 +109,11 @@ namespace sys::cfg
     std::vector<ConfigurationTable> ConfigurationTable::get_subtables(const std::string & table)
     {
         std::vector<ConfigurationTable> tables;
+        if(config.find(table) == config.end())
+            throw ConfigurationError("Table " + table + " not found in the configuration file.");
         toml::array * elements = config[table].as_array();
         for(auto & e : *elements)
-        {
             tables.push_back(ConfigurationTable(*e.as_table()));
-        }
         return tables;
     }
 } // namespace systematics::configuration
