@@ -147,6 +147,27 @@ namespace sys::cfg
         int64_t get_int_field(const std::string & field);
 
         /**
+         * @brief Get the requested double field from the ConfigurationTable.
+         * @details This function gets the requested double field from the
+         * ConfigurationTable. If the field is not present, the function throws
+         * an exception.
+         * @param field The name of the field that is requested.
+         * @return The value of the requested double field.
+         * @throw ConfigurationError
+         */
+        double get_double_field(const std::string & field);
+
+        /**
+         * @brief Get a list of all doubles matching the requested field name.
+         * @details This function gets a list of all doubles matching the
+         * requested field name. The function returns a vector of doubles.
+         * @param field The field that is requested.
+         * @return A vector of doubles.
+         * @throw ConfigurationError
+         */
+        std::vector<double> get_double_vector(const std::string & field);
+
+        /**
          * @brief Get a list of all subtables matching the requested table name.
          * @details This function gets a list of all subtables matching the
          * requested table name. The function returns a vector of ConfigurationTable

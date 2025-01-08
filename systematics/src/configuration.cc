@@ -78,6 +78,25 @@ namespace sys::cfg
         return *value;
     }
 
+    // Retrieve the requested double field from the configuration table.
+    double ConfigurationTable::get_double_field(const std::string & field)
+    {
+        std::optional<double> value(config.at_path(field).value<double>());
+        if(!value)
+            throw ConfigurationError("Field " + field + " (double) not found in the configuration file.");
+        return *value;
+    }
+
+    // Retrieve the requested vector of doubles from the configuration table.
+    std::vector<double> ConfigurationTable::get_double_vector(const std::string & field)
+    {
+        std::vector<double> values;
+        toml::array * elements = config.at_path(field).as_array();
+        for(auto & e : *elements)
+            values.push_back(*e.value<double>());
+        return values;
+    }
+
     // Validate the configuration file by checking that all the requisite
     // fields are present.
     void ConfigurationTable::validate()
