@@ -1,9 +1,19 @@
 [input]
-path = '/exp/icarus/app/users/mueller/cafana/spine_anaplot_tools/cafana/muon2024_1muNp_mc.root'
-caflist = 'small_input_list.txt'
+path = 'muon2024_sys_rev4.root'
+caflist = 'input_list.txt'
 
 [output]
-path = 'muon2024.root'
+path = 'muon2024_full_rev4.root'
+
+[variations]
+keys = ['var00', 'var01', 'var03m', 'var03p', 'var04', 'var05', 'var06m', 'var06p', 'var07m', 'var07p', 'var08', 'var09']
+origin = 'events/'
+tree = 'selectedNu'
+histogram_destination = 'variations/'
+result_destination = 'detsys_results/'
+variable = 'reco_edep'
+bins = [1, 0, 3]
+nuniverses = 100000
 
 [[tree]]
 origin = 'events/mc/selectedCos'
@@ -12,11 +22,90 @@ name = 'selectedCos'
 action = 'copy'
 
 [[tree]]
+origin = 'events/offbeam/selectedCos'
+destination = 'events/'
+name = 'selectedOffbeamCos'
+action = 'copy'
+
+[[tree]]
 origin = 'events/mc/selectedNu'
 destination = 'events/'
 name = 'selectedNu'
 action = 'add_weights'
-table = ['multisim', 'multisigma']
+table = ['multisim', 'multisigma', 'detsys']
+table_type = ['weights', 'weights', 'variation']
+
+# TPC Signal Shape
+[[detsys]]
+name = 'var01'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var01', 'var01', 'var01', 'var00', 'var01', 'var01', 'var01']
+scale = [-3, -2, -1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# TPC IND1 Gain
+[[detsys]]
+name = 'var03'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var03m', 'var03m', 'var03m', 'var00', 'var03p', 'var03p', 'var03p']
+scale = [3, 2, 1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# PMT Decreased QE
+[[detsys]]
+name = 'var04'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var04', 'var04', 'var04', 'var00', 'var04', 'var04', 'var04']
+scale = [-3, -2, -1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# Ellipsoidal Recombination
+[[detsys]]
+name = 'var05'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var05', 'var05', 'var05', 'var00', 'var05', 'var05', 'var05']
+scale = [-3, -2, -1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# TPC Coherent Noise
+[[detsys]]
+name = 'var06'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var06m', 'var06m', 'var06m', 'var00', 'var06p', 'var06p', 'var06p']
+scale = [3, 2, 1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# TPC Intrinsic Noise
+[[detsys]]
+name = 'var07'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var07m', 'var07m', 'var07m', 'var00', 'var07p', 'var07p', 'var07p']
+scale = [3, 2, 1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# Electron Lifetime (8ms)
+[[detsys]]
+name = 'var08'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var08', 'var08', 'var08', 'var00', 'var08', 'var08', 'var08']
+scale = [-3, -2, -1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
+
+# Null Variation
+[[detsys]]
+name = 'var09'
+destination = 'events/detsys/'
+ordinate = 'var00'
+points = ['var09', 'var09', 'var09', 'var00', 'var09', 'var09', 'var09']
+scale = [-3, -2, -1, 1, 1, 2, 3]
+zscores = [-3, -2, -1, 0, 1, 2, 3]
 
 [[multisigma]]
 name = 'GENIEReWeight_SBN_v1_multisigma_ZExpA1CCQE'
