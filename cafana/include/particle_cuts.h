@@ -49,5 +49,27 @@ namespace pcuts
             }
             return passes;
         }
+    /**
+     * @brief Check if the particle meets final state signal requirements.
+     * @details must be primary and have an energy above threshold.
+     * Muons must have a length of at least 50 cm (143.425 MeV), protons
+     * must have an energy above 50 MeV, and all other particles must have
+     * an energy above 25 MeV.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to check.
+     * @return true if the particle is a final state signal particle.
+     */
+    template<class T>
+        bool final_state_signal_nue(const T & p)
+        {
+            bool passes(false);
+            if(p.is_primary)
+            {
+                double energy(pvars::energy(p));
+                if((p.pid == 1 && energy > 70) || (p.pid != 1 && p.pid < 4 && energy > 25) || (p.pid == 4 && energy > 40))
+                    passes = true;
+            }
+            return passes;
+        }
 }
 #endif // PARTICLE_CUTS_H

@@ -83,6 +83,21 @@ namespace utilities
         }
 
     /**
+     * @brief Finds the index corresponding to the leading electron.
+     * @details The leading electron is defined as the electron with the highest
+     * kinetic energy. If the interaction is a true interaction, the initial
+     * kinetic energy is used instead of the CSDA kinetic energy.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to operate on.
+     * @return the index of the leading electron (highest KE).
+     */
+    template<class T>
+        size_t leading_electron_index(const T & obj)
+        {
+            return leading_particle_index(obj, 1);
+        }
+    
+    /**
      * @brief Finds the index corresponding to the leading muon.
      * @details The leading muon is defined as the muon with the highest
      * kinetic energy. If the interaction is a true interaction, the initial
@@ -96,7 +111,7 @@ namespace utilities
         {
             return leading_particle_index(obj, 2);
         }
-    
+
     /**
      * @brief Finds the index corresponding to the leading proton.
      * @details The leading proton is defined as the proton with the highest

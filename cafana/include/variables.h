@@ -338,6 +338,21 @@ namespace vars
         }
 
     /**
+     * Variable for the muon softmax score for the leading muon of the
+     * interaction.
+     * @tparam T the type of interaction (true or reco).
+     * @param interaction to apply the variable on.
+     * @return the muon softmax score of the leading muon.
+    */
+    
+    template<class T>
+        double electron_softmax(const T & interaction)
+        {
+            sauto & m(obj.particles[utilities::leading_particle_index(obj, 1)]);
+            return m.pid_scores[1];
+        }
+
+    /**
      * @brief Variable for the muon softmax score of the leading muon.
      * @details The leading muon is defined as the muon with the highest
      * kinetic energy. The softmax score can be thought of as a "confidence"
@@ -406,6 +421,26 @@ namespace vars
         }
 
     /**
+     * @brief Variable for finding the leading muon kinetic energy.
+     * @details The leading muon is defined as the muon with the highest
+     * kinetic energy. If the interaction is a true interaction, the initial
+     * kinetic energy is used instead of the CSDA kinetic energy.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to apply the variable on.
+     * @return the kinetic energy of the leading muon.
+     */
+    template<class T>
+        double leading_electron_ke(const T & obj)
+        {
+            size_t i(utilities::leading_particle_index(obj, 2));
+            double energy(pvars::energy(obj.particles[i]));
+            if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
+                energy = pvars::ke_init(obj.particles[i]);
+            return energy;
+        }
+    
+
+    /**
      * @brief Variable for finding the leading proton kinetic energy.
      * @details The leading proton is defined as the proton with the highest
      * kinetic energy. If the interaction is a true interaction, the initial
@@ -439,6 +474,24 @@ namespace vars
         double leading_muon_pt(const T & obj)
         {
             size_t i(utilities::leading_particle_index(obj, 2));
+            return pvars::transverse_momentum(obj.particles[i]);
+        }
+
+    /**
+     * @brief Variable for the transverse momentum of the leading muon.
+     * @details The leading muon is defined as the muon with the highest
+     * kinetic energy. The transverse momentum is defined as the square root
+     * of the sum of the squares of the x and y components of the momentum.
+     * This variable is useful for identifying muons which are produced in a
+     * transverse direction to the beam.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to apply the variable on.
+     * @return the transverse momentum of the leading muon.
+     */
+    template<class T>
+        double leading_electron_pt(const T & obj)
+        {
+            size_t i(utilities::leading_particle_index(obj, 1));
             return pvars::transverse_momentum(obj.particles[i]);
         }
 
@@ -489,6 +542,38 @@ namespace vars
         double muon_azimuthal_angle(const T & obj)
         {
             size_t i(utilities::leading_particle_index(obj, 2));
+            return pvars::azimuthal_angle(obj.particles[i]);
+        }
+
+    /**
+     * @brief Variable for the muon polar angle.
+     * @details The polar angle is defined as the arccosine of the z-component
+     * of the momentum vector. This variable is useful for identifying muons
+     * which are produced transversely to the beam.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to apply the variable on.
+     * @return the polar angle of the leading muon.
+     */
+    template<class T>
+        double electron_polar_angle(const T & obj)
+        {
+            size_t i(utilities::leading_particle_index(obj, 1));
+            return pvars::polar_angle(obj.particles[i]);
+        }
+
+    /**
+     * @brief Variable for the muon azimuthal angle.
+     * @details The azimuthal angle is defined as the arccosine of the x-component
+     * of the momentum vector divided by the square root of the sum of the squares
+     * of the x and y components of the momentum vector.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to apply the variable on.
+     * @return the azimuthal angle of the leading muon.
+     */
+    template<class T>
+        double electron_azimuthal_angle(const T & obj)
+        {
+            size_t i(utilities::leading_particle_index(obj, 1));
             return pvars::azimuthal_angle(obj.particles[i]);
         }
 
