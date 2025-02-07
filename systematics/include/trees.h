@@ -20,6 +20,8 @@
 #include "TFile.h"
 #include "TDirectory.h"
 #include "TTree.h"
+#include "TH1D.h"
+#include "TH2D.h"
 #include "TTreeReader.h"
 #include "TTreeReaderValue.h"
 #include "TTreeReaderArray.h"
@@ -40,11 +42,31 @@
 namespace sys::trees
 {
     /**
-     * @brief Type definitions for the selected signal candidates and the
-     * universe weights.
+     * @brief Type definitions for the selected signal candidates indexing, the
+     * universe weights, and systematic indexing (variable name and index).
      */
     typedef std::tuple<Double_t, Double_t, Double_t, Double_t> index_t;
     typedef std::map<index_t, size_t> map_t;
+    typedef std::pair<std::string, int64_t> syst_t;
+
+    /**
+     * @brief Simple struct to hold a variable's definition.
+     */
+    struct SysVariable
+    {
+        SysVariable(sys::cfg::ConfigurationTable & table)
+            : name(table.get_string_field("name"))
+        {
+            std::vector<double> bins = table.get_double_vector("bins");
+            nbins = bins[0];
+            min = bins[1];
+            max = bins[2];
+        }
+        std::string name;
+        size_t nbins;
+        double min;
+        double max;
+    };
 
     /**
      * @brief Copy the input TTree to the output TTree.
@@ -224,8 +246,31 @@ namespace sys::trees
         std::vector<std::vector<sys::cfg::ConfigurationTable>> systables;
         std::map<std::string, int64_t> systs;
         std::map<std::string, TTree *> systrees;
-        std::map<int64_t, std::vector<double>*> weights;
-        
+
+        /**
+         * @brief Create histograms for storing the systematic results as a 
+         * function of a collection of variables.
+         * @details This block creates histograms for storing the systematic
+         * weights / selected ratios as a function of a the variables specified
+         * in the configuration file. The histograms are stored in a map with
+         * the key being a pair of the variable name and the systematic name.
+         * The 1D histogram contains a single entry per universe with a fill
+         * value corresponding to the ratio of the selected signal candidates
+         * with the universe weight to the nominal count. The 2D histogram
+         * contains a 2D histogram with the variable on the x-axis and the
+         * universe index on the y-axis. The fill value is the universe weight.
+         * The 1D histograms can be easily inspected to see the one-bin effect
+         * (uncertainty) of the systematic on the selected signal candidates.
+         * The 2D histograms contain similar information, but can additionally
+         * be used to inspect the effect of the systematic as a function of the
+         * variable or calculate a covariance matrix.
+         */
+        std::vector<SysVariable> sysvariables;
+        std::map<syst_t, TH2D *> results2d;
+        std::map<syst_t, TH1D *> results1d;
+        for(sys::cfg::ConfigurationTable & t : config.get_subtables("sysvar"))
+            sysvariables.push_back(SysVariable(t));
+
         /**
          * @brief Loop over the systematic types in the configuration file.
          * @details This block loops over the systematic types in the
@@ -367,11 +412,25 @@ namespace sys::trees
                          */
                         for(auto & [key, value] : systs)
                         {
-                            if(value >= 0)
+                            value->get_weights()->clear();
+                            if(value->get_type() == Type::kMULTISIM || value->get_type() == Type::kMULTISIGMA)
                             {
-                                weights[value]->clear();
-                                for(size_t u(0); u < nu.wgt[value].univ.size(); ++u)
-                                    weights[value]->push_back(nu.wgt[value].univ[u]);
+                                for(SysVariable & sv : sysvariables)
+                                {
+                                    syst_t syskey = std::make_pair(sv.name, value->get_index());
+                                    if(results1d.find(syskey) == results1d.end())
+                                    {
+                                        results1d[syskey] = new TH1D((sv.name + "_" + key + "_1d").c_str(), (sv.name + "_" + key + "_1d").c_str(), 1000, -0.25, 0.25);
+                                        results1d[syskey]->SetDirectory(nullptr);
+                                        results2d[syskey] = new TH2D((sv.name + "_" + key + "_2d").c_str(), (sv.name + "_" + key + "_2d").c_str(), sv.nbins, sv.min, sv.max, nu.wgt[value->get_index()].univ.size(), 0, nu.wgt[value->get_index()].univ.size());
+                                        results2d[syskey]->SetDirectory(nullptr);
+                                    }
+                                    for(size_t u(0); u < nu.wgt[value->get_index()].univ.size(); ++u)
+                                    {
+                                        value->get_weights()->push_back(nu.wgt[value->get_index()].univ[u]);
+                                        results2d[syskey]->Fill(brs[sv.name], u, nu.wgt[value->get_index()].univ[u]);
+                                    }
+                                }
                             }
                             else
                             {
@@ -393,6 +452,28 @@ namespace sys::trees
         for(auto & [key, value] : systrees)
             directory->WriteObject(value, (key+"Tree").c_str());
         
+        // Write the systematic histograms to the output file.
+        TDirectory * histogram_directory = create_directory(output, config.get_string_field("output.histogram_destination"));
+        for(auto & [key, value] : results2d)
+        {
+            std::string name = value->GetName();
+            histogram_directory->WriteObject(value, name.c_str());
+            for(int i(0); i < value->GetNbinsY(); ++i)
+            {
+                double sum(0);
+                for(int j(0); j < value->GetNbinsX(); ++j)
+                    sum += value->GetBinContent(j+1, i+1);
+                results1d[key]->Fill((sum - nominal_count) / nominal_count);
+            }
+            delete value;
+        }
+        for(auto & [key, value] : results1d)
+        {
+            std::string name = value->GetName();
+            histogram_directory->WriteObject(value, name.c_str());
+            delete value;
+        }
+
         // Write detector systematic histograms to the output file.
         calc.write_results();
     }
