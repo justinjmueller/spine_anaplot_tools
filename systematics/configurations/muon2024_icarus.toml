@@ -1,0 +1,47 @@
+[input]
+path = 'muon2024_sys_rev4.root'
+caflist = 'small_input_list.txt'
+
+[output]
+path = 'muon2024_full_devdev.root'
+histogram_destination = 'variations/'
+
+[[sysvar]]
+name = 'reco_edep'
+bins = [10, 0, 3]
+
+[variations]
+keys = ['var00', 'var01']
+origin = 'events/'
+tree = 'selectedNu'
+result_destination = 'detsys_results/'
+variable = 'reco_edep'
+bins = [10, 0, 3]
+nuniverses = 100000
+
+[[tree]]
+origin = 'events/mc/selectedNu'
+destination = 'events/mc/'
+name = 'selectedNu'
+action = 'add_weights'
+table_types = ['multisim', 'multisigma', 'variation']
+
+[[sys]]
+name = 'var01'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [-3, -2, -1, 1, 1, 2, 3]
+ordinate = 'var00'
+points = ['var01', 'var01', 'var01', 'var00', 'var01', 'var01', 'var01']
+
+[[sys]]
+name = 'GENIEReWeight_SBN_v1_multisigma_ZExpA1CCQE'
+type = 'multisigma'
+index = 0
+zscores = [-1, 1, -2, 2, -3, 3]
+
+[[sys]]
+name = 'GENIEReWeight_SBN_v1_multisim_ZExpAVariationResponse'
+type = 'multisim'
+index = 52
