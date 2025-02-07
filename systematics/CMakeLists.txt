@@ -24,6 +24,11 @@ add_library(configuration SHARED src/configuration.cc)
 target_link_libraries(configuration PRIVATE tomlplusplus::tomlplusplus)
 target_include_directories(configuration PRIVATE include/ tomlplusplus/include)
 
+# Library for generic systematics
+add_library(systematics SHARED src/systematic.cc)
+target_link_libraries(systematics PRIVATE ${ROOT_LIBRARIES} configuration tomlplusplus::tomlplusplus)
+target_include_directories(systematics PRIVATE include/ ${ROOT_INCLUDE_DIRS} tomlplusplus/include)
+
 # Library for detector systematics
 add_library(detsys SHARED src/detsys.cc)
 target_link_libraries(detsys PRIVATE ${ROOT_LIBRARIES} configuration tomlplusplus::tomlplusplus)
@@ -33,7 +38,7 @@ target_include_directories(detsys PRIVATE include/ ${ROOT_INCLUDE_DIRS} tomlplus
 add_executable(run_systematics src/main.cc ${SYSINC})
 
 # Link the ROOT libraries to the target
-target_link_libraries(run_systematics ${ROOT_LIBRARIES} ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so tomlplusplus::tomlplusplus configuration detsys)
+target_link_libraries(run_systematics ${ROOT_LIBRARIES} ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so tomlplusplus::tomlplusplus configuration systematics detsys)
 
 # Include the ROOT headers
 include_directories(${ROOT_INCLUDE_DIRS} ${SBNANAOBJ_INCLUDE_DIRS} include/ tomlplusplus/include)

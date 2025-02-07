@@ -16,6 +16,7 @@
 #include "detsys.h"
 #include "utilities.h"
 #include "configuration.h"
+#include "systematic.h"
 
 #include "TFile.h"
 #include "TDirectory.h"
@@ -229,22 +230,17 @@ namespace sys::trees
          * @brief Configure the weight-based systematics.
          * @details This block configures the weight-based systematics. The
          * systematics are split (by type) into separate TTrees, which is
-         * enforced by the configuration file. Because we do not wish to loop
-         * over the selected signal candidates multiple times, we must store
-         * the systematic information in such a way that we can easily
-         * accomodate this scheme. The variable "systables" is a vector of
-         * vectors of @ref sys::cfg::ConfigurationTables, with an inner vector
-         * for each systematic parameter and an outer vector for grouping the
-         * systematics by type. The variable "systs" is a map that maps the
-         * name of the systematic parameter to its index within the input
-         * weights. The variable "systrees" is a map that serves as a container
-         * for the output TTrees of each systematic type keyed by the name of
-         * the type. The variable "weights" is a map with a key of the index of
-         * the systematic parameter and a value of std::vector<double>* that is
-         * used to connect the universe weights to the output TTree.
+         * enforced by the "type" field in the configuration block for each
+         * systematic. Because we do not wish to loop over the selected signal
+         * candidates multiple times, we must store the systematic information
+         * in such a way that we can easily accomodate this scheme. The variable
+         * "systematics" is a map of Systematic objects keyed by the name of the
+         * systematic parameter. Each Systematic object contains metadata about
+         * the systematic parameter (name, index, type, etc.), some
+         * configuration information, and a pointer to the output TTree,
+         * weights vector, and zscores vector.
          */
-        std::vector<std::vector<sys::cfg::ConfigurationTable>> systables;
-        std::map<std::string, int64_t> systs;
+        std::map<std::string, Systematic *> systematics;
         std::map<std::string, TTree *> systrees;
 
         /**
@@ -280,45 +276,20 @@ namespace sys::trees
          * loop is used to load and configure the systematics of each type in
          * sequential order.
          */
-        std::vector<std::string> tables = table.get_string_vector("table");
-        std::vector<std::string> table_types = table.get_string_vector("table_type");
-        int64_t variation_counter(-1);
-        for(size_t si(0); si < tables.size(); ++si)
+        std::vector<std::string> table_types = table.get_string_vector("table_types");
+        for(const std::string & s : table_types)
         {
-            std::string & s = tables[si];
-            std::string & type = table_types[si];
-
-            systables.push_back(config.get_subtables(s));
             systrees[s] = new TTree((s+"Tree").c_str(), (s+"Tree").c_str());
+            systrees[s]->SetDirectory(nullptr);
             systrees[s]->Branch("Run", &run);
             systrees[s]->Branch("Subrun", &subrun);
             systrees[s]->Branch("Evt", &event);
+        }
 
-            /**
-             * @brief Loop over the systematics of this type.
-             * @details This block loops over systematics belonging to the same
-             * type as defined by the configuration file. The loop "flattens"
-             * the systematics into a single set of maps for use below in the
-             * loop over the input CAF files. The TTree of each systematic type
-             * is extended with a vector of doubles for each systematic
-             * parameter belonging to the type.
-             */
-            for(sys::cfg::ConfigurationTable & t : systables.back())
-            {
-                if(type != "variation")
-                {
-                    systs.insert(std::make_pair<std::string, int64_t>(t.get_string_field("name"), t.get_int_field("index")));
-                    weights.insert(std::make_pair<int64_t, std::vector<double>*>(t.get_int_field("index"), new std::vector<double>));
-                    systrees[s]->Branch(t.get_string_field("name").c_str(), &weights[t.get_int_field("index")]);
-                }
-                else if(type == "variation")
-                {
-                    systs.insert(std::make_pair<std::string, int64_t>(t.get_string_field("name"), std::move(variation_counter)));
-                    weights.insert(std::make_pair<int64_t, std::vector<double>*>(std::move(variation_counter), new std::vector<double>));
-                    systrees[s]->Branch(t.get_string_field("name").c_str(), &weights[variation_counter]);
-                    --variation_counter;
-                }
-            }
+        for(sys::cfg::ConfigurationTable & t : config.get_subtables("sys"))
+        {
+            systematics.insert(std::make_pair<std::string, Systematic *>(t.get_string_field("name"), new Systematic(t, systrees[t.get_string_field("type")])));
+            systematics[t.get_string_field("name")]->get_tree()->Branch(t.get_string_field("name").c_str(), &systematics[t.get_string_field("name")]->get_weights());
         }
 
         /**
@@ -342,6 +313,7 @@ namespace sys::trees
          * weights for parent neutrino. 
          */
         size_t nprocessed(0);
+        double nominal_count(0);
         for(std::string input_file : input_files)
         {
             if(nprocessed % 100 == 0)
@@ -392,6 +364,7 @@ namespace sys::trees
                     if(candidates.find(index) != candidates.end())
                     {
                         calc.increment_nominal_count(1.0);
+                        nominal_count += 1.0;
                         /**
                          * @brief Retrieve the selected signal candidate and copy
                          * the values to the output TTree.
@@ -410,7 +383,7 @@ namespace sys::trees
                          * @details This block stores the universe weights in the
                          * output TTree for each of the configured systematics.  
                          */
-                        for(auto & [key, value] : systs)
+                        for(auto & [key, value] : systematics)
                         {
                             value->get_weights()->clear();
                             if(value->get_type() == Type::kMULTISIM || value->get_type() == Type::kMULTISIGMA)
@@ -434,15 +407,23 @@ namespace sys::trees
                             }
                             else
                             {
-                                weights[value]->clear();
                                 for(double & z : calc.get_zscores(key))
-                                    weights[value]->push_back(calc.get_weight(key, brs[calc.get_variable()], z));
+                                    value->get_weights()->push_back(calc.get_weight(key, brs[calc.get_variable()], z));
                                 calc.add_value(key, brs[calc.get_variable()]);
                             }
                         } // End of loop over the configured systematics.
+
+                        /**
+                         * @brief Fill the systematic TTrees.
+                         * @details This block fills the systematic TTrees with
+                         * the universe weights for the parent neutrino. Each
+                         * configured systematic should have its weights vector
+                         * populated by the above loop.
+                         */
                         for(auto & [key, value] : systrees)
                             value->Fill();
-                    }
+
+                    } // End of block for matched signal candidates.
                 } // End of loop over the neutrino interactions in the input CAF file.
             } // End of loop over the events in the input CAF file.
             caf->Close();
