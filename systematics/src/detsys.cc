@@ -36,7 +36,7 @@ sys::detsys::DetsysCalculator::DetsysCalculator(sys::cfg::ConfigurationTable & t
 
     // Create the output directories to store the histograms and splines.
     // Also, load a few configuration details.
-    histogram_directory = create_directory(output, table.get_string_field("variations.histogram_destination"));
+    histogram_directory = create_directory(output, table.get_string_field("output.histogram_destination"));
     result_directory = create_directory(output, table.get_string_field("variations.result_destination"));
     variations = table.get_string_vector("variations.keys");
     variable = table.get_string_field("variations.variable");
@@ -60,11 +60,15 @@ sys::detsys::DetsysCalculator::DetsysCalculator(sys::cfg::ConfigurationTable & t
     }
 
     // Loop over the detector systematics and create the splines. A single
-    // entry in the "detsys" block of the configuration file specifies a
-    // single detector systematic parameter, but in general may consist of
-    // multiple variations spanning the range of the parameter.
-    for(sys::cfg::ConfigurationTable & t : table.get_subtables("detsys"))
+    // entry in the "sys" block of the configuration file with type "variation"
+    // specifies a single detector systematic parameter, but in general may
+    // consist of multiple variations spanning the range of the parameter.
+    for(sys::cfg::ConfigurationTable & t : table.get_subtables("sys"))
     {
+        // Skip non-variation detector systematics.
+        if(t.get_string_field("type") != "variation")
+            continue;
+        
         // The "points" field specifies the variations to be used in the spline
         // construction. The "scale" field specifies the scale factors for each
         // variation, which is really just a way to weight the variations in the
@@ -77,7 +81,7 @@ sys::detsys::DetsysCalculator::DetsysCalculator(sys::cfg::ConfigurationTable & t
         // corresponding z-scores for each variation (how many standard
         // deviations the systematic parameter is from the nominal value).
         std::string name = t.get_string_field("name");
-        zscores.insert(std::make_pair(name, t.get_double_vector("zscores")));
+        zscores.insert(std::make_pair(name, t.get_double_vector("nsigma")));
         hdummies.insert(std::make_pair(name, new TH1D("hdummy", "hdummy", histograms[points[0]]->GetNbinsX(), histograms[points[0]]->GetXaxis()->GetXmin(), histograms[points[0]]->GetXaxis()->GetXmax())));
 
         // This block creates a TH2D that will be used to store the input for
@@ -160,10 +164,10 @@ void sys::detsys::DetsysCalculator::write()
 {
     histogram_directory->cd();
     for(auto & [key, value] : histograms)
-        histogram_directory->WriteObject(value, key.c_str());
+        result_directory->WriteObject(value, key.c_str());
     for(auto & [key, value] : splines)
     {
-        TDirectory * tmp = histogram_directory->mkdir((key+"_splines").c_str());
+        TDirectory * tmp = result_directory->mkdir((key+"_splines").c_str());
         tmp->cd();
         for(size_t i(0); i < value.size(); ++i)
             tmp->WriteObject(value[i], (std::string("bin") + std::to_string(i)).c_str());
@@ -179,7 +183,7 @@ void sys::detsys::DetsysCalculator::write_results()
     for(auto & [key, value] : detsys_results2D)
     {
         std::string name = key + "_2D";
-        result_directory->WriteObject(value, name.c_str());
+        histogram_directory->WriteObject(value, name.c_str());
         for(int i(0); i < value->GetNbinsY(); ++i)
         {
             double sum(0);
@@ -191,7 +195,7 @@ void sys::detsys::DetsysCalculator::write_results()
     for(auto & [key, value] : detsys_results1D)
     {
         std::string name = key + "_1D";
-        result_directory->WriteObject(value, name.c_str());
+        histogram_directory->WriteObject(value, name.c_str());
     }
     
 }
