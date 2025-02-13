@@ -46,6 +46,10 @@ sys::detsys::DetsysCalculator::DetsysCalculator(sys::cfg::ConfigurationTable & t
     // the detector model.
     for(std::string variation : variations)
     {
+        std::string pot_name = table.get_string_field("variations.origin") + variation + '/' + "POT";
+        TH1D * h = (TH1D *) input->Get(pot_name.c_str());
+        double pot = h->GetBinContent(1) / 1e18;
+
         std::string name = table.get_string_field("variations.origin") + variation + '/' + table.get_string_field("variations.tree");
         TTree * t = input->Get<TTree>(name.c_str());
         double value;
@@ -55,7 +59,7 @@ sys::detsys::DetsysCalculator::DetsysCalculator(sys::cfg::ConfigurationTable & t
         for(int i(0); i < t->GetEntries(); ++i)
         {
             t->GetEntry(i);
-            histograms[variation]->Fill(value);
+            histograms[variation]->Fill(value, 1.0 / pot);
         }
     }
 
@@ -172,7 +176,10 @@ void sys::detsys::DetsysCalculator::write()
 {
     histogram_directory->cd();
     for(auto & [key, value] : histograms)
+    {
+        value->GetYaxis()->SetTitle("Signal Candidates / 1e18 POT");
         result_directory->WriteObject(value, key.c_str());
+    }
     for(auto & [key, value] : splines)
     {
         TDirectory * tmp = result_directory->mkdir((key+"_splines").c_str());
