@@ -8,7 +8,11 @@ histogram_destination = 'variations/'
 
 [[sysvar]]
 name = 'reco_edep'
-bins = [10, 0, 3]
+bins = [25, 0, 3]
+
+[[sysvar]]
+name = 'reco_tmuon'
+bins = [25, 0, 2000]
 
 [variations]
 keys = ['mc', 'var00', 'var01', 'var02m', 'var02p', 'var03', 'var04', 'var05', 'var06m']

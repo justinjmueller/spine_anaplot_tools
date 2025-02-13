@@ -18,6 +18,31 @@
 #include "TTreeReaderValue.h"
 
 /**
+ * @class SysVariable
+ * @brief Simple struct to hold a variable's definition.
+ * @details This struct holds a variable's definition, which includes the name
+ * of the variable, the number of bins, the minimum value, and the maximum
+ * value. This is used to contain the configuration of the variables that are
+ * used in the systematics framework.
+ * @see sys::cfg::ConfigurationTable
+ */
+struct SysVariable
+{
+    SysVariable(sys::cfg::ConfigurationTable & table)
+        : name(table.get_string_field("name"))
+    {
+        std::vector<double> bins = table.get_double_vector("bins");
+        nbins = bins[0];
+        min = bins[1];
+        max = bins[2];
+    }
+    std::string name;
+    size_t nbins;
+    double min;
+    double max;
+};
+
+/**
  * @brief Create a nested directory structure in the output ROOT file.
  * @details This function creates a nested directory structure in the output
  * ROOT file. The directory structure is parsed from the desired output

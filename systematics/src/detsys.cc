@@ -115,11 +115,19 @@ sys::detsys::DetsysCalculator::DetsysCalculator(sys::cfg::ConfigurationTable & t
             }
             splines[name].push_back(new TSpline3("spline", x.data(), y.data(), x.size()));
         }
+    }
+}
 
-        // Create the TH1D and TH2D that will be used to store the results of
-        // the detector systematic universes.
+// Add a variable to the list of result histograms.
+void sys::detsys::DetsysCalculator::add_variable(SysVariable & variable)
+{
+    // Create the TH1D and TH2D that will be used to store the results of
+    // the detector systematic universes.
+    for(auto & [key, value] : hdummies)
+    {
+        std::string name = variable.name + "_" + key;
         detsys_results1D[name] = new TH1D(name.c_str(), name.c_str(), 1000, -0.25, 0.25);
-        detsys_results2D[name] = new TH2D(name.c_str(), name.c_str(), hdummies[name]->GetNbinsX(), hdummies[name]->GetXaxis()->GetXmin(), hdummies[name]->GetXaxis()->GetXmax(), nuniverses, 0, nuniverses);
+        detsys_results2D[name] = new TH2D(name.c_str(), name.c_str(), variable.nbins, variable.min, variable.max, nuniverses, 0, nuniverses);
     }
 }
 
@@ -221,8 +229,9 @@ double sys::detsys::DetsysCalculator::get_weight(std::string name, double value,
 
 // Method to add a value to the detector systematic parameter histogram
 // for all pre-roll z-scores (universes).
-void sys::detsys::DetsysCalculator::add_value(std::string name, double value)
+void sys::detsys::DetsysCalculator::add_value(std::string varname, double binvar, std::string detsysname, double value)
 {
+    std::string name = varname + "_" + detsysname;
     for(size_t i(0); i < nuniverses; ++i)
-        detsys_results2D[name]->Fill(value, i, get_weight(name, value, random_zscores[i]));
+        detsys_results2D[name]->Fill(binvar, i, get_weight(detsysname, value, random_zscores[i]));
 }

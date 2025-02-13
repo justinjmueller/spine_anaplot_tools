@@ -88,6 +88,18 @@ namespace sys::detsys
         DetsysCalculator();
 
         /**
+         * @brief Add a variable to the list of result histograms.
+         * @details This function adds a variable to the list of result
+         * histograms by creating a new TH1D and TH2D for each configured
+         * detector variation. The name of each histogram follows the naming
+         * scheme "<variable>_<detsys>_1D" and "<variable>_<detsys>_2D".
+         * @param variable The SysVariable object to be added to the list of
+         * result histograms.
+         * @return void
+         */
+        void add_variable(SysVariable & variable);
+
+        /**
          * @brief Accessor method for the initialized flag.
          * @details This function returns the initialized flag.
          * @return The initialized flag.
@@ -178,11 +190,13 @@ namespace sys::detsys
          * @details This function adds a value to the histogram for a specified
          * detector systematic while respecting the pre-rolled z-scores of
          * the random universes.
-         * @param name The name of the detector systematic.
+         * @param varname The name of the variable.
+         * @param binvar The value of the binning variable.
+         * @param detsysname The name of the detector systematic.
          * @param value The value to be added to the histogram.
          * @return void
          */
-        void add_value(std::string name, double value);
+        void add_value(std::string varname, double binvar, std::string detsysname, double value);
     };
 } // namespace sys::detsys
 #endif // DETSYS_H

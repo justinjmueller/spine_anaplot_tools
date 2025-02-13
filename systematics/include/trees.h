@@ -51,25 +51,6 @@ namespace sys::trees
     typedef std::pair<std::string, int64_t> syst_t;
 
     /**
-     * @brief Simple struct to hold a variable's definition.
-     */
-    struct SysVariable
-    {
-        SysVariable(sys::cfg::ConfigurationTable & table)
-            : name(table.get_string_field("name"))
-        {
-            std::vector<double> bins = table.get_double_vector("bins");
-            nbins = bins[0];
-            min = bins[1];
-            max = bins[2];
-        }
-        std::string name;
-        size_t nbins;
-        double min;
-        double max;
-    };
-
-    /**
      * @brief Copy the input TTree to the output TTree.
      * @details This function copies the input TTree to the output TTree. The
      * function loops over the input TTree and copies the values of the branches
@@ -265,7 +246,10 @@ namespace sys::trees
         std::map<syst_t, TH2D *> results2d;
         std::map<syst_t, TH1D *> results1d;
         for(sys::cfg::ConfigurationTable & t : config.get_subtables("sysvar"))
+        {
             sysvariables.push_back(SysVariable(t));
+            calc.add_variable(sysvariables.back());
+        }
 
         /**
          * @brief Loop over the systematic types in the configuration file.
@@ -409,7 +393,8 @@ namespace sys::trees
                             {
                                 for(double & z : calc.get_zscores(key))
                                     value->get_weights()->push_back(calc.get_weight(key, brs[calc.get_variable()], z));
-                                calc.add_value(key, brs[calc.get_variable()]);
+                                for(SysVariable & sv : sysvariables)
+                                    calc.add_value(sv.name, brs[sv.name], key, brs[calc.get_variable()]);
                             }
                         } // End of loop over the configured systematics.
 
