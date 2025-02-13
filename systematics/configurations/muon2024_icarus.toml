@@ -11,7 +11,7 @@ name = 'reco_edep'
 bins = [10, 0, 3]
 
 [variations]
-keys = ['var00', 'var01']
+keys = ['mc', 'var00', 'var01', 'var02m', 'var02p', 'var03', 'var04', 'var05', 'var06m']
 origin = 'events/'
 tree = 'selectedNu'
 result_destination = 'detsys_results/'
@@ -27,13 +27,67 @@ action = 'add_weights'
 table_types = ['multisim', 'multisigma', 'variation']
 
 [[sys]]
+name = 'var00'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [-3, -2, -1, 1, 1, 2, 3]
+ordinate = 'mc'
+points = ['var00', 'var00', 'var00', 'mc', 'var00', 'var00', 'var00']
+
+[[sys]]
 name = 'var01'
 type = 'variation'
 index = -1
 nsigma = [-3, -2, -1, 0, 1, 2, 3]
 scale = [-3, -2, -1, 1, 1, 2, 3]
-ordinate = 'var00'
-points = ['var01', 'var01', 'var01', 'var00', 'var01', 'var01', 'var01']
+ordinate = 'mc'
+points = ['var01', 'var01', 'var01', 'mc', 'var01', 'var01', 'var01']
+
+[[sys]]
+name = 'var02'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [3, 2, 1, 1, 1, 2, 3]
+ordinate = 'mc'
+points = ['var02m', 'var02m', 'var02m', 'mc', 'var02p', 'var02p', 'var02p']
+
+[[sys]]
+name = 'var03'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [-3, -2, -1, 1, 1, 2, 3]
+ordinate = 'mc'
+points = ['var03', 'var03', 'var03', 'mc', 'var03', 'var03', 'var03']
+
+[[sys]]
+name = 'var04'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [-3, -2, -1, 1, 1, 2, 3]
+ordinate = 'mc'
+points = ['var04', 'var04', 'var04', 'mc', 'var04', 'var04', 'var04']
+
+[[sys]]
+name = 'var05'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [-3, -2, -1, 1, 1, 2, 3]
+ordinate = 'mc'
+points = ['var05', 'var05', 'var05', 'mc', 'var05', 'var05', 'var05']
+
+[[sys]]
+name = 'var06'
+type = 'variation'
+index = -1
+nsigma = [-3, -2, -1, 0, 1, 2, 3]
+scale = [-3, -2, -1, 1, 1, 2, 3]
+ordinate = 'mc'
+points = ['var06m', 'var06m', 'var06m', 'mc', 'var06m', 'var06m', 'var06m']
 
 [[sys]]
 name = 'GENIEReWeight_SBN_v1_multisigma_ZExpA1CCQE'

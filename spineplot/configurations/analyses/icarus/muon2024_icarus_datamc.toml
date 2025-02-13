@@ -1,0 +1,74 @@
+[[this_includes]]
+file = 'configurations/common/variables.toml'
+
+[[this_includes]]
+file = 'configurations/common/samples.toml'
+choose = {'samples' = ['mc','onbeam']}
+
+[[this_includes]]
+file = 'configurations/common/styles.toml'
+
+[output]
+path = '/exp/icarus/app/users/mueller/spineprod/plots/dev'
+
+[analysis]
+ordinate_sample = 'onbeam'
+category_branch = 'category'
+category_assignment = [[0,2], [1,3,4,5,6], [7], [-1,8], [-100]]
+category_labels = ['1$\mu$Np', 'Other CC $\nu$', 'NC $\nu$', 'Cosmic', 'Run 2 Data']
+category_colors = ['C0', 'C1', 'C3', 'C4', 'black']
+category_types = ['histogram', 'histogram', 'histogram', 'histogram', 'scatter']
+
+[[figure]]
+name = 'reco_visible_energy'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_visible_energy'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_dpT'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dpT'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_dpT_lp'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dpT_lp'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_dpL'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dpL'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_dpL_lp'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dpL_lp'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_pn'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_pn'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_pn_lp'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_pn_lp'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_dphiT'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dphiT'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'reco_dalphaT'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dalphaT'},]
+style = 'selected_icarus'
