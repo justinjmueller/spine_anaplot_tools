@@ -47,7 +47,7 @@ class Analysis:
         """
         self._toml_path = toml_path
         self._config = toml.load(self._toml_path)
-        for table in self._config['this_includes']:
+        for table in self._config.get('this_includes', []):
             Analysis.handle_include(self._config, table)
         rf = uproot.open(rf_path)
 
