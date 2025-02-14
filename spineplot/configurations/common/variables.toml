@@ -24,6 +24,144 @@ range = [0,1200]
 nbins = 100
 xlabel = 'Reconstructed $\delta p_T$ [MeV/c]'
 
+[variables.true_dpT_lp]
+key = "true_dpT_lp"
+range = [0,1200]
+nbins = 25
+xlabel = 'True $\delta p_T^{lp}$ [MeV/c]'
+
+[variables.reco_dpT_lp]
+key = "reco_dpT_lp"
+range = [0,1200]
+nbins = 25
+xlabel = 'Reconstructed $\delta p_T^{lp}$ [MeV/c]'
+
+[variables.true_dpL]
+key = "true_dpL"
+range = [0,800]
+nbins = 25
+xlabel = 'True $\delta p_L$ [MeV/c]'
+
+[variables.reco_dpL]
+key = "reco_dpL"
+range = [0,800]
+nbins = 25
+xlabel = 'Reconstructed $\delta p_L$ [MeV/c]'
+
+[variables.true_dpL_lp]
+key = "true_dpL_lp"
+range = [0,800]
+nbins = 25
+xlabel = 'True $\delta p_L^{lp}$ [MeV/c]'
+
+[variables.reco_dpL_lp]
+key = "reco_dpL_lp"
+range = [0,800]
+nbins = 25
+xlabel = 'Reconstructed $\delta p_L^{lp}$ [MeV/c]'
+
+[variables.true_pn]
+key = "true_pn"
+range = [0,1200]
+nbins = 25
+xlabel = 'True $p_n$ [MeV/c]'
+
+[variables.reco_pn]
+key = "reco_pn"
+range = [0,1200]
+nbins = 25
+xlabel = 'Reconstructed $p_n$ [MeV/c]'
+
+[variables.true_pn_lp]
+key = "true_pn_lp"
+range = [0,1200]
+nbins = 25
+xlabel = 'True $p_n^{lp}$ [MeV/c]'
+
+[variables.reco_pn_lp]
+key = "reco_pn_lp"
+range = [0,1200]
+nbins = 25
+xlabel = 'Reconstructed $p_n^{lp}$ [MeV/c]'
+
+[variables.true_dphiT]
+key = "true_dphiT"
+range = [0.0, 3.1415]
+nbins = 25
+xlabel = 'True $d\phi_T$ [Rad.]'
+
+[variables.reco_dphiT]
+key = "reco_dphiT"
+range = [0.0, 3.1415]
+nbins = 25
+xlabel = 'Reconstructed $d\phi_T$ [Rad.]'
+
+[variables.true_dalphaT]
+key = "true_dalphaT"
+range = [0.0, 3.1415]
+nbins = 25
+xlabel = 'True $d\alpha_T$ [Rad.]'
+
+[variables.reco_dalphaT]
+key = "reco_dalphaT"
+range = [0.0, 3.1415]
+nbins = 25
+xlabel = 'Reconstructed $d\alpha_T$ [Rad.]'
+
+[variables.muon_primary_softmax]
+key = "muon_primary_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Primary Softmax Score"
+
+[variables.muon_muon_softmax]
+key = "muon_muon_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Muon Softmax Score"
+
+[variables.muon_pion_softmax]
+key = "muon_pion_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Pion Softmax Score"
+
+[variables.muon_proton_softmax]
+key = "muon_proton_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Proton Softmax Score"
+
+[variables.muon_mip_softmax]
+key = "muon_mip_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "'MIP' Softmax Score"
+
+[variables.muon_hadron_softmax]
+key = "muon_hadron_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "'Hadron' Softmax Score"
+
+[variables.proton_primary_softmax]
+key = "proton_primary_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Primary Softmax Score"
+
+[variables.proton_proton_softmax]
+key = "proton_proton_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Proton Softmax Score"
+
+[variables.proton_mip_softmax]
+key = "proton_mip_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "'MIP' Softmax Score"
+
 [variables.reco_muon_z]
 key = "reco_muon_z"
 range = [-100, 100]

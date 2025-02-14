@@ -72,3 +72,15 @@ name = 'reco_dalphaT'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_dalphaT'},]
 style = 'selected_icarus'
+
+[[figure]]
+name = 'muon_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'muon_muon_softmax'}]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'proton_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'proton_proton_softmax'}]
+style = 'selected_icarus'
