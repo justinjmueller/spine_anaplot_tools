@@ -53,6 +53,24 @@ namespace vars
     double neutrino_id(const caf::SRInteractionTruthDLPProxy & obj) { return obj.nu_id; }
 
     /**
+     * @brief Variable for the best-match IoU of the interaction.
+     * @details The best-match IoU is the intersection over union of the
+     * points belonging to a pair of reconstructed and true interactions. The
+     * best-match IoU is calculated upstream in the SPINE reconstruction.
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to apply the variable on.
+     * @return the best-match IoU of the interaction.
+     */
+    template<class T>
+        double iou(const T & obj)
+        {
+            if(obj.match_ids.size() > 0)
+                return obj.match_overlaps[0];
+            else 
+                return PLACEHOLDERVALUE;
+        }
+
+    /**
      * @brief Variable for the containment status of the interaction.
      * @details The containment status is determined upstream in the SPINE
      * reconstruction and is based on the set of all points in the interaction,

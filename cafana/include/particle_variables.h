@@ -79,6 +79,23 @@ namespace pvars
             return pid;
         }
 
+    /**
+     * @brief Variable for the best-match IoU of the particle.
+     * @details The best-match IoU is the intersection over union of the
+     * points belonging to a pair of reconstructed and true particles. The
+     * best-match IoU is calculated upstream in the SPINE reconstruction.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the best-match IoU of the particle.
+     */
+    template<class T>
+        double iou(const T & p)
+        {
+            if(p.match_ids.size() > 0)
+                return p.match_overlaps[0];
+            else 
+                return PLACEHOLDERVALUE;
+        }
 
     /**
      * @brief Variable for the mass of the particle.
