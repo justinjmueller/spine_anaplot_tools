@@ -64,5 +64,18 @@ namespace pcuts
             }
             return passes;
         }
+
+    template<class T>
+        bool final_state_signal_elec(const T & p)
+        {
+            bool passes(false);
+            if(is_primary(p))
+            {
+                double energy(pvars::ke(p));
+                if((p.pid == 1 && energy > 10) || (p.pid == 0 && energy > 10))
+                    passes = true;
+            }
+            return passes;
+        }
 }
 #endif // PARTICLE_CUTS_H
