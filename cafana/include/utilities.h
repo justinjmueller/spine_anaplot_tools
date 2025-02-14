@@ -46,7 +46,7 @@ namespace utilities
             for(auto &p : obj.particles)
             {
                 if(pcuts::final_state_signal(p))
-                    ++counts[p.pid];
+                    ++counts[PIDFUNC(p)];
             }
             return counts;
         }
@@ -73,7 +73,7 @@ namespace utilities
                 double energy(p.csda_ke);
                 if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
                     energy = pvars::ke(p);
-                if(p.pid == pid && energy > leading_ke)
+                if(PIDFUNC(p) == pid && energy > leading_ke)
                 {
                     leading_ke = energy;
                     index = i;

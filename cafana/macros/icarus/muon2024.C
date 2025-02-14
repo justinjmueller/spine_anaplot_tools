@@ -16,6 +16,7 @@
  * which beam is used, which cuts are applied, and which trees are created.
  */
 #define PLACEHOLDERVALUE std::numeric_limits<double>::quiet_NaN()
+#define PIDFUNC pvars::custom_pid
 #define PROTON_BINDING_ENERGY 30.9 // MeV
 #define BEAM_IS_NUMI false
 #define WRITE_PURITY_TREES false
@@ -455,9 +456,9 @@ void muon2024()
     analysis.AddTree("signal", vars_signal, true);
 
     std::map<std::string, ana::SpillMultiVar> vars_pid_muon;
-    auto primary_muon = [](const TTYPEP & p) { return p.pid == 2 && p.is_primary; };
-    auto primary_muon_reco = [](const RTYPEP & p) -> double { return p.pid == 2 && p.is_primary; };
-    auto pid = [](const RTYPEP & p) -> double { return p.pid; };
+    auto primary_muon = [](const TTYPEP & p) { return PIDFUNC(p) == 2 && p.is_primary; };
+    auto primary_muon_reco = [](const RTYPEP & p) -> double { return PIDFUNC(p) == 2 && p.is_primary; };
+    auto pid = [](const RTYPEP & p) -> double { return PIDFUNC(p); };
     vars_pid_muon.insert({"muon_primary_softmax", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::primary_softmax, primary_muon, &cuts::no_cut)});
     vars_pid_muon.insert({"muon_secondary_softmax", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::secondary_softmax, primary_muon, &cuts::no_cut)});
     vars_pid_muon.insert({"muon_muon_softmax", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::muon_softmax, primary_muon, &cuts::no_cut)});
@@ -476,8 +477,8 @@ void muon2024()
     analysis.AddTree("pidMuon", vars_pid_muon, true);
 
     std::map<std::string, ana::SpillMultiVar> vars_pid_proton;
-    auto primary_proton = [](const TTYPEP & p) { return p.pid == 4 && p.is_primary; };
-    auto primary_proton_reco = [](const RTYPEP & p) -> double { return p.pid == 4 && p.is_primary; };
+    auto primary_proton = [](const TTYPEP & p) { return PIDFUNC(p) == 4 && p.is_primary; };
+    auto primary_proton_reco = [](const RTYPEP & p) -> double { return PIDFUNC(p) == 4 && p.is_primary; };
     vars_pid_proton.insert({"proton_primary_softmax", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::primary_softmax, primary_proton, &cuts::no_cut)});
     vars_pid_proton.insert({"proton_secondary_softmax", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::secondary_softmax, primary_proton, &cuts::no_cut)});
     vars_pid_proton.insert({"proton_muon_softmax", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::muon_softmax, primary_proton, &cuts::no_cut)});

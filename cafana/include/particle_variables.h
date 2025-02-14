@@ -33,6 +33,99 @@
 namespace pvars
 {
     /**
+     * @brief Variable for the particle's PID.
+     * @details This variable returns the PID of the particle. The PID is
+     * determined by the softmax scores of the particle. This function uses the
+     * "nominal" PID decision that is made upstream in the SPINE reconstruction.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the PID of the particle.
+     */
+    template<class T>
+        double pid(const T & p)
+        {
+            return p.pid;
+        }
+
+    /**
+     * @brief Variable for assigning PID based on the particle's softmax scores.
+     * @details This variable assigns a PID based on the softmax scores of the
+     * particle. Nominally, the PID is assigned based on the highest softmax
+     * score, but the PID can be overridden directly by this function.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the PID of the particle.
+     */
+    template<class T>
+        double custom_pid(const T & p)
+        {
+            double pid = std::numeric_limits<double>::quiet_NaN();
+            if constexpr (std::is_same_v<T, caf::SRParticleTruthDLPProxy>)
+            {
+                pid = p.pid;
+            }
+            else
+            {
+                if(p.pid_scores[2] > 0.10)
+                    pid = 2;
+                else
+                {
+                    size_t high_index(0);
+                    for(size_t i(0); i < 5; ++i)
+                        if(p.pid_scores[i] > p.pid_scores[high_index]) high_index = i;
+                    pid = high_index;
+                }
+            }
+            return pid;
+        }
+
+
+    /**
+     * @brief Variable for the mass of the particle.
+     * @details The mass of the particle is determined by the PID of the
+     * particle. This couples the PID to the mass of the particle, so it is
+     * necessary to use the appropriate PID function rather than the in-built
+     * PID attribute.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the mass of the particle.
+     */
+    template<class T>
+        double mass(const T & p)
+        {
+            double mass(0);
+            if constexpr (std::is_same_v<T, caf::SRParticleTruthDLPProxy>)
+            {
+                mass = p.mass;
+            }
+            else
+            {
+                switch(int(PIDFUNC(p)))
+                {
+                    case 0:
+                        mass = 0;
+                        break;
+                    case 1:
+                        mass = ELECTRON_MASS;
+                        break;
+                    case 2:
+                        mass = MUON_MASS;
+                        break;
+                    case 3:
+                        mass = PION_MASS;
+                        break;
+                    case 4:
+                        mass = PROTON_MASS;
+                        break;
+                    default:
+                        mass = PLACEHOLDERVALUE;
+                        break;
+                }
+            }
+            return mass;
+        }
+
+    /**
      * @brief Variable for true particle starting kinetic energy.
      * @details The starting kinetic energy is defined as the total energy
      * minus the rest mass energy of the particle.
@@ -46,15 +139,15 @@ namespace pvars
             double energy(0);
             if constexpr (std::is_same_v<T, caf::SRParticleTruthDLPProxy>)
             {
-                energy = p.energy_init - p.mass;
+                energy = p.energy_init - mass(p);
             }
             else
             {
                 if(PIDFUNC(p) < 2) energy += p.calo_ke;
                 else
                 {
-                    if(p.is_contained) energy += p.csda_ke;
-                    else energy += p.mcs_ke;
+                    if(p.is_contained) energy += p.csda_ke_per_pid[PIDFUNC(p)];
+                    else energy += p.mcs_ke_per_pid[PIDFUNC(p)];
                 }
             }
             return energy;
@@ -73,7 +166,7 @@ namespace pvars
     template<class T>
         double energy(const T & p)
         {
-            double energy = ke(p) + p.mass;
+            double energy = ke(p) + mass(p);
             return energy;
         }
 

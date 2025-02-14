@@ -15,6 +15,7 @@
  * which beam is used, which cuts are applied, and which trees are created.
  */
 #define PLACEHOLDERVALUE std::numeric_limits<double>::quiet_NaN()
+#define PIDFUNC pvars::pid
 #define PROTON_BINDING_ENERGY 30.9 // MeV
 #define BEAM_IS_NUMI false
 #define WRITE_PURITY_TREES false
