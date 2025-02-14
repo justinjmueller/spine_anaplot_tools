@@ -8,6 +8,7 @@ mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
 show_component_number = true
 show_component_percentage = true
 invert_stack_order = false
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.signal_icarus]
 style_sheet = "styles/muon2024.mplstyle"
@@ -18,6 +19,7 @@ mark_preliminary = '$\bf{ICARUS}$ Simulation Work-in-Progress'
 show_component_number = true
 show_component_percentage = false
 invert_stack_order = false
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.selected_sbnd]
 style_sheet = "styles/muon2024.mplstyle"
@@ -28,6 +30,7 @@ mark_preliminary = '$\bf{SBND}$ Work-in-Progress'
 show_component_number = true
 show_component_percentage = true
 invert_stack_order = false
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.signal_sbnd]
 style_sheet = "styles/muon2024.mplstyle"
@@ -38,3 +41,4 @@ mark_preliminary = '$\bf{SBND}$ Simulation Work-in-Progress'
 show_component_number = true
 show_component_percentage = false
 invert_stack_order = false
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}

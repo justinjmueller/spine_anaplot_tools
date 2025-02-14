@@ -28,8 +28,11 @@ class Style:
     _invert_stack_order : bool
         A flag toggling the inversion of the stack order for the
         components in the histogram.
+    _plot_kwargs : dict
+        A dictionary containing the keyword arguments to be passed
+        to the plotting function.
     """
-    def __init__(self, style_sheet, default_figsize, title, mark_pot, mark_preliminary, show_component_number, show_component_percentage, invert_stack_order) -> None:
+    def __init__(self, style_sheet, default_figsize, title, mark_pot, mark_preliminary, show_component_number, show_component_percentage, invert_stack_order, plot_kwargs) -> None:
         """
         Initializes the Style object with the given kwargs.
 
@@ -56,6 +59,9 @@ class Style:
         invert_stack_order : bool
             A flag toggling the inversion of the stack order for the
             components in the histogram.
+        plot_kwargs : dict
+            A dictionary containing the keyword arguments to be passed
+            to the plotting function.
 
         Returns
         -------
@@ -69,6 +75,7 @@ class Style:
         self._show_component_number = show_component_number
         self._show_component_percentage = show_component_percentage
         self._invert_stack_order = invert_stack_order
+        self._plot_kwargs = plot_kwargs
 
     def __enter__(self):
         """
@@ -189,3 +196,15 @@ class Style:
             The value of the invert_stack_order attribute.
         """
         return self._invert_stack_order
+
+    @property
+    def plot_kwargs(self) -> dict:
+        """
+        Returns the value of the plot_kwargs attribute.
+
+        Returns
+        -------
+        dict
+            The value of the plot_kwargs attribute.
+        """
+        return self._plot_kwargs
