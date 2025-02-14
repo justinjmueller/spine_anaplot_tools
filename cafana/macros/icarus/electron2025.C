@@ -67,33 +67,50 @@ void electron2025()
     vars_selected_ee.insert({"leading_shower_energy_reco", SpineVar<RTYPE,RTYPE>(&vars::electron2025::leading_shower_energy, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"subleading_shower_energy_reco", SpineVar<RTYPE,RTYPE>(&vars::electron2025::subleading_shower_energy, &CUT, &cuts::no_cut)}); 
     vars_selected_ee.insert({"invariant_mass", SpineVar<RTYPE,RTYPE>(&vars::electron2025::invariant_mass, &CUT, &cuts::no_cut)});
-    vars_selected_ee.insert({"electron_primary_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::primary_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_electron_index)});
-    vars_selected_ee.insert({"electron_secondary_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::secondary_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_electron_index)});
-    vars_selected_ee.insert({"electron_electron_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::electron_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_electron_index)});
-    vars_selected_ee.insert({"electron_photon_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::photon_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_electron_index)});
-    //vars_selected_ee.insert({"flash_time", SpineVar<RTYPE,RTYPE>(&vars::flash_time, &CUT, &cuts::no_cut)});
-    //vars_selected_ee.insert({"flash_total", SpineVar<RTYPE,RTYPE>(&vars::flash_total_pe, &CUT, &cuts::no_cut)});
-    //vars_selected_ee.insert({"flash_hypothesis", SpineVar<RTYPE,RTYPE>(&vars::flash_hypothesis, &CUT, &cuts::no_cut)});  
+    vars_selected_ee.insert({"invariant_mass_true", SpineVar<TTYPE,RTYPE>(&vars::electron2025::invariant_mass, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"electron_primary_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::primary_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"electron_secondary_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::secondary_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"electron_electron_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::electron_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"electron_photon_softmax", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::photon_softmax, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"px", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::px, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"py", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::py, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"pz", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::pz, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_px", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::px, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_py", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::py, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_pz", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::pz, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"px_dir", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::px_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"py_dir", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::py_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"pz_dir", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::pz_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_px_dir", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::px_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_py_dir", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::py_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_pz_dir", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::pz_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"true_vertex_x", SpineVar<TTYPE,RTYPE>(&vars::vertex_x, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"reco_vertex_x", SpineVar<RTYPE,RTYPE>(&vars::vertex_x, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"true_vertex_y", SpineVar<TTYPE,RTYPE>(&vars::vertex_y, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"reco_vertex_y", SpineVar<RTYPE,RTYPE>(&vars::vertex_y, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"true_vertex_z", SpineVar<TTYPE,RTYPE>(&vars::vertex_z, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"reco_vertex_z", SpineVar<RTYPE,RTYPE>(&vars::vertex_z, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"flash_time", SpineVar<RTYPE,RTYPE>(&vars::flash_time, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"flash_total", SpineVar<RTYPE,RTYPE>(&vars::flash_total_pe, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"flash_hypothesis", SpineVar<RTYPE,RTYPE>(&vars::flash_hypothesis, &CUT, &cuts::no_cut)});  
 
     analysis.AddTree("selectedEvents", vars_selected_ee, false);
 
     std::map<std::string, ana::SpillMultiVar> vars_pid_electron;
     auto pid = [](const RTYPEP & p) -> double { return p.pid; };
-    auto primary_electron = [](const TTYPEP & p) { return p.pid == 1 && p.is_primary; };
+    auto true_pid = [](const TTYPEP & p) -> double { return p.pid; };
+    auto primary_electron = [](const TTYPEP & p) { return (p.pid == 1 || p.pid == 0) && p.is_primary; };
     vars_pid_electron.insert({"pid", SpineVar<RTYPEP,TTYPEP,TTYPE>(pid, primary_electron, &cuts::no_cut)});
+    vars_pid_electron.insert({"true_pid", SpineVar<TTYPEP,TTYPEP,TTYPE>(true_pid, primary_electron, &cuts::no_cut)});
     vars_pid_electron.insert({"primary", SpineVar<RTYPEP,TTYPEP,TTYPE>(WRAP_BOOL(pcuts::is_primary), primary_electron, &cuts::no_cut)});
     vars_pid_electron.insert({"IoU", SpineVar<RTYPEP,TTYPEP,TTYPE>(&vars::electron2025::iou, primary_electron, &cuts::no_cut)});
+    vars_selected_ee.insert({"px_dir", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::px_dir, primary_electron, &cuts::no_cut)});
+    vars_selected_ee.insert({"py_dir", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::py_dir, primary_electron, &cuts::no_cut)});
+    vars_selected_ee.insert({"pz_dir", SpineVar<RTYPEP,TTYPEP,TTYPE>(&pvars::pz_dir, primary_electron, &cuts::no_cut)});
+    vars_selected_ee.insert({"true_px_dir", SpineVar<TTYPEP,TTYPEP,TTYPE>(&pvars::px_dir, primary_electron, &cuts::no_cut)});
+    vars_selected_ee.insert({"true_py_dir", SpineVar<TTYPEP,TTYPEP,TTYPE>(&pvars::py_dir, primary_electron, &cuts::no_cut)});
+    vars_selected_ee.insert({"true_pz_dir", SpineVar<TTYPEP,TTYPEP,TTYPE>(&pvars::pz_dir, primary_electron, &cuts::no_cut)});
     analysis.AddTree("pid_electron", vars_pid_electron, false);
-
-    
-    #undef CUT
-    #define CUT cuts::electron2025::topological_1shower_cut
-    std::map<std::string, ana::SpillMultiVar> vars_shower_sel;
-    vars_shower_sel.insert({"nshowers", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nshowers, &CUT, &cuts::no_cut)});
-    vars_shower_sel.insert({"nphotons", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nelectrons, &CUT, &cuts::no_cut)});
-    vars_shower_sel.insert({"nelectrons", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nphotons, &CUT, &cuts::no_cut)});
-    analysis.AddTree("shower_sel", vars_shower_sel, false);
-    
 
     /**
      * @brief Run the analysis.

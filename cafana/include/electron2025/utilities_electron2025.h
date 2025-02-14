@@ -95,8 +95,29 @@ namespace utilities::electron2025
         }
 
     template <class T>
-        std::vector<size_t> particle_indices(const T & obj, uint16_t pid)
+        size_t leading_particle_index_shower(const T & obj, uint16_t pid1, uint16_t pid2)
         {
+            double leading_ke(0);
+            size_t index(0);
+            for(size_t i(0); i < obj.particles.size(); ++i)
+            {
+                const auto & p = obj.particles[i];
+                double energy(p.csda_ke);
+                if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
+                    energy = pvars::ke(p);
+                if((p.pid == pid1 || p.pid == pid2) && energy > leading_ke)
+                {
+                    leading_ke = energy;
+                    index = i;
+                }
+            }
+            return index;
+        }
+
+    template <class T>
+        std::vector<size_t> particle_indices(const T & obj, uint16_t pid1, uint16_t pid2)
+        {
+            //enable selection of any shower type (electron or photon) at the moment for benchmarking purposes
             double leading_ke(0);
             double subleading_ke(0);
             size_t index(0);
@@ -109,21 +130,21 @@ namespace utilities::electron2025
                 double energy(p.calo_ke);
                 if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
                     energy = pvars::ke(p);
-                if(p.pid == pid && energy > leading_ke)
+                if((p.pid == pid1 || p.pid == pid2) && energy > leading_ke)
                 {
                     leading_ke = energy;
                     index = i;
                 }
             }
             indices.push_back(index);
-            //find subleading particle of a given type
+            //find subleading particle of any shower type (electron, photon)
             for(size_t i(0); i < obj.particles.size(); ++i)
             {
                 const auto & p = obj.particles[i];
                 double energy(p.calo_ke);
                 if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
                     energy = pvars::ke(p);
-                if(p.pid == pid && energy > subleading_ke && i != index)
+                if((p.pid == pid1 || p.pid == pid2) && energy > subleading_ke && i != index)
                 {
                     subleading_ke = energy;
                     subindex = i;
@@ -165,9 +186,9 @@ namespace utilities::electron2025
         }
 
     template<class T>
-        size_t leading_electron_index(const T & obj)
+        size_t leading_shower_index(const T & obj)
         {
-            return leading_particle_index(obj, 1);
+            return leading_particle_index_shower(obj, 1, 0);
         }
 }
 #endif // UTILITIES_ELECTRON2025_H

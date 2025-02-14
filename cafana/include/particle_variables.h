@@ -197,7 +197,6 @@ namespace pvars
         {
             return p.momentum[1];
         }
-
     /**
      * @brief Variable for the z-component of the particle momentum.
      * @details The momentum is predicted upstream in the SPINE reconstruction.
@@ -211,6 +210,31 @@ namespace pvars
             return p.momentum[2];
         }
     
+    template<class T>
+        double px_dir(const T & p)
+        {
+            utilities::three_vector momentum = {pvars::px(p), pvars::py(p), pvars::pz(p)};
+            double magnitude = utilities::magnitude(momentum);
+            return p.momentum[0]/magnitude;
+        }
+
+    template<class T>
+        double py_dir(const T & p)
+        {
+            utilities::three_vector momentum = {pvars::px(p), pvars::py(p), pvars::pz(p)};
+            double magnitude = utilities::magnitude(momentum);
+            return p.momentum[1]/magnitude;
+        }
+
+
+    template<class T>
+        double pz_dir(const T & p)
+        {
+            utilities::three_vector momentum = {pvars::px(p), pvars::py(p), pvars::pz(p)};
+            double magnitude = utilities::magnitude(momentum);
+            return p.momentum[2]/magnitude;
+        }
+
     /**
      * @brief Variable for the transverse momentum of a particle.
      * @details This function calculates the transverse momentum of the

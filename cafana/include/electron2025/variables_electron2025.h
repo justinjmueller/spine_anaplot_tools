@@ -115,7 +115,7 @@ namespace vars::electron2025
     template<class T>
         double opening_angle_ee(const T & obj)
         {
-            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1);
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
             if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
             auto & e1(obj.particles[indices[0]]); //extract the leading shower
             auto & e2(obj.particles[indices[1]]); //extract the subleading shower 
@@ -130,7 +130,6 @@ namespace vars::electron2025
             {
                 if(p.is_primary)
                 {
-                    double energy(pvars::energy(p));
                     if(pcuts::final_state_signal_elec(p)) //at the moment, we are only interested in electrons with energy > 25 MeV
                     {
                         energy += pvars::energy(p);
@@ -143,7 +142,7 @@ namespace vars::electron2025
     template<class T>
         double leading_shower_energy(const T & obj)
         {
-            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1);
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
             auto & e1(obj.particles[indices[0]]); //extract the leading shower
             return pvars::energy(e1);
         }
@@ -151,7 +150,7 @@ namespace vars::electron2025
     template<class T>
         double subleading_shower_energy(const T & obj)
         {
-            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1);
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
             if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
             auto & e2(obj.particles[indices[1]]); //extract the subleading shower
             return pvars::energy(e2);
@@ -160,15 +159,18 @@ namespace vars::electron2025
     template<class T>
         double invariant_mass(const T & obj)
         {
-            double mass(0);
-            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1);
+            double inv_mass(0);
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
             if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
             auto & e1(obj.particles[indices[0]]); //extract the leading shower
             auto & e2(obj.particles[indices[1]]); //extract the subleading shower
             double e1_energy(pvars::energy(e1));
             double e2_energy(pvars::energy(e2));
-            double inv_mass = std::sqrt(2 * e1_energy * e2_energy * (1 - std::cos(std::acos(pvars::px(e1) * pvars::px(e2) + pvars::py(e1) * pvars::py(e2) + pvars::pz(e1) * pvars::pz(e2)))));
-
+            double mag_1 = std::sqrt(std::pow(pvars::px(e1), 2) + std::pow(pvars::py(e1), 2) + std::pow(pvars::pz(e1), 2));
+            double mag_2 = std::sqrt(std::pow(pvars::px(e2), 2) + std::pow(pvars::py(e2), 2) + std::pow(pvars::pz(e2), 2));
+            double costheta = pvars::px(e1)/mag_1 * pvars::px(e2)/mag_2 + pvars::py(e1)/mag_1 * pvars::py(e2)/mag_2 + pvars::pz(e1)/mag_1 * pvars::pz(e2)/mag_2;
+            //inv_mass = std::sqrt(2 * e1_energy * e2_energy * (1 - (costheta)));
+            inv_mass = std::sqrt(e1.mass*e1.mass + e2.mass*e2.mass + 2 * ((e1_energy * e2_energy) - (pvars::px(e1) * pvars::px(e2) + pvars::py(e1) * pvars::py(e2) + pvars::pz(e1) * pvars::pz(e2))));
             return inv_mass;
         }
 
