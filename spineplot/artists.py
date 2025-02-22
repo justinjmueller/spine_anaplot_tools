@@ -14,7 +14,7 @@ class SpineArtist(ABC):
         pass
 
     @abstractmethod
-    def draw(self, ax, show_option=None, style=None):
+    def draw(self, ax, style=None):
         """
         Draw the artist on the given axis.
 
@@ -22,11 +22,6 @@ class SpineArtist(ABC):
         ----------
         ax : matplotlib.axes.Axes
             The axis to draw the artist on.
-        show_option : str, optional
-            The option to use when showing the artist. The default is
-            None. This is intended to be used in cases where the artist
-            can be shown in different ways (e.g. 2D vs projection of 2D
-            down to 1D).
         style : Style, optional
             The style to use when drawing the artist. The default is
             None. This is intended to be used in cases where the artist

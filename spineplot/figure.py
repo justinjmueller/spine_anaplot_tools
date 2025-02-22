@@ -35,8 +35,9 @@ class SpineFigure:
         self._style = style
         self._axs = []
         self._artists = []
+        self._draw_kwargs = []
 
-    def register_spine_artist(self, artist):
+    def register_spine_artist(self, artist, draw_kwargs):
         """
         Register an artist with the figure. This method is used to
         add an artist to the figure so that it can be displayed when
@@ -46,8 +47,12 @@ class SpineFigure:
         ----------
         artist : matplotlib.artist.Artist
             The artist to add to the figure.
+        draw_kwargs : dict
+            A dictionary of keyword arguments to pass to the draw
+            method of the artist.
         """
         self._artists.append(artist)
+        self._draw_kwargs.append(draw_kwargs)
 
     def create(self):
         """
@@ -56,7 +61,7 @@ class SpineFigure:
         """
         with self._style as style:
             for axi, ax in enumerate(self._axs):
-                self._artists[axi].draw(ax, self._style)
+                self._artists[axi].draw(ax, **self._draw_kwargs[axi], style=style)
 
     @property
     def figure(self):
