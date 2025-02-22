@@ -1,6 +1,7 @@
 numpy
+scipy
 pandas
 matplotlib
 uproot
 toml
-doxypypy
+uproot
