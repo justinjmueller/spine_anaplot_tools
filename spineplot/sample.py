@@ -25,7 +25,7 @@ class Sample:
     _data : pd.DataFrame
         The data comprising the sample.
     """
-    def __init__(self, name, rf, category_branch, key, exposure_type, trees, override_category=None) -> None:
+    def __init__(self, name, rf, category_branch, key, exposure_type, trees, precompute=None, presel=None, override_category=None) -> None:
         """
         Initializes the Sample object with the given name and key.
 
@@ -50,6 +50,14 @@ class Sample:
         trees : list
             The list of TTree names in the ROOT file to load for the
             sample.
+        precompute : dict, optional
+            A dictionary of new branches to compute from the existing
+            branches in the sample. The keys are the names of the new
+            branches and the values are the expressions to compute the
+            new branches. The default is None.
+        presel : str, optional
+            A pre-selection string to apply to the sample data. The
+            default is None.
         override_category : int
             The category to override the category branch with if it is
             configured. Else, the category branch is left as is.
@@ -70,6 +78,13 @@ class Sample:
             self._data[self._category_branch] = 0
         if override_category is not None:
             self._data[self._category_branch] = override_category
+        
+        if precompute is not None:
+            for k, v in precompute.items():
+                self._data[k] = self._data.eval(v)
+        
+        if presel is not None:
+            self._data = self._data[self._data.eval(presel)]
 
     def override_exposure(self, exposure, exposure_type='pot') -> None:
         """
