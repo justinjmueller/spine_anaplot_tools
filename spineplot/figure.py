@@ -15,12 +15,18 @@ class SpineFigure:
     _figure : matplotlib.figure.Figure
         The parent figure object that will be used to contain all of
         the subplots.
+    _figsize : tuple
+        The size of the figure to create.
     _style : Style
         The style to use when drawing the figure.
     _axs : list
         A list of axes objects that will be used to plot the figure.
     _artists : list
         A list of SpineArtists to be drawn on the figure.
+    _draw_kwargs : list
+        A list of keyword arguments (dicts) to pass to the draw method
+        of the SpineArtists.
+
     """
     def __init__(self, figsize, style):
         """
@@ -31,7 +37,8 @@ class SpineFigure:
         style : Style
             The style to use when drawing the figure.
         """
-        self._figure = plt.figure(figsize=figsize)
+        self._figure = None
+        self._figsize = figsize
         self._style = style
         self._axs = []
         self._artists = []
@@ -58,10 +65,25 @@ class SpineFigure:
         """
         Create the figure. This method is used to create the figure
         and all of the subplots that will be used to display the data.
+
+        Returns
+        -------
+        None.
         """
         with self._style as style:
             for axi, ax in enumerate(self._axs):
                 self._artists[axi].draw(ax, **self._draw_kwargs[axi], style=style)
+    
+    def close(self):
+        """
+        Close the figure. This method is used to close the figure
+        and release the resources associated with it.
+
+        Returns
+        -------
+        None.
+        """
+        plt.close(self._figure)
 
     @property
     def figure(self):
@@ -100,4 +122,16 @@ class SimpleFigure(SpineFigure):
             The size of the figure to create. The default is (8, 6).
         """
         super().__init__(figsize=figsize, style=style)
+
+    def create(self):
+        """
+        Create the figure. This method is used to create the figure
+        and all of the subplots that will be used to display the data.
+
+        Returns
+        -------
+        None.
+        """
+        self._figure = plt.figure(figsize=self._figsize)
         self._axs = [self._figure.add_subplot(),]
+        super().create()

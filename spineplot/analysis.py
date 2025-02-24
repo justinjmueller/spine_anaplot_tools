@@ -150,6 +150,7 @@ class Analysis:
         for figname, figure in self._figures.items():
             figure.create()
             figure.figure.savefig(f"{self._output_path}/{figname}.png")
+            figure.close()
 
     @staticmethod
     def handle_include(config, table):
