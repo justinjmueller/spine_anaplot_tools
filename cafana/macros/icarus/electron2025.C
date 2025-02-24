@@ -16,6 +16,7 @@
  * which beam is used, which cuts are applied, and which trees are created.
  */
 #define PLACEHOLDERVALUE std::numeric_limits<double>::quiet_NaN()
+#define PIDFUNC pvars::custom_pid
 #define PROTON_BINDING_ENERGY 30.9 // MeV
 #define BEAM_IS_NUMI false
 #define WRITE_PURITY_TREES false
@@ -58,8 +59,8 @@ void electron2025()
     vars_selected_ee.insert({"reco_edep", SpineVar<RTYPE,RTYPE>(&vars::electron2025::visible_energy_ee, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"true_edep", SpineVar<TTYPE,RTYPE>(&vars::visible_energy, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"nshowers", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nshowers, &CUT, &cuts::no_cut)});
-    vars_selected_ee.insert({"nphotons", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nelectrons, &CUT, &cuts::no_cut)});
-    vars_selected_ee.insert({"nelectrons", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nphotons, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"nelectrons", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nelectrons, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"nphotons", SpineVar<RTYPE,RTYPE>(&vars::electron2025::nphotons, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"ntracks", SpineVar<RTYPE,RTYPE>(&vars::electron2025::ntracks, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"opening_angle", SpineVar<TTYPE,RTYPE>(&vars::electron2025::opening_angle_ee, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"opening_angle_reco", SpineVar<RTYPE,RTYPE>(&vars::electron2025::opening_angle_ee, &CUT, &cuts::no_cut)});
@@ -81,6 +82,7 @@ void electron2025()
     vars_selected_ee.insert({"leading_true_px", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::px, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
     vars_selected_ee.insert({"leading_true_py", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::py, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
     vars_selected_ee.insert({"leading_true_pz", SpineVar<TTYPEP,RTYPE,TTYPE>(&pvars::pz, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
+    vars_selected_ee.insert({"IoU", SpineVar<RTYPEP,RTYPE,RTYPE>(&vars::electron2025::iou, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
     vars_selected_ee.insert({"leading_px_dir", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::px_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
     vars_selected_ee.insert({"leading_py_dir", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::py_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});
     vars_selected_ee.insert({"leading_pz_dir", SpineVar<RTYPEP,RTYPE,RTYPE>(&pvars::pz_dir, &CUT, &cuts::no_cut, &utilities::electron2025::leading_shower_index)});

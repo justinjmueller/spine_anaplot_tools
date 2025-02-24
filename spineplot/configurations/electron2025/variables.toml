@@ -6,6 +6,36 @@ range = [0.0, 4.0]
 nbins = 50
 xlabel = "Reconstructed Visible Energy"
 
+[variables.true_edep]
+key = "true_edep"
+range = [0.0, 4.0]
+nbins = 50
+xlabel = "True Energy"
+
+[variables.leading_shower_energy_reco]
+key = "leading_shower_energy_reco"
+range = [0, 4000]
+nbins = 50
+xlabel = "Reconstructed Leading Shower Energy"
+
+[variables.leading_shower_energy_true]
+key = "leading_shower_energy"
+range = [0, 4000]
+nbins = 50
+xlabel = "True Leading Shower Energy"
+
+[variables.subleading_shower_energy_reco]
+key = "subleading_shower_energy_reco"
+range = [0, 4000]
+nbins = 50
+xlabel = "Reconstructed Subleading Shower Energy"
+
+[variables.subleading_shower_energy_true]
+key = "subleading_shower_energy"
+range = [0, 4000]
+nbins = 50
+xlabel = "True Subleading Shower Energy"
+
 [variables.leading_electron_primary_softmax]
 key = "leading_electron_primary_softmax"
 range = [0, 1]
@@ -24,11 +54,47 @@ range = [0, 1]
 nbins = 50
 xlabel = "Leading Electron Photon Softmax Score"
 
+[variables.subleading_electron_primary_softmax]
+key = "subleading_electron_primary_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Subleading Electron Primary Softmax Score"
+
+[variables.subleading_electron_electron_softmax]
+key = "subleading_electron_electron_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Subleading Electron Electron Softmax Score"
+
+[variables.subleading_electron_photon_softmax]
+key = "subleading_electron_photon_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Subleading Electron Photon Softmax Score"
+
 [variables.invariant_mass]
 key = "invariant_mass"
-range = [0, 2000]
+range = [0, 3000]
 nbins = 50
-xlabel = "Invariant Mass"
+xlabel = "Reco Invariant Mass"
+
+[variables.invariant_mass_true]
+key = "invariant_mass_true"
+range = [0, 3000]
+nbins = 50
+xlabel = "True Invariant Mass"
+
+[variables.energy_asymmetry_reco]
+key = "energy_asymmetry"
+range = [0.0, 1.0]
+nbins = 50
+xlabel = "Reconstructed Energy Asymmetry"
+
+[variables.energy_asymmetry_true]
+key = "energy_asymmetry_true"
+range = [0.0, 1.0]
+nbins = 50
+xlabel = "True Energy Asymmetry"
 
 [variables.opening_angle]
 key = "opening_angle"
@@ -44,18 +110,24 @@ xlabel = "Reco Opening Angle"
 
 [variables.nshowers]
 key = "nshowers"
-range = [0, 30]
-nbins = 30
+range = [0, 10]
+nbins = 10
 xlabel = "Number of Reconstructed Showers"
 
 [variables.nphotons]
 key = "nphotons"
-range = [0, 30]
+range = [0, 10]
+nbins = 10
+xlabel = "Number of Reconstructed Photons"
+
+[variables.IoU]
+key = "IoU"
+range = [0.0, 1.0]
 nbins = 30
-xlabel = "Number of Reconstructed Photon"
+xlabel = "IoU"
 
 [variables.nelectrons]
 key = "nelectrons"
-range = [0, 30]
-nbins = 30
-xlabel = "Number of Reconstructed Electron"
+range = [0, 10]
+nbins = 10
+xlabel = "Number of Reconstructed Electrons"

@@ -15,18 +15,144 @@ path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/pl
 name = 'reco_visible_energy'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_edep'},]
-style = 'selected_icarus'
+style = 'selected_electrons'
+
+[[figure]]
+name = 'true_opening_angle'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'opening_angle'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'reco_opening_angle'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'opening_angle_reco'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'invariant_mass'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'invariant_mass'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'energy_asymmetry_reco'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'energy_asymmetry_reco'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'energy_asymmetry_true'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'energy_asymmetry_true'},]
+style = 'selected_electrons'
 
 [[figure]]
 name = 'lead_electron_primary_softmax'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'leading_electron_primary_softmax'},]
-style = 'selected_icarus'
+style = 'selected_electrons'
+
+[[figure]]
+name = 'lead_electron_electron_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'leading_electron_electron_softmax'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'lead_electron_photon_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'leading_electron_photon_softmax'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'sublead_electron_primary_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'subleading_electron_primary_softmax'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'sublead_electron_electron_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'subleading_electron_electron_softmax'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'sublead_electron_photon_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'subleading_electron_photon_softmax'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'nshowers'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'nshowers'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'nelectrons'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'nelectrons'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'nphotons'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'nphotons'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'IoU'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'IoU'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'nshowers_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'nelectrons', 'yvariable' = 'nphotons'}]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'energy_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'true_edep', 'yvariable' = 'reco_edep'}]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'invmass_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'invariant_mass_true', 'yvariable' = 'invariant_mass'}]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'opening_angle_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'opening_angle', 'yvariable' = 'opening_angle_reco'}]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'shower_energy_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'leading_shower_energy_reco', 'yvariable' = 'subleading_shower_energy_reco'}]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'leading_shower_energy_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'leading_shower_energy_true', 'yvariable' = 'leading_shower_energy_reco'}]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'subleading_shower_energy_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'subleading_shower_energy_true', 'yvariable' = 'subleading_shower_energy_reco'}]
+style = 'selected_electrons'
 
 [analysis]
 ordinate_sample = 'mc'
-category_branch = 'category'
-category_assignment = [[0,1,2]]
-category_labels = ['Electron-like Stuff']
-category_colors = ['C0']
-category_types = ['histogram']
+category_branch = 'category_reco'
+category_assignment = [[0],[1],[2],[3]]
+category_labels = ['2e', '1e1$\gamma$', '1eN$\gamma$', '2$\gamma$']
+category_colors = ['C0', 'C1', 'C2', 'C3']
+category_types = ['histogram', 'histogram', 'histogram', 'histogram']

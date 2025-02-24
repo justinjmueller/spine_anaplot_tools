@@ -2,7 +2,19 @@
 [samples.mc]
 key = "mc"
 exposure_type = "pot"
-trees = ['selectedEvents']
+trees = ['selectedEvents',]
+
+[samples.benchmark]
+key = "mc"
+exposure_type = "pot"
+trees = ['selectedEvents',]
+presel = 'opening_angle_reco > 0.8 and opening_angle_reco < 1.0'
+
+[samples.benchmark_lowOA]
+key = "mc"
+exposure_type = "pot"
+trees = ['selectedEvents',]
+presel = 'opening_angle_reco > 0.0 and opening_angle_reco < 0.6'
 
 [samples.mcsignal]
 key = "mc"
