@@ -1,0 +1,32 @@
+[[this_includes]]
+file = 'configurations/electron2025/variables.toml'
+
+[[this_includes]]
+file = 'configurations/common/samples.toml'
+choose = {'samples' = ['mc']}
+
+[[this_includes]]
+file = 'configurations/common/styles.toml'
+
+[output]
+path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/plots'
+
+[[figure]]
+name = 'reco_visible_energy'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_edep'},]
+style = 'selected_icarus'
+
+[[figure]]
+name = 'lead_electron_primary_softmax'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'leading_electron_primary_softmax'},]
+style = 'selected_icarus'
+
+[analysis]
+ordinate_sample = 'mc'
+category_branch = 'category'
+category_assignment = [[0,1,2]]
+category_labels = ['Electron-like Stuff']
+category_colors = ['C0']
+category_types = ['histogram']

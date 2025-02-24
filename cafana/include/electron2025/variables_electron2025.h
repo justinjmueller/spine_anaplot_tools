@@ -1,13 +1,13 @@
 /**
  * @file vars_electron2025.h
  * @brief Header file for definitions of analysis variables specific to the
- * muon2024 analysis.
+ * electron2025 benchmarking analysis.
  * @details This file contains definitions of analysis variables which can be
  * used to extract information from interactions specific to the electron2025 benchmarking. 
  * Each variable is implemented as a function which takes an
  * interaction object as an argument and returns a double. These are the
  * building blocks for producing high-level plots of the selected interactions.
- * @author jzettle@fnal.gov
+ * @author jzettle@fnal.gov/mueller@fnal.gov
  */
 #ifndef VARS_ELECTRON2025_H
 #define VARS_ELECTRON2025_H
@@ -57,13 +57,14 @@ namespace vars::electron2025
 
     double category(const caf::SRInteractionTruthDLPProxy & obj)
     {
-        double cat(6);
+        double cat(7);
         if(cuts::electron2025::all_2e_cut(obj)) cat = 0;
         else if(cuts::electron2025::all_1e1gamma_cut(obj)) cat = 1;
         else if(cuts::electron2025::all_1eNgamma_cut(obj)) cat = 2;
         else if(cuts::electron2025::all_2gamma_cut(obj)) cat = 3;
         else if(cuts::electron2025::all_gt2e_cut(obj)) cat = 4;
         else if(cuts::electron2025::all_gt2gamma_cut(obj)) cat = 5;
+        else if(cuts::electron2025::all_1showeronly_cut(obj)) cat = 6;
         //else if(cuts::neutrino(obj)) cat = 1;
         return cat;
     }
@@ -83,13 +84,14 @@ namespace vars::electron2025
     template<class T>
         double category_templated(const T & obj)
         {
-            double cat(6);
+            double cat(7);
             if(cuts::electron2025::all_2e_cut(obj)) cat = 0;
             else if(cuts::electron2025::all_1e1gamma_cut(obj)) cat = 1;
             else if(cuts::electron2025::all_1eNgamma_cut(obj)) cat = 2;
             else if(cuts::electron2025::all_2gamma_cut(obj)) cat = 3;
             else if(cuts::electron2025::all_gt2e_cut(obj)) cat = 4;
             else if(cuts::electron2025::all_gt2gamma_cut(obj)) cat = 5;
+            else if(cuts::electron2025::all_1showeronly_cut(obj)) cat = 6;
             //else if(cuts::neutrino(obj)) cat = 1;
             return cat;
         }
@@ -119,7 +121,8 @@ namespace vars::electron2025
             if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
             auto & e1(obj.particles[indices[0]]); //extract the leading shower
             auto & e2(obj.particles[indices[1]]); //extract the subleading shower 
-            return std::acos(e1.start_dir[0] * e2.start_dir[0] + e1.start_dir[1] * e2.start_dir[1] + e1.start_dir[2] * e2.start_dir[2]);
+            //return std::acos(e1.start_dir[0] * e2.start_dir[0] + e1.start_dir[1] * e2.start_dir[1] + e1.start_dir[2] * e2.start_dir[2]);
+            return (e1.start_dir[0] * e2.start_dir[0] + e1.start_dir[1] * e2.start_dir[1] + e1.start_dir[2] * e2.start_dir[2]);
         }
 
     template<class T>
@@ -166,12 +169,21 @@ namespace vars::electron2025
             auto & e2(obj.particles[indices[1]]); //extract the subleading shower
             double e1_energy(pvars::energy(e1));
             double e2_energy(pvars::energy(e2));
-            double mag_1 = std::sqrt(std::pow(pvars::px(e1), 2) + std::pow(pvars::py(e1), 2) + std::pow(pvars::pz(e1), 2));
-            double mag_2 = std::sqrt(std::pow(pvars::px(e2), 2) + std::pow(pvars::py(e2), 2) + std::pow(pvars::pz(e2), 2));
-            double costheta = pvars::px(e1)/mag_1 * pvars::px(e2)/mag_2 + pvars::py(e1)/mag_1 * pvars::py(e2)/mag_2 + pvars::pz(e1)/mag_1 * pvars::pz(e2)/mag_2;
-            //inv_mass = std::sqrt(2 * e1_energy * e2_energy * (1 - (costheta)));
+            //M^2 = m1^2 + m2^2 + 2(E1E2 - p1.Dot(p2))
             inv_mass = std::sqrt(e1.mass*e1.mass + e2.mass*e2.mass + 2 * ((e1_energy * e2_energy) - (pvars::px(e1) * pvars::px(e2) + pvars::py(e1) * pvars::py(e2) + pvars::pz(e1) * pvars::pz(e2))));
             return inv_mass;
+        }
+
+    template<class T>
+        double energy_asymmetry(const T & obj)
+        {
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
+            if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
+            auto & e1(obj.particles[indices[0]]); //extract the leading shower
+            auto & e2(obj.particles[indices[1]]); //extract the subleading shower
+            double e1_energy(pvars::energy(e1));
+            double e2_energy(pvars::energy(e2));
+            return (e1_energy - e2_energy)/(e1_energy + e2_energy);
         }
 
     /**
@@ -211,6 +223,13 @@ namespace vars::electron2025
         {
             std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
             return c[0];
+        }
+
+    template<class T>   
+        double ntracks(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
+            return c[2]+c[3]+c[4];
         }
 
 }

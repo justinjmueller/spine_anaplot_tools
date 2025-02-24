@@ -7,7 +7,7 @@
  * are intended to be used to simplify the implementation of variables and cuts
  * by providing common functionality which can be reused across multiple
  * variables and cuts.
- * @author mueller@fnal.gov/jzettle@fnal.gov
+ * @author jzettle@fnal.gov/mueller@fnal.gov
  */
 #ifndef UTILITIES_ELECTRON2025_H
 #define UTILITIES_ELECTRON2025_H
@@ -189,6 +189,12 @@ namespace utilities::electron2025
         size_t leading_shower_index(const T & obj)
         {
             return leading_particle_index_shower(obj, 1, 0);
+        }
+    template<class T>
+        size_t subleading_shower_index(const T & obj)
+        {
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
+            return indices[1];
         }
 }
 #endif // UTILITIES_ELECTRON2025_H

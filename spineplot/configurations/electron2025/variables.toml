@@ -1,0 +1,61 @@
+[variables]
+
+[variables.reco_edep]
+key = "reco_edep"
+range = [0.0, 4.0]
+nbins = 50
+xlabel = "Reconstructed Visible Energy"
+
+[variables.leading_electron_primary_softmax]
+key = "leading_electron_primary_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Leading Electron Primary Softmax Score"
+
+[variables.leading_electron_electron_softmax]
+key = "leading_electron_electron_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Leading Electron Electron Softmax Score"
+
+[variables.leading_electron_photon_softmax]
+key = "leading_electron_photon_softmax"
+range = [0, 1]
+nbins = 50
+xlabel = "Leading Electron Photon Softmax Score"
+
+[variables.invariant_mass]
+key = "invariant_mass"
+range = [0, 2000]
+nbins = 50
+xlabel = "Invariant Mass"
+
+[variables.opening_angle]
+key = "opening_angle"
+range = [0, 1]
+nbins = 50
+xlabel = "True Opening Angle"
+
+[variables.opening_angle_reco]
+key = "opening_angle_reco"
+range = [0, 1]
+nbins = 50
+xlabel = "Reco Opening Angle"
+
+[variables.nshowers]
+key = "nshowers"
+range = [0, 30]
+nbins = 30
+xlabel = "Number of Reconstructed Showers"
+
+[variables.nphotons]
+key = "nphotons"
+range = [0, 30]
+nbins = 30
+xlabel = "Number of Reconstructed Photon"
+
+[variables.nelectrons]
+key = "nelectrons"
+range = [0, 30]
+nbins = 30
+xlabel = "Number of Reconstructed Electron"

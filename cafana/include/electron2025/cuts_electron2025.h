@@ -1,11 +1,10 @@
 /**
- * @file cuts_muon2024.h
- * @brief Header file for definitions of analysis cuts specific to the muon2024
- * analysis.
- * @details This file contains definitions of analysis cuts which can be used
+ * @file cuts_electron2025.h
+ * @brief Header file for definitions of analysis cuts specific to the electron2025 benchmarking analysis.
+ * @details This file  definitions of analysis cuts which can be used
  * to select interactions specific to the muon2024 analysis. The cuts are
  * intended to be used in conjunction with the generic cuts defined in cuts.h.
- * @author mueller@fnal.gov
+ * @author jzettle@fnal.gov/mueller@fnal.gov
 */
 #ifndef CUTS_ELECTRON2025_H
 #define CUTS_ELECTRON2025_H
@@ -18,10 +17,10 @@
 #include "include/electron2025/utilities_electron2025.h"
 
 /**
- * @namespace cuts::muon2024
- * @brief Namespace for organizing cuts specific to the muon2024 analysis.
+ * @namespace cuts::electron2025
+ * @brief Namespace for organizing cuts specific to the electron2025 analysis.
  * @details This namespace is intended to be used for organizing cuts which act
- * on interactions specific to the muon2024 analysis. Each cut is implemented as
+ * on interactions specific to the electron2025 analysis. Each cut is implemented as
  * a function which takes an interaction object as an argument and returns a
  * boolean. The function should be templated on the type of interaction object if
  * the cut is intended to be used on both true and reconstructed interactions.
@@ -89,6 +88,12 @@ namespace cuts::electron2025
             return c[0] >= 1 || c[1] >= 1;
         }
     
+    template<class T>
+        bool topological_1showeronly_cut(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
+            return (c[0] == 1 && c[1] == 0) || (c[0] == 0 && c[1] == 1);
+        }
 
     /**
      * @brief Apply a 1mu1p topological (final state) cut.
@@ -186,6 +191,9 @@ namespace cuts::electron2025
 
     template<class T>
 	bool all_1shower_cut(const T & obj) { return fiducial_cut<T>(obj) && topological_1shower_cut<T>(obj); }
+
+    template<class T>
+	bool all_1showeronly_cut(const T & obj) { return fiducial_cut<T>(obj) && topological_1showeronly_cut<T>(obj); }
 
     template<class T>
 	bool all_1e1gamma_cut(const T & obj) { return fiducial_cut<T>(obj) && topological_1e1gamma_cut<T>(obj); }
@@ -308,4 +316,4 @@ namespace cuts::electron2025
      */
     bool nonsignal_1muX(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && containment_cut(obj)) && topological_1muX_cut(obj); }
 }
-#endif // CUTS_MUON2024_H
+#endif // CUTS_ELECTRON2025_H
