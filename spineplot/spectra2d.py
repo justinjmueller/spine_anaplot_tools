@@ -112,18 +112,24 @@ class SpineSpectra2D(SpineSpectra):
             self._plotdata_diagonal[self._categories[category]] += h[0]
             self._binedges_diagonal[self._categories[category]] = h[1]
 
-    def draw(self, ax, style, show_option='2d') -> None:
+    def draw(self, ax, style, show_option='2d', override_xlabel=None) -> None:
         """
         Plots the data for the SpineSpectra2D object.
 
         Parameters
         ----------
+        ax : Axes
+            The matplotlib Axes object to draw the plot on.
         style : Style
             The Style object to use for the plot.
-        path : str
-            The path to the output directory
-        name : str
-            The name of the output image file.
+        show_option : str
+            The option to use for the plot. This can be one of a few
+            options:
+                '2d'         - Draw a 2D histogram of the data.
+                'projection' - Draw a projection of the data about the
+                               diagonal.
+        override_xlabel : str
+            An optional override for the x-axis label.
         
         Returns
         -------
@@ -133,7 +139,7 @@ class SpineSpectra2D(SpineSpectra):
             values = np.sum([v for v in self._plotdata.values()], axis=0)
             binedges = self._binedges[list(self._plotdata.keys())[0]]
             ax.imshow(values.T, extent=(binedges[0], binedges[-1], binedges[0], binedges[-1]), aspect='auto', origin='lower')
-            ax.set_xlabel(self._variables[0]._xlabel)
+            ax.set_xlabel(self._variables[0]._xlabel if override_xlabel is None else override_xlabel)
             ax.set_ylabel(self._variables[1]._xlabel)
 
         if show_option == 'projection' and self._plotdata_diagonal is not None:
@@ -142,7 +148,7 @@ class SpineSpectra2D(SpineSpectra):
             bincenters = [self._binedges_diagonal[l][:-1] + np.diff(self._binedges_diagonal[l]) / 2 for l in labels]
 
             ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-1,1), histtype='barstacked', label=labels, color=colors, stacked=True)
-            ax.set_xlabel('(Y-X)/X')
+            ax.set_xlabel('(Y-X)/X' if override_xlabel is None else override_xlabel)
             ax.set_ylabel('Entries')
         
         if style.get_mark_pot():

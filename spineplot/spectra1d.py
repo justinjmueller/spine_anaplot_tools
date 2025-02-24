@@ -106,7 +106,7 @@ class SpineSpectra1D(SpineSpectra):
             self._plotdata[self._categories[category]] += h[0]
             self._binedges[self._categories[category]] = h[1]
 
-    def draw(self, ax, style) -> None:
+    def draw(self, ax, style, override_xlabel=None) -> None:
         """
         Plots the data for the SpineSpectra1D object.
 
@@ -118,12 +118,14 @@ class SpineSpectra1D(SpineSpectra):
             The style to use when drawing the artist. The default is
             None. This is intended to be used in cases where the artist
             has some configurable style options.
+        override_xlabel : str
+            An optional override for the x-axis label.
 
         Returns
         -------
         None.
         """
-        ax.set_xlabel(self._variable._xlabel)
+        ax.set_xlabel(self._variable._xlabel if override_xlabel is None else override_xlabel)
         ax.set_ylabel('Candidates')
         ax.set_xlim(*self._variable._range)
 
