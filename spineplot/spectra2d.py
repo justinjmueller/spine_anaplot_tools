@@ -150,6 +150,12 @@ class SpineSpectra2D(SpineSpectra):
             ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-1,1), histtype='barstacked', label=labels, color=colors, stacked=True)
             ax.set_xlabel('(Y-X)/X' if override_xlabel is None else override_xlabel)
             ax.set_ylabel('Entries')
+            
+            if style.get_invert_stack_order():
+                h, l = ax.get_legend_handles_labels()
+                ax.legend(h[::-1], l[::-1])
+            else:
+                ax.legend()
         
         if style.get_mark_pot():
             self.mark_pot(ax)
