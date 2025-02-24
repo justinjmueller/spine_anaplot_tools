@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from sample import Sample
 from figure import SimpleFigure
 from spectra1d import SpineSpectra1D
+from spectra2d import SpineSpectra2D
 from efficiency import SpineEfficiency
 from style import Style
 from variable import Variable
@@ -91,6 +92,10 @@ class Analysis:
                     for x in fig['artists']:
                         if x['type'] == 'SpineSpectra1D':
                             art = SpineSpectra1D(self._variables[x['variable']], self._categories, self._colors, self._category_types)
+                            self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
+                            self._artists.append(art)
+                        elif x['type'] == 'SpineSpectra2D':
+                            art = SpineSpectra2D([self._variables[x['xvariable']], self._variables[x['yvariable']]], self._categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineEfficiency':
