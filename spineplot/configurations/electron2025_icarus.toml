@@ -149,6 +149,36 @@ type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'subleading_shower_energy_true', 'yvariable' = 'subleading_shower_energy_reco'}]
 style = 'selected_electrons'
 
+[[figure]]
+name = 'visible_energy_2d'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_edep'
+yvariable = 'reco_edep'
+draw_kwargs = {'show_option' = 'projection'}
+
+[[figure]]
+name = 'opening_angle_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'opening_angle'
+yvariable = 'opening_angle_reco'
+draw_kwargs = {'show_option' = 'projection'}
+
+[[figure]]
+name = 'invariant_mass_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'invariant_mass_true'
+yvariable = 'invariant_mass'
+draw_kwargs = {'show_option' = 'projection'}
+
 [analysis]
 ordinate_sample = 'mc'
 category_branch = 'category_reco'
