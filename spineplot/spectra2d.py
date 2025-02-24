@@ -108,11 +108,11 @@ class SpineSpectra2D(SpineSpectra):
             if self._categories[category] not in self._plotdata_diagonal:
                 self._plotdata_diagonal[self._categories[category]] = np.zeros(self._variables[0]._nbins)
             diag = np.divide(values[1] - values[0], values[0])
-            h = np.histogram(diag, bins=self._variables[0]._nbins, range=(-4,4), weights=weights[category])
+            h = np.histogram(diag, bins=self._variables[0]._nbins, range=(-1,1), weights=weights[category])
             self._plotdata_diagonal[self._categories[category]] += h[0]
             self._binedges_diagonal[self._categories[category]] = h[1]
 
-    def draw(self, ax, style) -> None:
+    def draw(self, ax, style, show_option='2d') -> None:
         """
         Plots the data for the SpineSpectra2D object.
 
@@ -129,13 +129,21 @@ class SpineSpectra2D(SpineSpectra):
         -------
         None.
         """
-        ax.set_xlabel(self._variables[0]._xlabel)
-        ax.set_ylabel(self._variables[1]._xlabel)
-
-        if self._plotdata is not None:
+        if show_option == '2d' and self._plotdata is not None:
             values = np.sum([v for v in self._plotdata.values()], axis=0)
             binedges = self._binedges[list(self._plotdata.keys())[0]]
             ax.imshow(values.T, extent=(binedges[0], binedges[-1], binedges[0], binedges[-1]), aspect='auto', origin='lower')
+            ax.set_xlabel(self._variables[0]._xlabel)
+            ax.set_ylabel(self._variables[1]._xlabel)
+
+        if show_option == 'projection' and self._plotdata_diagonal is not None:
+            labels, data = zip(*self._plotdata_diagonal.items())
+            colors = [self._colors[label] for label in labels]
+            bincenters = [self._binedges_diagonal[l][:-1] + np.diff(self._binedges_diagonal[l]) / 2 for l in labels]
+
+            ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-1,1), histtype='barstacked', label=labels, color=colors, stacked=True)
+            ax.set_xlabel('(Y-X)/X')
+            ax.set_ylabel('Entries')
         
         if style.get_mark_pot():
             self.mark_pot(ax)
