@@ -132,6 +132,7 @@ class SimpleFigure(SpineFigure):
         -------
         None.
         """
-        self._figure = plt.figure(figsize=self._figsize)
-        self._axs = [self._figure.add_subplot(),]
-        super().create()
+        with self._style as style:
+            self._figure = plt.figure(figsize=self._figsize)
+            self._axs = [self._figure.add_subplot(),]
+            super().create()
