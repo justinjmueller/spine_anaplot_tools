@@ -123,6 +123,14 @@ namespace utilities::electron2025
             size_t index(0);
             size_t subindex(0);
             std::vector<size_t> indices;
+            //if there is only one particle in the list (I expect this is the case for reconstructed only one shower), return 0 for both indices
+            //figure out a smarter way, still has some that pass this and are added to the other plots, must not always be the case even in reco (are there tracks?)
+            if(obj.particles.size() == 1)
+            {
+                indices.push_back(0);
+                indices.push_back(0);
+                return indices;
+            }
             //find leading particle of a given type
             for(size_t i(0); i < obj.particles.size(); ++i)
             {
@@ -130,7 +138,7 @@ namespace utilities::electron2025
                 double energy(p.calo_ke);
                 if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
                     energy = pvars::ke(p);
-                if((p.pid == pid1 || p.pid == pid2) && energy > leading_ke)
+                if((p.pid == pid1 || p.pid == pid2) && (energy > leading_ke && p.is_primary))
                 {
                     leading_ke = energy;
                     index = i;
@@ -144,7 +152,7 @@ namespace utilities::electron2025
                 double energy(p.calo_ke);
                 if constexpr (std::is_same_v<T, caf::SRInteractionTruthDLPProxy>)
                     energy = pvars::ke(p);
-                if((p.pid == pid1 || p.pid == pid2) && energy > subleading_ke && i != index)
+                if((p.pid == pid1 || p.pid == pid2) && energy > subleading_ke && p.is_primary && i != index)
                 {
                     subleading_ke = energy;
                     subindex = i;
