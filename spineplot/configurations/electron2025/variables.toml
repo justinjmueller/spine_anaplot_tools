@@ -12,6 +12,18 @@ range = [0.0, 4.0]
 nbins = 50
 xlabel = "True Energy"
 
+[variables.category_reco]
+key = "category_reco"
+range = [0, 8]
+nbins = 8
+xlabel = "Reconstructed Category"
+
+[variables.category_true]
+key = "category"
+range = [0, 8]
+nbins = 8
+xlabel = "True Category"
+
 [variables.leading_shower_energy_reco]
 key = "leading_shower_energy_reco"
 range = [0, 4000]

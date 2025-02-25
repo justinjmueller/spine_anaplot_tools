@@ -18,6 +18,12 @@ artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_edep'},]
 style = 'selected_electrons'
 
 [[figure]]
+name = 'true_visible_energy'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_edep'},]
+style = 'selected_electrons'
+
+[[figure]]
 name = 'true_opening_angle'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'opening_angle'},]
@@ -102,6 +108,18 @@ artists = [{'type' = 'SpineSpectra1D', 'variable' = 'nphotons'},]
 style = 'selected_electrons'
 
 [[figure]]
+name = 'category_reco'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'category_reco'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'category_true'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'category_true'},]
+style = 'selected_electrons'
+
+[[figure]]
 name = 'IoU'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'IoU'},]
@@ -150,6 +168,12 @@ artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'subleading_shower_energy_t
 style = 'selected_electrons'
 
 [[figure]]
+name = 'energy_asymmetry_2d'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'energy_asymmetry_true', 'yvariable' = 'energy_asymmetry_reco'}]
+style = 'selected_electrons'
+
+[[figure]]
 name = 'visible_energy_2d'
 type = 'SimpleFigure'
 style = 'selected_electrons'
@@ -157,7 +181,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'true_edep'
 yvariable = 'reco_edep'
-draw_kwargs = {'show_option' = 'projection'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
 
 [[figure]]
 name = 'opening_angle_proj'
@@ -167,7 +191,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'opening_angle'
 yvariable = 'opening_angle_reco'
-draw_kwargs = {'show_option' = 'projection'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
 
 [[figure]]
 name = 'invariant_mass_proj'
@@ -177,12 +201,22 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'invariant_mass_true'
 yvariable = 'invariant_mass'
-draw_kwargs = {'show_option' = 'projection'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+
+[[figure]]
+name = 'energy_asymmetry_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'energy_asymmetry_true'
+yvariable = 'energy_asymmetry_reco'
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
 
 [analysis]
 ordinate_sample = 'mc'
 category_branch = 'category_reco'
-category_assignment = [[0],[1],[2],[3]]
-category_labels = ['2e', '1e1$\gamma$', '1eN$\gamma$', '2$\gamma$']
-category_colors = ['C0', 'C1', 'C2', 'C3']
-category_types = ['histogram', 'histogram', 'histogram', 'histogram']
+category_assignment = [[0],[1],[2],[3], [6]]
+category_labels = ['2e', '1e1$\gamma$', '1eN$\gamma$', '2$\gamma$', '1shower']
+category_colors = ['C0', 'C1', 'C2', 'C3', 'C4']
+category_types = ['histogram', 'histogram', 'histogram', 'histogram', 'histogram']

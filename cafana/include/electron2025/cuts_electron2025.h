@@ -92,7 +92,7 @@ namespace cuts::electron2025
         bool topological_1showeronly_cut(const T & obj)
         {
             std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
-            return (c[0] == 1 && c[1] == 0) || (c[0] == 0 && c[1] == 1);
+            return ((c[0] == 1 && c[1] == 0) || (c[0] == 0 && c[1] == 1)) && (c[2] == 0 && c[3] == 0 && c[4] == 0);
         }
 
     /**
