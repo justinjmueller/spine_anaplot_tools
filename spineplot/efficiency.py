@@ -216,7 +216,6 @@ class SpineEfficiency(SpineArtist):
         """
         efficiencies = np.linspace(0.0, 1, int(1e6))
         data, _ = sample.get_data([self._variable._key, *self._cuts.keys()])
-        #print(data)
         for category, values in data.items():
             if category not in self._categories:
                 continue
@@ -231,7 +230,7 @@ class SpineEfficiency(SpineArtist):
                 self._posteriors[category][f'seq_{cut}'] /= np.sum(self._posteriors[category][f'seq_{cut}'])
 
                 # Non-sequential cuts
-                success = np.sum(values[ci+1].to_numpy(dtype=np.bool))
+                success = np.sum(values[ci+1].to_numpy(bool))
                 self._posteriors[category][f'unseq_{cut}'] *= binom.pmf(success, total, efficiencies)
                 self._posteriors[category][f'unseq_{cut}'] /= np.sum(self._posteriors[category][f'unseq_{cut}'])
 
