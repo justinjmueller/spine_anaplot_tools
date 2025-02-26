@@ -99,7 +99,7 @@ class SpineEfficiency(SpineArtist):
             # Loop over the groups requested in the plot.
             for group in groups:
                 if group not in final_posteriors[0].keys():
-                    continue
+                    raise ValueError(f"Group '{group}' not in the list of groups configured in the analysis block!")
 
                 # Extract the cv, msigma, and psigma values for the
                 # group.
