@@ -252,6 +252,8 @@ namespace cuts::electron2025
      */
     bool signal_1mu1p(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && containment_cut(obj) && topological_1mu1p_cut(obj); }
 
+    bool signal_1shower(const caf::SRInteractionTruthDLPProxy & obj) { return fiducial_cut(obj) && containment_cut(obj) && topological_1shower_cut(obj); }
+
     /**
      * @brief Apply a cut to select the 1mu1p non-signal.
      * @details This function applies a cut on the final state, fiducial volume,

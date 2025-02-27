@@ -2,14 +2,14 @@
 
 [variables.reco_edep]
 key = "reco_edep"
-range = [0.0, 4.0]
-nbins = 50
+range = [0.0, 10.0]
+nbins = 100
 xlabel = "Reconstructed Visible Energy"
 
 [variables.true_edep]
 key = "true_edep"
-range = [0.0, 4.0]
-nbins = 50
+range = [0.0, 10.0]
+nbins = 100
 xlabel = "True Energy"
 
 [variables.category_reco]
@@ -26,26 +26,26 @@ xlabel = "True Category"
 
 [variables.leading_shower_energy_reco]
 key = "leading_shower_energy_reco"
-range = [0, 4000]
-nbins = 50
+range = [0, 8000]
+nbins = 80
 xlabel = "Reconstructed Leading Shower Energy"
 
 [variables.leading_shower_energy_true]
 key = "leading_shower_energy"
-range = [0, 4000]
-nbins = 50
+range = [0, 8000]
+nbins = 80
 xlabel = "True Leading Shower Energy"
 
 [variables.subleading_shower_energy_reco]
 key = "subleading_shower_energy_reco"
-range = [0, 4000]
-nbins = 50
+range = [0, 8000]
+nbins = 80
 xlabel = "Reconstructed Subleading Shower Energy"
 
 [variables.subleading_shower_energy_true]
 key = "subleading_shower_energy"
-range = [0, 4000]
-nbins = 50
+range = [0, 8000]
+nbins = 80
 xlabel = "True Subleading Shower Energy"
 
 [variables.leading_electron_primary_softmax]
@@ -110,13 +110,13 @@ xlabel = "True Energy Asymmetry"
 
 [variables.opening_angle]
 key = "opening_angle"
-range = [0, 1]
+range = [-1, 1]
 nbins = 50
 xlabel = "True Opening Angle"
 
 [variables.opening_angle_reco]
 key = "opening_angle_reco"
-range = [0, 1]
+range = [-1, 1]
 nbins = 50
 xlabel = "Reco Opening Angle"
 
@@ -137,6 +137,54 @@ key = "IoU"
 range = [0.0, 1.0]
 nbins = 30
 xlabel = "IoU"
+
+[variables.true_vertex_x]
+key = "true_vertex_x"
+range = [-400, 400]
+nbins = 200
+xlabel = "True Vertex X Position"
+
+[variables.reco_vertex_x]
+key = "reco_vertex_x"
+range = [-400, 400]
+nbins = 200
+xlabel = "Reconstructed Vertex X Position"
+
+[variables.true_vertex_y]
+key = "true_vertex_y"
+range = [-300, 300]
+nbins = 200
+xlabel = "True Vertex Y Position"
+
+[variables.reco_vertex_y]
+key = "reco_vertex_y"
+range = [-300, 300]
+nbins = 200
+xlabel = "Reconstructed Vertex Y Position"
+
+[variables.true_vertex_z]
+key = "true_vertex_z"
+range = [-900, 900]
+nbins = 600
+xlabel = "True Vertex Z Position"
+
+[variables.reco_vertex_z]
+key = "reco_vertex_z"
+range = [-900, 900]
+nbins = 600
+xlabel = "Reconstructed Vertex Z Position"
+
+[variables.true_vertex_distance]
+key = "true_vertex_distance"
+range = [0, 5]
+nbins = 50
+xlabel = "True Max Vertex Distance"
+
+[variables.reco_vertex_distance]
+key = "reco_vertex_distance"
+range = [0, 100]
+nbins = 75
+xlabel = "Reconstructed Max Vertex Distance"
 
 [variables.nelectrons]
 key = "nelectrons"

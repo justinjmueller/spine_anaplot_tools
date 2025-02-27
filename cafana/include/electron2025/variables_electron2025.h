@@ -186,6 +186,61 @@ namespace vars::electron2025
             return (e1_energy - e2_energy)/(e1_energy + e2_energy);
         }
 
+    template<class T>
+        double max_vertex_x_distance(const T & obj)
+        {
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
+            if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
+            double vtx_x = vars::vertex_x(obj);
+            auto & e1(obj.particles[indices[0]]); //extract the leading shower
+            double dist_1 = vtx_x - pvars::start_x(e1);
+            auto & e2(obj.particles[indices[1]]); //extract the subleading shower
+            double dist_2 = vtx_x - pvars::start_x(e2);
+            return std::max(dist_1, dist_2);
+        }
+
+    template<class T>
+        double max_vertex_y_distance(const T & obj)
+        {
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
+            if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
+            double vtx_y = vars::vertex_y(obj);
+            auto & e1(obj.particles[indices[0]]); //extract the leading shower
+            double dist_1 = vtx_y - pvars::start_y(e1);
+            auto & e2(obj.particles[indices[1]]); //extract the subleading shower
+            double dist_2 = vtx_y - pvars::start_y(e2);
+            return std::max(dist_1, dist_2);
+        }
+
+    template<class T>
+        double max_vertex_z_distance(const T & obj)
+        {
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
+            if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
+            double vtx_z = vars::vertex_z(obj);
+            auto & e1(obj.particles[indices[0]]); //extract the leading shower
+            double dist_1 = vtx_z - pvars::start_z(e1);
+            auto & e2(obj.particles[indices[1]]); //extract the subleading shower
+            double dist_2 = vtx_z - pvars::start_z(e2);
+            return std::max(dist_1, dist_2);
+        }
+
+    template<class T>
+        double max_vertex_distance(const T & obj)
+        {
+            //compute 3D magnitude here and use that
+            std::vector<size_t> indices = utilities::electron2025::particle_indices(obj, 1, 0);
+            if(indices[0] == indices[1]) return PLACEHOLDERVALUE; //return NaN if there is only one shower
+            double vtx_x = vars::vertex_x(obj);
+            double vtx_y = vars::vertex_y(obj);
+            double vtx_z = vars::vertex_z(obj);
+            auto & e1(obj.particles[indices[0]]); //extract the leading shower
+            double dist_1 = std::sqrt((vtx_x - pvars::start_x(e1))*(vtx_x - pvars::start_x(e1)) + (vtx_y - pvars::start_y(e1))*(vtx_y - pvars::start_y(e1) + (vtx_z - pvars::start_z(e1))*(vtx_z - pvars::start_z(e1))));
+            auto & e2(obj.particles[indices[1]]); //extract the subleading shower
+            double dist_2 = std::sqrt((vtx_x - pvars::start_x(e2))*(vtx_x - pvars::start_x(e2)) + (vtx_y - pvars::start_y(e2))*(vtx_y - pvars::start_y(e2) + (vtx_z - pvars::start_z(e2))*(vtx_z - pvars::start_z(e2))));
+            return std::max(dist_1, dist_2);
+        }
+
     /**
      * @brief Variable for the best-match IoU of the particle.
      * @details The best-match IoU is the intersection over union of the

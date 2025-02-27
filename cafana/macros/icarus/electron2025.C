@@ -38,9 +38,10 @@
 
 void electron2025()
 {
-    ana::Analysis analysis("electron2025_rev1_icarus_testbenchmark");
+    ana::Analysis analysis("electron2025_rev1_icarus_boosted_testbenchmark");
 
-    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spineprod/mpv_boostedshower/mpv_boosted_ee.flat.root");
+    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spineprod/mpv_boostedshower/mpv_boosted_ee.flat.root");
+    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/production/simulation/mpv_ee_showers/mpv_ee_showers.flat.root");
     analysis.AddLoader("mc", &mc, true);
 
     /**
@@ -111,9 +112,14 @@ void electron2025()
     vars_selected_ee.insert({"reco_vertex_y", SpineVar<RTYPE,RTYPE>(&vars::vertex_y, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"true_vertex_z", SpineVar<TTYPE,RTYPE>(&vars::vertex_z, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"reco_vertex_z", SpineVar<RTYPE,RTYPE>(&vars::vertex_z, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"true_vertex_distance", SpineVar<TTYPE,RTYPE>(&vars::electron2025::max_vertex_distance, &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"reco_vertex_distance", SpineVar<RTYPE,RTYPE>(&vars::electron2025::max_vertex_distance, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"flash_time", SpineVar<RTYPE,RTYPE>(&vars::flash_time, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"flash_total", SpineVar<RTYPE,RTYPE>(&vars::flash_total_pe, &CUT, &cuts::no_cut)});
     vars_selected_ee.insert({"flash_hypothesis", SpineVar<RTYPE,RTYPE>(&vars::flash_hypothesis, &CUT, &cuts::no_cut)});  
+    vars_selected_ee.insert({"fiducial_cut", SpineVar<RTYPE,RTYPE>(WRAP_BOOL(cuts::fiducial_cut), &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"containment_cut", SpineVar<RTYPE,RTYPE>(WRAP_BOOL(cuts::containment_cut), &CUT, &cuts::no_cut)});
+    vars_selected_ee.insert({"flash_cut", SpineVar<RTYPE,RTYPE>(WRAP_BOOL(cuts::flash_cut), &CUT, &cuts::no_cut)});
 
     analysis.AddTree("selectedEvents", vars_selected_ee, false);
 
@@ -132,6 +138,17 @@ void electron2025()
     vars_selected_ee.insert({"true_py_dir", SpineVar<TTYPEP,TTYPEP,TTYPE>(&pvars::py_dir, primary_shower, &cuts::no_cut)});
     vars_selected_ee.insert({"true_pz_dir", SpineVar<TTYPEP,TTYPEP,TTYPE>(&pvars::pz_dir, primary_shower, &cuts::no_cut)});
     analysis.AddTree("pid_electron", vars_pid_electron, false);
+
+     #define SIGCUT cuts::electron2025::signal_1shower
+    std::map<std::string, ana::SpillMultiVar> vars_signal;
+    vars_signal.insert({"category", SpineVar<TTYPE,TTYPE>(&vars::electron2025::category, &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"true_edep", SpineVar<TTYPE,TTYPE>(&vars::visible_energy, &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"fiducial_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::fiducial_cut), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"containment_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::containment_cut), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"flash_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::flash_cut), &SIGCUT, &SIGCUT)});
+
+    analysis.AddTree("signal", vars_signal, true);
+
 
     /**
      * @brief Run the analysis.
