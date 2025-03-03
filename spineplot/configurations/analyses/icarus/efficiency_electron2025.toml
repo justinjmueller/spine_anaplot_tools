@@ -18,20 +18,46 @@ style = 'selected_electrons'
 figsize = [6.0, 5.5]
 [[figure.artists]]
 type = 'SpineEfficiency'
-variable = 'true_edep'
+variable = 'true_edep_eff'
+groups = ['2e',]
 cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'has_one_shower' = 'At Least One Shower', 'has_no_tracks' = 'No Tracks', 'has_two_showers' = 'Two Recod Showers', 'has_two_electrons' = 'Two Recod Electrons'}
-draw_kwargs = {'show_option' = 'table', 'show_seqeff' = true, 'show_unseqeff' = true, 'groups' = ['2e']}
+draw_kwargs = {'show_option' = 'table', 'show_seqeff' = true, 'show_unseqeff' = true, 'npts' = 1e5}
 
 [[figure]]
 name = 'efficiency_truesignalplot'
 type = 'SimpleFigure'
 style = 'selected_electrons'
+figsize = [8.0, 4.0]
+[[figure.artists]]
+type = 'SpineEfficiency'
+variable = 'true_edep_eff'
+groups = ['2e',]
+cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'has_one_shower' = 'At Least One Shower', 'has_no_tracks' = 'No Tracks', 'has_two_showers' = 'Two Recod Showers', 'has_two_electrons' = 'Two Recod Electrons'}
+draw_kwargs = {'show_option' = 'differential', 'show_seqeff' = true, 'show_unseqeff' = false, 'npts' = 1e5}
+
+[[figure]]
+name = 'efficiency_openingangle'
+type = 'SimpleFigure'
+style = 'selected_electrons'
 figsize = [6.0, 5.5]
 [[figure.artists]]
 type = 'SpineEfficiency'
-variable = 'true_edep'
+variable = 'true_opening_angle'
+groups = ['2e',]
 cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'has_one_shower' = 'At Least One Shower', 'has_no_tracks' = 'No Tracks', 'has_two_showers' = 'Two Recod Showers', 'has_two_electrons' = 'Two Recod Electrons'}
-draw_kwargs = {'show_option' = 'plot', 'show_seqeff' = true, 'show_unseqeff' = true, 'groups' = ['2e']}
+draw_kwargs = {'show_option' = 'table', 'show_seqeff' = true, 'show_unseqeff' = true, 'npts' = 1e5}
+
+[[figure]]
+name = 'efficiency_openingangleplot'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+figsize = [8.0, 4.0]
+[[figure.artists]]
+type = 'SpineEfficiency'
+variable = 'true_opening_angle'
+groups = ['2e',]
+cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'has_one_shower' = 'At Least One Shower', 'has_no_tracks' = 'No Tracks', 'has_two_showers' = 'Two Recod Showers', 'has_two_electrons' = 'Two Recod Electrons'}
+draw_kwargs = {'show_option' = 'differential', 'percentage' = true, 'show_seqeff' = true, 'show_unseqeff' = false, 'npts' = 1e5}
 
 [analysis]
 ordinate_sample = 'mcsignal'

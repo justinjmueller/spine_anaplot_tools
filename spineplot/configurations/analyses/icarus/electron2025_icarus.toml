@@ -42,17 +42,6 @@ yvariable = 'reco_vertex_z'
 draw_kwargs = {'show_option' = 'absdiff', 'override_xlabel' = '(Reco-True)'}
 
 [[figure]]
-name = 'efficiency_test'
-type = 'SimpleFigure'
-style = 'selected_electrons'
-figsize = [6.0, 5.5]
-[[figure.artists]]
-type = 'SpineEfficiency'
-variable = 'true_edep'
-cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'flash_cut' = 'Flash Time'}
-draw_kwargs = {'show_option' = 'table', 'show_seqeff' = true, 'show_unseqeff' = true, 'groups' = ['2e', '1e1$\gamma$', '1shower']}
-
-[[figure]]
 name = 'reco_visible_energy'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_edep'},]

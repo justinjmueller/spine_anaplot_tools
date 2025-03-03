@@ -2,6 +2,7 @@
 
 [styles.selected_electrons]
 style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
 title = '$\bf{ICARUS}$ Di-Shower'
 mark_pot = true
@@ -13,6 +14,7 @@ plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.unstacked]
 style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
 title = '$\bf{ICARUS}$ Di-Shower'
 mark_pot = true

@@ -38,10 +38,10 @@
 
 void electron2025()
 {
-    ana::Analysis analysis("electron2025_rev1_icarus_testbenchmark");
+    ana::Analysis analysis("electron2025_rev1_icarus_boosted_testbenchmark");
 
-    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spineprod/mpv_boostedshower/mpv_boosted_ee.flat.root");
-    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/production/simulation/mpv_ee_showers/mpv_ee_showers.flat.root");
+    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spineprod/mpv_boostedshower/mpv_boosted_ee.flat.root");
+    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/production/simulation/mpv_ee_showers/mpv_ee_showers.flat.root");
     analysis.AddLoader("mc", &mc, true);
 
     /**
@@ -143,6 +143,7 @@ void electron2025()
     std::map<std::string, ana::SpillMultiVar> vars_signal;
     vars_signal.insert({"category", SpineVar<TTYPE,TTYPE>(&vars::electron2025::category, &SIGCUT, &SIGCUT)});
     vars_signal.insert({"true_edep", SpineVar<TTYPE,TTYPE>(&vars::visible_energy, &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"true_opening_angle", SpineVar<TTYPE, TTYPE>(&vars::electron2025::opening_angle_ee, &SIGCUT, &SIGCUT)});
     vars_signal.insert({"fiducial_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::fiducial_cut), &SIGCUT, &SIGCUT)});
     vars_signal.insert({"containment_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::containment_cut), &SIGCUT, &SIGCUT)});
     vars_signal.insert({"flash_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::flash_cut), &SIGCUT, &SIGCUT)});

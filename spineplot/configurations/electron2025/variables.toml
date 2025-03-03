@@ -2,14 +2,21 @@
 
 [variables.reco_edep]
 key = "reco_edep"
-range = [0.0, 10.0]
-nbins = 100
+range = [0.0, 4.0]
+nbins = 50
 xlabel = "Reconstructed Visible Energy"
 
 [variables.true_edep]
 key = "true_edep"
-range = [0.0, 10.0]
-nbins = 100
+range = [0.0, 4.0]
+nbins = 50
+xlabel = "True Energy"
+
+[variables.true_edep_eff]
+key = "true_edep"
+range = [0.0, 4.0]
+nbins = 50
+binning_scheme = "equal_population"
 xlabel = "True Energy"
 
 [variables.category_reco]
@@ -112,6 +119,13 @@ xlabel = "True Energy Asymmetry"
 key = "opening_angle"
 range = [-1, 1]
 nbins = 50
+xlabel = "True Opening Angle"
+
+[variables.true_opening_angle]
+key = "true_opening_angle"
+range = [-1, 1]
+nbins = 30
+binning_scheme = "equal_population"
 xlabel = "True Opening Angle"
 
 [variables.opening_angle_reco]
