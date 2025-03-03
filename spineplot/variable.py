@@ -18,6 +18,12 @@ class Variable:
         The number of bins for the variable.
     _xlabel : str
         The x-axis label for the variable.
+    _bin_edges : numpy.ndarray
+        The bin edges for the variable.
+    _bin_centers : numpy.ndarray
+        The bin centers for the variable.
+    _bin_widths : numpy.ndarray
+        The bin widths for the variable.
     """
     def __init__(self, name, key, range, nbins, xlabel) -> None:
         """
@@ -46,3 +52,6 @@ class Variable:
         self._range = range
         self._nbins = nbins
         self._xlabel = xlabel
+        self._bin_edges = np.linspace(self._range[0], self._range[1], self._nbins+1)
+        self._bin_centers = 0.5*(self._bin_edges[1:] + self._bin_edges[:-1])
+        self._bin_widths = self._bin_edges[1:] - self._bin_edges[:-1]
