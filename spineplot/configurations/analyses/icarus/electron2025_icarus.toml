@@ -64,6 +64,7 @@ name = 'reco_opening_angle'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'opening_angle_reco'},]
 style = 'selected_electrons'
+draw_kwargs = {'show_component_number' = true, 'show_component_percentage' = true, 'invert_stack_order' = false}
 
 [[figure]]
 name = 'invariant_mass'

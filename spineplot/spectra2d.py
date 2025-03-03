@@ -183,7 +183,7 @@ class SpineSpectra2D(SpineSpectra):
             ax.set_xlabel('(Y-X)' if override_xlabel is None else override_xlabel)
             ax.set_ylabel('Entries')
 
-            if style.get_invert_stack_order():
+            if invert_stack_order:
                 h, l = ax.get_legend_handles_labels()
                 ax.legend(h[::-1], l[::-1])
             else:
