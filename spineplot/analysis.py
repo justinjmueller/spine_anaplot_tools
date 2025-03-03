@@ -105,26 +105,36 @@ class Analysis:
                             restrict_categories = self._categories.copy()
                     
                         if x['type'] == 'SpineSpectra1D':
+                            # Check if the variable is present in all samples
                             if not all(self._variables[x['variable']]._validity_check.values()):
                                 missing_samples = [k for k, v in self._variables[x['variable']]._validity_check.items() if not v]
                                 raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
+                            
+                            # Create the artist
                             art = SpineSpectra1D(self._variables[x['variable']], restrict_categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineSpectra2D':
+                            # Check if the variables are present in all samples
                             if not all(self._variables[x['xvariable']]._validity_check.values()) or not all(self._variables[x['yvariable']]._validity_check.values()):
                                 missing_samples = [k for k, v in self._variables[x['xvariable']]._validity_check.items() if not v] + [k for k, v in self._variables[x['yvariable']]._validity_check.items() if not v]
                                 raise ConfigException(f"Variable '{x['xvariable']}' or '{x['yvariable']}' not found in all samples ({' '.join(missing_samples)}).")
+                            
+                            # Create the artist
                             art = SpineSpectra2D([self._variables[x['xvariable']], self._variables[x['yvariable']]], restrict_categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineEfficiency':
+                            # Check if the variable is present in all samples
                             if not all(self._variables[x['variable']]._validity_check.values()):
                                 missing_samples = [k for k, v in self._variables[x['variable']]._validity_check.items() if not v]
                                 raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
+                            
+                            # Grab artist settings
                             show_option = x.get('draw_kwargs', {}).get('show_option', 'table')
-                            npts = x.get('draw_kwargs', {}).get('npts', 1e6)
-                            art = SpineEfficiency(self._variables[x['variable']], self._categories, x['cuts'], show_option, npts)
+                            npts = x.get('draw_kwargs', {}).get('npts', 1e6)                            
+                            # Create the artist
+                            art = SpineEfficiency(self._variables[x['variable']], restrict_categories, x['cuts'], show_option, npts)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
 
