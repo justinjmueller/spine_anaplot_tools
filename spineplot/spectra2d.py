@@ -125,7 +125,7 @@ class SpineSpectra2D(SpineSpectra):
             self._plotdata_absdiag[self._categories[category]] += h[0]
             self._binedges_absdiag[self._categories[category]] = h[1]
 
-    def draw(self, ax, style, show_option='2d', override_xlabel=None, invert_stack_order=False) -> None:
+    def draw(self, ax, style, show_option='2d', draw_identity=True, override_xlabel=None, invert_stack_order=False) -> None:
         """
         Plots the data for the SpineSpectra2D object.
 
@@ -137,11 +137,14 @@ class SpineSpectra2D(SpineSpectra):
             The Style object to use for the plot.
         show_option : str
             The option to use for the plot. This can be one of a few
-            options:
+            options (default is '2d'):
                 '2d'         - Draw a 2D histogram of the data.
                 'projection' - Draw a projection of the data about the
-                               diagonal.
-                'absdiff'    - Draw a absolute difference of the data 
+                               diagonal
+                'absdiff'    - Draw a absolute difference of the data
+        draw_identity : bool
+            A flag to indicate if the identity line should be drawn on
+            the plot. The default is True.
         override_xlabel : str
             An optional override for the x-axis label.
         invert_stack_order : bool
@@ -158,6 +161,14 @@ class SpineSpectra2D(SpineSpectra):
             ax.imshow(values.T, extent=(binedges[0], binedges[-1], binedges[0], binedges[-1]), aspect='auto', origin='lower')
             ax.set_xlabel(self._variables[0]._xlabel if override_xlabel is None else override_xlabel)
             ax.set_ylabel(self._variables[1]._xlabel)
+            
+            # Draw the identity line. This must span the full range
+            # of the plot, so we need to find the minimum and maximum
+            # of the range for the plot.
+            if draw_identity:
+                min_range = min([binedges[0], binedges[-1]])
+                max_range = max([binedges[0], binedges[-1]])
+                ax.plot([min_range, max_range], [min_range, max_range], 'k--')
 
         if show_option == 'projection' and self._plotdata_diagonal is not None:
             labels, data = zip(*self._plotdata_diagonal.items())
