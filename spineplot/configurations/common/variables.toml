@@ -6,22 +6,28 @@ range = [0, 3]
 nbins = 25
 xlabel = "True Visible Energy [GeV]"
 
+[variables.reco_tmuon]
+key = "reco_tmuon"
+range = [0, 1200]
+nbins = 25
+xlabel = "Reconstructed Muon Kinetic Energy [MeV]"
+
 [variables.reco_visible_energy]
 key = "reco_edep"
 range = [0, 3]
 nbins = 25
 xlabel = "Reconstructed Visible Energy [GeV]"
 
-[variables.true_interaction_pt]
+[variables.true_dpT]
 key = "true_dpT"
 range = [0,1200]
-nbins = 100
+nbins = 25
 xlabel = 'True $\delta p_T$ [MeV/c]'
 
-[variables.reco_interaction_pt]
+[variables.reco_dpT]
 key = "reco_dpT"
 range = [0,1200]
-nbins = 100
+nbins = 25
 xlabel = 'Reconstructed $\delta p_T$ [MeV/c]'
 
 [variables.true_dpT_lp]
