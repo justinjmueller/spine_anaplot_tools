@@ -38,7 +38,7 @@ class SpineEfficiency(SpineArtist):
         A dictionary containing the number of successful events in each
         bin of the variable.
     """
-    def __init__(self, variable, categories, cuts, show_option='table'):
+    def __init__(self, variable, categories, cuts, show_option='table', npts=1e6):
         """
         Parameters
         ----------
@@ -56,6 +56,7 @@ class SpineEfficiency(SpineArtist):
         self._samples = list()
         self._categories = categories
         self._cuts = cuts
+        self._npts = int(npts)
         self._show_option = show_option
         self._posteriors = dict()
         self._totals = dict()
