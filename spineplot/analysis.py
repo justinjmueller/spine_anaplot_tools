@@ -92,18 +92,30 @@ class Analysis:
                 with self._styles[fig['style']] as style:
                     self._figures[fig['name']] = SimpleFigure(style, fig.get('figsize', style.default_figsize))
                     for x in fig['artists']:
+
+                        # Check if the artist is restricted to certain
+                        # groups. This allows for some additional
+                        # amount of control over the plotting.
+                        restrict_categories = {}
+                        group_setting = x.get('groups', [])
+                        if group_setting:
+                            for g in group_setting:
+                                restrict_categories.update({k : v for k,v in self._categories.items() if v == g})
+                        else:
+                            restrict_categories = self._categories.copy()
+                    
                         if x['type'] == 'SpineSpectra1D':
                             if not all(self._variables[x['variable']]._validity_check.values()):
                                 missing_samples = [k for k, v in self._variables[x['variable']]._validity_check.items() if not v]
                                 raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
-                            art = SpineSpectra1D(self._variables[x['variable']], self._categories, self._colors, self._category_types)
+                            art = SpineSpectra1D(self._variables[x['variable']], restrict_categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineSpectra2D':
                             if not all(self._variables[x['xvariable']]._validity_check.values()) or not all(self._variables[x['yvariable']]._validity_check.values()):
                                 missing_samples = [k for k, v in self._variables[x['xvariable']]._validity_check.items() if not v] + [k for k, v in self._variables[x['yvariable']]._validity_check.items() if not v]
                                 raise ConfigException(f"Variable '{x['xvariable']}' or '{x['yvariable']}' not found in all samples ({' '.join(missing_samples)}).")
-                            art = SpineSpectra2D([self._variables[x['xvariable']], self._variables[x['yvariable']]], self._categories, self._colors, self._category_types)
+                            art = SpineSpectra2D([self._variables[x['xvariable']], self._variables[x['yvariable']]], restrict_categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineEfficiency':
@@ -111,7 +123,8 @@ class Analysis:
                                 missing_samples = [k for k, v in self._variables[x['variable']]._validity_check.items() if not v]
                                 raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
                             show_option = x.get('draw_kwargs', {}).get('show_option', 'table')
-                            art = SpineEfficiency(self._variables[x['variable']], self._categories, x['cuts'], show_option)
+                            npts = x.get('draw_kwargs', {}).get('npts', 1e6)
+                            art = SpineEfficiency(self._variables[x['variable']], restrict_categories, x['cuts'], show_option, npts)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
 

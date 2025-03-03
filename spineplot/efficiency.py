@@ -61,9 +61,9 @@ class SpineEfficiency(SpineArtist):
         self._totals = dict()
         self._successes = dict()
 
-    def draw(   self, ax, show_option, groups=None, percentage=True,
-                override_title=None, show_seqeff=True, show_unseqeff=True,
-                yrange=None, style=None):
+    def draw(   self, ax, show_option, percentage=True, override_title=None,
+                show_seqeff=True, show_unseqeff=True, yrange=None, npts=1e6,
+                style=None):
         """
         Draw the artist on the given axis.
 
@@ -76,10 +76,6 @@ class SpineEfficiency(SpineArtist):
             None. This is intended to be used in cases where the artist
             can be shown in different ways (e.g. 2D vs projection of 2D
             down to 1D).
-        groups : list, optional
-            A list of groups to show in the plot. This configures the
-            the artist to show only the specified groups. The default
-            is None, which will display all groups.
         percentage : bool, optional
             A flag to indicate if the efficiency should be displayed
             as a percentage. The default is True.
@@ -104,8 +100,7 @@ class SpineEfficiency(SpineArtist):
         -------
         None.
         """
-        if groups is None:
-            groups = list(self._categories.values())
+        groups = list(set([v for v in self._categories.values()]))
 
         if show_option == 'table':
             # Lambda formatter to round the values to two decimal
