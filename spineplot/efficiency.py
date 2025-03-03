@@ -327,7 +327,7 @@ class SpineEfficiency(SpineArtist):
         """
         # Create a linear space of efficiencies to calculate the
         # posterior distribution.
-        efficiencies = np.linspace(0.0, 1, int(1e6))
+        efficiencies = np.linspace(0.0, 1, int(1e5))
 
         # Get the data for the binning variable and the configured
         # cuts. The data is returned as a dictionary with the key
@@ -434,7 +434,7 @@ class SpineEfficiency(SpineArtist):
             If the group is not in the list of groups configured
             in the analysis block.
         """
-        efficiencies = np.linspace(0.0, 1, int(1e6))
+        efficiencies = np.linspace(0.0, 1, int(1e5))
         
         # If the group is not in the list of groups configured in
         # the analysis block, raise an exception. Otherwise,
