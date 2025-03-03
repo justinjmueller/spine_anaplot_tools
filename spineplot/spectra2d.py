@@ -125,7 +125,7 @@ class SpineSpectra2D(SpineSpectra):
             self._plotdata_absdiag[self._categories[category]] += h[0]
             self._binedges_absdiag[self._categories[category]] = h[1]
 
-    def draw(self, ax, style, show_option='2d', override_xlabel=None) -> None:
+    def draw(self, ax, style, show_option='2d', override_xlabel=None, invert_stack_order=False) -> None:
         """
         Plots the data for the SpineSpectra2D object.
 
@@ -144,6 +144,9 @@ class SpineSpectra2D(SpineSpectra):
                 'absdiff'    - Draw a absolute difference of the data 
         override_xlabel : str
             An optional override for the x-axis label.
+        invert_stack_order : bool
+            A flag to indicate if the stack order in the legend should
+            be inverted. The default is False.
         
         Returns
         -------
@@ -165,7 +168,7 @@ class SpineSpectra2D(SpineSpectra):
             ax.set_xlabel('(Y-X)/X' if override_xlabel is None else override_xlabel)
             ax.set_ylabel('Entries')
             
-            if style.get_invert_stack_order():
+            if invert_stack_order:
                 h, l = ax.get_legend_handles_labels()
                 ax.legend(h[::-1], l[::-1])
             else:
@@ -186,9 +189,9 @@ class SpineSpectra2D(SpineSpectra):
             else:
                 ax.legend()
         
-        if style.get_mark_pot():
+        if style.mark_pot:
             self.mark_pot(ax)
-        if style.get_mark_preliminary() is not None:
-            self.mark_preliminary(ax, style.get_mark_preliminary())
+        if style.mark_preliminary is not None:
+            self.mark_preliminary(ax, style.mark_preliminary)
         if style.get_title() is not None:
             ax.set_title(style.get_title())

@@ -21,20 +21,11 @@ class Style:
     _mark_preliminary : str
         A string to be used a label to indicate that the plot is
         preliminary. If None, no label is added.
-    _show_component_number : bool
-        A flag toggling the display of the total number of selected
-        interactions per component in the legend.
-    _show_component_percentage : bool
-        A flag toggling the display of the percentage of selected
-        interactions per component in the legend.
-    _invert_stack_order : bool
-        A flag toggling the inversion of the stack order for the
-        components in the histogram.
     _plot_kwargs : dict
         A dictionary containing the keyword arguments to be passed
         to the plotting function.
     """
-    def __init__(self, style_sheet, markers, default_figsize, title, mark_pot, mark_preliminary, show_component_number, show_component_percentage, invert_stack_order, plot_kwargs) -> None:
+    def __init__(self, style_sheet, markers, default_figsize, title, mark_pot, mark_preliminary, plot_kwargs) -> None:
         """
         Initializes the Style object with the given kwargs.
 
@@ -54,15 +45,6 @@ class Style:
         mark_preliminary : str
             A string to be used a label to indicate that the plot is
             preliminary. If None, no label is added.
-        show_component_number : bool
-            A flag toggling the display of the total number of selected
-            interactions per component in the legend.
-        show_component_percentage : bool
-            A flag toggling the display of the percentage of selected
-            interactions per component in the legend.
-        invert_stack_order : bool
-            A flag toggling the inversion of the stack order for the
-            components in the histogram.
         plot_kwargs : dict
             A dictionary containing the keyword arguments to be passed
             to the plotting function.
@@ -77,9 +59,6 @@ class Style:
         self._title = None if title == 'none' else title
         self._mark_pot = mark_pot
         self._mark_preliminary = None if mark_preliminary == 'none' else mark_preliminary
-        self._show_component_number = show_component_number
-        self._show_component_percentage = show_component_percentage
-        self._invert_stack_order = invert_stack_order
         self._plot_kwargs = plot_kwargs
 
     def __enter__(self):
@@ -187,7 +166,8 @@ class Style:
         """
         return self._title
     
-    def get_mark_pot(self) -> bool:
+    @property
+    def mark_pot(self) -> bool:
         """
         Returns the value of the mark_pot attribute.
 
@@ -198,7 +178,8 @@ class Style:
         """
         return self._mark_pot
     
-    def get_mark_preliminary(self) -> str:
+    @property
+    def mark_preliminary(self) -> str:
         """
         Returns the value of the mark_preliminary attribute.
 
@@ -208,39 +189,6 @@ class Style:
             The value of the mark_preliminary attribute.
         """
         return self._mark_preliminary
-
-    def get_show_component_number(self) -> bool:
-        """
-        Returns the value of the show_component_number attribute.
-
-        Returns
-        -------
-        bool
-            The value of the show_component_number attribute.
-        """
-        return self._show_component_number
-    
-    def get_show_component_percentage(self) -> bool:
-        """
-        Returns the value of the show_component_percentage attribute.
-
-        Returns
-        -------
-        bool
-            The value of the show_component_percentage attribute.
-        """
-        return self._show_component_percentage
-    
-    def get_invert_stack_order(self) -> bool:
-        """
-        Returns the value of the invert_stack_order attribute.
-
-        Returns
-        -------
-        bool
-            The value of the invert_stack_order attribute.
-        """
-        return self._invert_stack_order
 
     @property
     def plot_kwargs(self) -> dict:

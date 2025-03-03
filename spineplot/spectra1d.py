@@ -106,7 +106,8 @@ class SpineSpectra1D(SpineSpectra):
             self._plotdata[self._categories[category]] += h[0]
             self._binedges[self._categories[category]] = h[1]
 
-    def draw(self, ax, style, override_xlabel=None) -> None:
+    def draw(self, ax, style, override_xlabel=None, show_component_number=False,
+             show_component_percentage=False, invert_stack_order=False) -> None:
         """
         Plots the data for the SpineSpectra1D object.
 
@@ -119,7 +120,17 @@ class SpineSpectra1D(SpineSpectra):
             None. This is intended to be used in cases where the artist
             has some configurable style options.
         override_xlabel : str
-            An optional override for the x-axis label.
+            An optional override for the x-axis label. The default is
+            None, which will use the label from the Variable object.
+        show_component_number : bool
+            A flag to indicate if the component number should be shown
+            in the legend. The default is False.
+        show_component_percentage : bool
+            A flag to indicate if the component percentage should be
+            shown in the legend. The default is False.
+        invert_stack_order : bool
+            A flag to indicate if the stack order in the legend should
+            be inverted. The default is False.
 
         Returns
         -------
@@ -139,16 +150,16 @@ class SpineSpectra1D(SpineSpectra):
 
             denominator = np.sum([self._onebincount[labels[i]] for i in histogram_mask])
             counts = [x for x in self._onebincount.values()]
-            if style.get_show_component_number() and style.get_show_component_percentage():
+            if show_component_number and show_component_percentage:
                 hlabel = lambda x : f'{np.sum(x):.1f}, {np.sum(x)/denominator:.2%}'
                 slabel = lambda x : f'{np.sum(x):.1f}'
                 labels = [f'{label} ({hlabel(d) if li in histogram_mask else slabel(d)})' for li, (label, d) in enumerate(zip(labels, counts))]
-            elif style.get_show_component_number():
+            elif show_component_number:
                 labels = [f'{label} ({np.sum(d):.1f})' for label, d in zip(labels, counts)]
-            elif style.get_show_component_percentage():
+            elif show_component_percentage:
                 labels = [f'{label} ({np.sum(d)/denominator:.2%})' if li in histogram_mask else label for li, (label, d) in enumerate(zip(labels, counts))]
 
-            if style.get_invert_stack_order():
+            if invert_stack_order:
                 reduce = lambda x : [x[i] for i in histogram_mask[::-1]]
             else:
                 reduce = lambda x : [x[i] for i in histogram_mask]
@@ -159,14 +170,14 @@ class SpineSpectra1D(SpineSpectra):
             for i, label in enumerate(reduce(labels)):
                 ax.errorbar(bincenters[scatter_mask[i]], data[scatter_mask[i]], yerr=np.sqrt(data[scatter_mask[i]]), fmt='o', label=label, color=colors[scatter_mask[i]])
         
-        if style.get_invert_stack_order():
+        if invert_stack_order:
             h, l = ax.get_legend_handles_labels()
             ax.legend(h[::-1], l[::-1])
         else:
             ax.legend()
-        if style.get_mark_pot():
+        if style.mark_pot:
             self.mark_pot(ax)
-        if style.get_mark_preliminary() is not None:
-            self.mark_preliminary(ax, style.get_mark_preliminary())
+        if style.mark_preliminary is not None:
+            self.mark_preliminary(ax, style.mark_preliminary)
         if style.get_title() is not None:
             ax.set_title(style.get_title())

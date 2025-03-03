@@ -31,9 +31,6 @@ default_figsize = [6.4,4.8]
 title = '$\bf{ICARUS}$ $1\mu Np$ CC0$\pi$'
 mark_pot = true
 mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
-show_component_number = true
-show_component_percentage = true
-invert_stack_order = false
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.signal_icarus]
@@ -43,9 +40,6 @@ default_figsize = [6.4,4.8]
 title = '$\bf{ICARUS}$ $1\mu Np$ CC0$\pi$'
 mark_pot = true
 mark_preliminary = '$\bf{ICARUS}$ Simulation Work-in-Progress'
-show_component_number = true
-show_component_percentage = false
-invert_stack_order = false
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.selected_sbnd]
@@ -55,9 +49,6 @@ default_figsize = [6.4,4.8]
 title = '$\bf{SBND}$ $1\mu Np$ CC0$\pi$'
 mark_pot = true
 mark_preliminary = '$\bf{SBND}$ Work-in-Progress'
-show_component_number = true
-show_component_percentage = true
-invert_stack_order = false
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [styles.signal_sbnd]
@@ -67,7 +58,4 @@ default_figsize = [6.4,4.8]
 title = '$\bf{SBND}$ $1\mu Np$ CC0$\pi$'
 mark_pot = true
 mark_preliminary = '$\bf{SBND}$ Simulation Work-in-Progress'
-show_component_number = true
-show_component_percentage = false
-invert_stack_order = false
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
