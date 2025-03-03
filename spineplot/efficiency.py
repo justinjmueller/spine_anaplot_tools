@@ -68,9 +68,9 @@ class SpineEfficiency(SpineArtist):
         self._totals = dict()
         self._successes = dict()
 
-    def draw(   self, ax, show_option, groups=None, percentage=True,
-                override_title=None, show_seqeff=True, show_unseqeff=True,
-                yrange=None, npts=1e6, style=None):
+    def draw(   self, ax, show_option, percentage=True, override_title=None,
+                show_seqeff=True, show_unseqeff=True, yrange=None, npts=1e6,
+                style=None, logx=False, logy=False):
         """
         Draw the artist on the given axis.
 
@@ -105,6 +105,12 @@ class SpineEfficiency(SpineArtist):
             The style to use when drawing the artist. The default is
             None. This is intended to be used in cases where the artist
             has some configurable style options.
+        logx : bool, optional
+            A flag to indicate if the x-axis should be logarithmic.
+            The default is False.
+        logy : bool, optional
+            A flag to indicate if the y-axis should be logarithmic.
+            The default is False.
 
         Returns
         -------
@@ -240,6 +246,21 @@ class SpineEfficiency(SpineArtist):
             ax.set_xlim(self._variable._range)
             if yrange is not None:
                 ax.set_ylim(yrange)
+
+            # Set the axis to be logarithmic if requested.
+            if logx:
+                # Modify the x-axis limits to ensure that the lower limit
+                # is greater than zero. The lower edge needs to be at least
+                # 3 orders of magnitude less than the maximum value in the
+                # plot.
+                if self._variable._range[0] == 0:    
+                    xhigh_exporder = np.floor(np.log10(self._variable._range[1]))
+                    xlow = xhigh_exporder - 3
+                    ax.set_xlim(10**xlow, self._variable._range[1])
+                ax.set_xscale('log')
+            if logy:
+                ax.set_yscale('log')
+
             ax.legend()
             ax.set_title(title if override_title is None else override_title)
 
