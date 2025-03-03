@@ -124,7 +124,7 @@ class Analysis:
                                 raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
                             show_option = x.get('draw_kwargs', {}).get('show_option', 'table')
                             npts = x.get('draw_kwargs', {}).get('npts', 1e6)
-                            art = SpineEfficiency(self._variables[x['variable']], restrict_categories, x['cuts'], show_option, npts)
+                            art = SpineEfficiency(self._variables[x['variable']], self._categories, x['cuts'], show_option, npts)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
 
