@@ -9,6 +9,8 @@ class Style:
     ----------
     _style : str
         The name of the style sheet to use for the plot.
+    _markers : list
+        The list of markers to use for the plot.
     _default_figsize : tuple
         The default size of the figure to create.
     _title : str
@@ -32,7 +34,7 @@ class Style:
         A dictionary containing the keyword arguments to be passed
         to the plotting function.
     """
-    def __init__(self, style_sheet, default_figsize, title, mark_pot, mark_preliminary, show_component_number, show_component_percentage, invert_stack_order, plot_kwargs) -> None:
+    def __init__(self, style_sheet, markers, default_figsize, title, mark_pot, mark_preliminary, show_component_number, show_component_percentage, invert_stack_order, plot_kwargs) -> None:
         """
         Initializes the Style object with the given kwargs.
 
@@ -40,6 +42,8 @@ class Style:
         ----------
         style_sheet : str
             The name of the style sheet to use for the plot.
+        markers : list
+            The list of markers to use for the plot.
         default_figsize : tuple
             The default size of the figure to create.
         title : str
@@ -68,6 +72,7 @@ class Style:
         None
         """
         self._style = style_sheet
+        self._markers = markers
         self._default_figsize = default_figsize
         self._title = None if title == 'none' else title
         self._mark_pot = mark_pot
@@ -118,6 +123,46 @@ class Style:
             The value of the style attribute.
         """
         return self._style
+
+    def get_color(self, cdx) -> str:
+        """
+        Returns the color for the given cycle index. This needs to
+        correctly loop over the colors in the color cycle in case
+        the cycle index is larger than the number of colors in the
+        cycle.
+
+        Parameters
+        ----------
+        cdx : int
+            The cycle index of the color to return.
+
+        Returns
+        -------
+        str
+            The color at the given index.
+        """
+        cdx = cdx % len(plt.rcParams['axes.prop_cycle'].by_key()['color'])
+        return plt.rcParams['axes.prop_cycle'].by_key()['color'][cdx]
+
+    def get_marker(self, cdx) -> str:
+        """
+        Returns the marker for the given cycle index. This needs to
+        correctly loop over the markers in the marker cycle in case
+        the cycle index is larger than the number of markers in the
+        cycle.
+
+        Parameters
+        ----------
+        cdx : int
+            The cycle index of the marker to return.
+
+        Returns
+        -------
+        str
+            The marker at the given index.
+        """
+        cdx = cdx % len(self._markers)
+        return self._markers[cdx]
     
     @property
     def default_figsize(self):
