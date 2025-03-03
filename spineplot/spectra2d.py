@@ -125,7 +125,7 @@ class SpineSpectra2D(SpineSpectra):
             self._plotdata_absdiag[self._categories[category]] += h[0]
             self._binedges_absdiag[self._categories[category]] = h[1]
 
-    def draw(self, ax, style, show_option='2d', draw_identity=True, override_xlabel=None, invert_stack_order=False) -> None:
+    def draw(self, ax, style, show_option='2d', draw_identity=True, override_xlabel=None, invert_stack_order=False, fit_type=None) -> None:
         """
         Plots the data for the SpineSpectra2D object.
 
@@ -150,6 +150,11 @@ class SpineSpectra2D(SpineSpectra):
         invert_stack_order : bool
             A flag to indicate if the stack order in the legend should
             be inverted. The default is False.
+        fit_type : str
+            The type of fit to perform on the data. The default is
+            None, which will not perform any fit. The options are:
+                'crystal_ball' - Perform a Crystal Ball fit on the data.
+                'gaussian'     - Perform a Gaussian fit on the data.
         
         Returns
         -------
@@ -178,7 +183,10 @@ class SpineSpectra2D(SpineSpectra):
             ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-1,1), histtype='barstacked', label=labels, color=colors, stacked=True)
             ax.set_xlabel('(Y-X)/X' if override_xlabel is None else override_xlabel)
             ax.set_ylabel('Entries')
-            
+
+            if fit_type is not None:
+                super().fit_with_function(ax, bincenters, data, self._binedges_diagonal[labels[0]], fit_type)
+
             if invert_stack_order:
                 h, l = ax.get_legend_handles_labels()
                 ax.legend(h[::-1], l[::-1])

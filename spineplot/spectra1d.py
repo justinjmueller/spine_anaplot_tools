@@ -107,7 +107,8 @@ class SpineSpectra1D(SpineSpectra):
             self._binedges[self._categories[category]] = h[1]
 
     def draw(self, ax, style, override_xlabel=None, show_component_number=False,
-             show_component_percentage=False, invert_stack_order=False) -> None:
+             show_component_percentage=False, invert_stack_order=False,
+             fit_type=None) -> None:
         """
         Plots the data for the SpineSpectra1D object.
 
@@ -131,6 +132,11 @@ class SpineSpectra1D(SpineSpectra):
         invert_stack_order : bool
             A flag to indicate if the stack order in the legend should
             be inverted. The default is False.
+        fit_type : str
+            The type of fit to perform on the data. The default is
+            None, which will not perform any fit. The options are:
+                'crystal_ball' - Perform a Crystal Ball fit on the data.
+                'gaussian'     - Perform a Gaussian fit on the data.
 
         Returns
         -------
@@ -150,6 +156,10 @@ class SpineSpectra1D(SpineSpectra):
 
             denominator = np.sum([self._onebincount[labels[i]] for i in histogram_mask])
             counts = [x for x in self._onebincount.values()]
+
+            if fit_type is not None:
+                super().fit_with_function(ax, bincenters, data, self._binedges[labels[0]], fit_type, range=self._variable._range)
+
             if show_component_number and show_component_percentage:
                 hlabel = lambda x : f'{np.sum(x):.1f}, {np.sum(x)/denominator:.2%}'
                 slabel = lambda x : f'{np.sum(x):.1f}'
