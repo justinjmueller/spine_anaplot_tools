@@ -79,6 +79,8 @@ class Analysis:
         if 'variables' not in self._config.keys():
             raise ConfigException(f"No variables defined in the TOML file. Please check for a valid variable configuration block (table='variables') in the TOML file ('{toml_path}').")
         self._variables = {name: Variable(name, **self._config['variables'][name]) for name in self._config['variables']}
+        for varname, var in self._variables.items():
+            var.check_data(self._categories, self._samples)
 
         # Load the artists table
         if 'figure' not in self._config.keys():
@@ -91,14 +93,23 @@ class Analysis:
                     self._figures[fig['name']] = SimpleFigure(style, fig.get('figsize', style.default_figsize))
                     for x in fig['artists']:
                         if x['type'] == 'SpineSpectra1D':
+                            if not all(self._variables[x['variable']]._validity_check.values()):
+                                missing_samples = [k for k, v in self._variables[x['variable']]._validity_check.items() if not v]
+                                raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
                             art = SpineSpectra1D(self._variables[x['variable']], self._categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineSpectra2D':
+                            if not all(self._variables[x['xvariable']]._validity_check.values()) or not all(self._variables[x['yvariable']]._validity_check.values()):
+                                missing_samples = [k for k, v in self._variables[x['xvariable']]._validity_check.items() if not v] + [k for k, v in self._variables[x['yvariable']]._validity_check.items() if not v]
+                                raise ConfigException(f"Variable '{x['xvariable']}' or '{x['yvariable']}' not found in all samples ({' '.join(missing_samples)}).")
                             art = SpineSpectra2D([self._variables[x['xvariable']], self._variables[x['yvariable']]], self._categories, self._colors, self._category_types)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                         elif x['type'] == 'SpineEfficiency':
+                            if not all(self._variables[x['variable']]._validity_check.values()):
+                                missing_samples = [k for k, v in self._variables[x['variable']]._validity_check.items() if not v]
+                                raise ConfigException(f"Variable '{x['variable']}' not found in all samples ({' '.join(missing_samples)}).")
                             show_option = x.get('draw_kwargs', {}).get('show_option', 'table')
                             art = SpineEfficiency(self._variables[x['variable']], self._categories, x['cuts'], show_option)
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))

@@ -162,8 +162,11 @@ class Sample:
         for category in np.unique(self._data[self._category_branch]):
             data[int(category)] = list()
             for v in variables:
-                data[int(category)].append(self._data[self._data[self._category_branch] == category][v])    
-            weights[int(category)] = self._data[self._data[self._category_branch] == category]['weight']
+                data[int(category)].append(self._data[self._data[self._category_branch] == category][v])  
+            if 'weight' in self._data.columns:  
+                weights[int(category)] = self._data[self._data[self._category_branch] == category]['weight']
+            else:
+                weights[int(category)] = None
         return data, weights
 
     def __str__(self) -> str:
