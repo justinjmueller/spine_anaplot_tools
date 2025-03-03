@@ -149,6 +149,7 @@ class Analysis:
 
         for figname, figure in self._figures.items():
             figure.create()
+            print(figname)
             figure.figure.savefig(f"{self._output_path}/{figname}.png")
             figure.close()
 

@@ -1,0 +1,43 @@
+[[this_includes]]
+file = 'configurations/electron2025/variables.toml'
+
+[[this_includes]]
+file = 'configurations/common/samples.toml'
+choose = {'samples' = ['mcsignal']}
+
+[[this_includes]]
+file = 'configurations/common/styles.toml'
+
+[output]
+path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/plots_boosted'
+
+[[figure]]
+name = 'efficiency_truesignal'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+figsize = [6.0, 5.5]
+[[figure.artists]]
+type = 'SpineEfficiency'
+variable = 'true_edep'
+cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'has_one_shower' = 'At Least One Shower', 'has_no_tracks' = 'No Tracks', 'has_two_showers' = 'Two Recod Showers', 'has_two_electrons' = 'Two Recod Electrons'}
+draw_kwargs = {'show_option' = 'table', 'show_seqeff' = true, 'show_unseqeff' = true, 'groups' = ['2e']}
+
+[[figure]]
+name = 'efficiency_truesignalplot'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+figsize = [6.0, 5.5]
+[[figure.artists]]
+type = 'SpineEfficiency'
+variable = 'true_edep'
+cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'has_one_shower' = 'At Least One Shower', 'has_no_tracks' = 'No Tracks', 'has_two_showers' = 'Two Recod Showers', 'has_two_electrons' = 'Two Recod Electrons'}
+draw_kwargs = {'show_option' = 'plot', 'show_seqeff' = true, 'show_unseqeff' = true, 'groups' = ['2e']}
+
+[analysis]
+ordinate_sample = 'mcsignal'
+category_branch = 'category'
+category_assignment = [[0]]
+category_labels = ['2e']
+category_colors = ['C0']
+category_types = ['histogram']
+

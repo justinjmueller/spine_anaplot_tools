@@ -94,6 +94,24 @@ namespace cuts::electron2025
             std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
             return ((c[0] == 1 && c[1] == 0) || (c[0] == 0 && c[1] == 1)) && (c[2] == 0 && c[3] == 0 && c[4] == 0);
         }
+    template<class T>
+        bool has_no_tracks(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
+            return (c[2] == 0 && c[3] == 0 && c[4] == 0);
+        }
+    template<class T>
+        bool has_two_showers(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
+            return (c[0] + c[1] == 2);
+        }
+    template<class T>
+        bool has_two_electrons(const T & obj)
+        {
+            std::vector<uint32_t> c(utilities::electron2025::count_primaries_ee(obj));
+            return (c[1] == 2);
+        }
 
     /**
      * @brief Apply a 1mu1p topological (final state) cut.

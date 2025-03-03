@@ -11,6 +11,17 @@ show_component_percentage = true
 invert_stack_order = false
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
+[styles.unstacked]
+style_sheet = "styles/muon2024.mplstyle"
+default_figsize = [6.4,4.8]
+title = '$\bf{ICARUS}$ Di-Shower'
+mark_pot = true
+mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
+show_component_number = true
+show_component_percentage = true
+invert_stack_order = false
+plot_kwargs = {'histtype' = 'step', 'stacked' = false}
+
 [styles.selected_icarus]
 style_sheet = "styles/muon2024.mplstyle"
 default_figsize = [6.4,4.8]

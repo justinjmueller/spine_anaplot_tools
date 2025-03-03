@@ -67,6 +67,8 @@ class SpineSpectra2D(SpineSpectra):
         self._category_types = category_types
         self._plotdata_diagonal = None
         self._binedges_diagonal = None
+        self._plotdata_absdiag = None
+        self._binedges_absdiag = None
 
     def add_sample(self, sample, is_ordinate) -> None:
         """
@@ -94,6 +96,10 @@ class SpineSpectra2D(SpineSpectra):
         if self._plotdata_diagonal is None:
             self._plotdata_diagonal = {}
             self._binedges_diagonal = {}
+        if self._plotdata_absdiag is None:
+            self._plotdata_absdiag = {}
+            self._binedges_absdiag = {}
+        
 
         data, weights = sample.get_data([self._variables[0]._key, self._variables[1]._key])        
         for category, values in data.items():
@@ -112,6 +118,13 @@ class SpineSpectra2D(SpineSpectra):
             self._plotdata_diagonal[self._categories[category]] += h[0]
             self._binedges_diagonal[self._categories[category]] = h[1]
 
+            if self._categories[category] not in self._plotdata_absdiag:
+                self._plotdata_absdiag[self._categories[category]] = np.zeros(self._variables[0]._nbins)
+            absdiag = values[1] - values[0]
+            h = np.histogram(absdiag, bins=self._variables[0]._nbins, range=(-100,100), weights=weights[category])
+            self._plotdata_absdiag[self._categories[category]] += h[0]
+            self._binedges_absdiag[self._categories[category]] = h[1]
+
     def draw(self, ax, style, show_option='2d', override_xlabel=None) -> None:
         """
         Plots the data for the SpineSpectra2D object.
@@ -128,6 +141,7 @@ class SpineSpectra2D(SpineSpectra):
                 '2d'         - Draw a 2D histogram of the data.
                 'projection' - Draw a projection of the data about the
                                diagonal.
+                'absdiff'    - Draw a absolute difference of the data 
         override_xlabel : str
             An optional override for the x-axis label.
         
@@ -151,6 +165,21 @@ class SpineSpectra2D(SpineSpectra):
             ax.set_xlabel('(Y-X)/X' if override_xlabel is None else override_xlabel)
             ax.set_ylabel('Entries')
             
+            if style.get_invert_stack_order():
+                h, l = ax.get_legend_handles_labels()
+                ax.legend(h[::-1], l[::-1])
+            else:
+                ax.legend()
+
+        if show_option == 'absdiff' and self._plotdata_absdiag is not None:
+            labels, data = zip(*self._plotdata_absdiag.items())
+            colors = [self._colors[label] for label in labels]
+            bincenters = [self._binedges_absdiag[l][:-1] + np.diff(self._binedges_absdiag[l]) / 2 for l in labels]
+
+            ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-100,100), histtype='barstacked', label=labels, color=colors, stacked=True)
+            ax.set_xlabel('(Y-X)' if override_xlabel is None else override_xlabel)
+            ax.set_ylabel('Entries')
+
             if style.get_invert_stack_order():
                 h, l = ax.get_legend_handles_labels()
                 ax.legend(h[::-1], l[::-1])

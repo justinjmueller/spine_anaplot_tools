@@ -9,7 +9,48 @@ choose = {'samples' = ['mc']}
 file = 'configurations/common/styles.toml'
 
 [output]
-path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/plots'
+path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/plots_boosted'
+
+[[figure]]
+name = 'vertex_x_diff'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_vertex_x'
+yvariable = 'reco_vertex_x'
+draw_kwargs = {'show_option' = 'absdiff', 'override_xlabel' = '(Reco-True)'}
+
+[[figure]]
+name = 'vertex_y_diff'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_vertex_y'
+yvariable = 'reco_vertex_y'
+draw_kwargs = {'show_option' = 'absdiff', 'override_xlabel' = '(Reco-True)'}
+
+[[figure]]
+name = 'vertex_z_diff'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_vertex_z'
+yvariable = 'reco_vertex_z'
+draw_kwargs = {'show_option' = 'absdiff', 'override_xlabel' = '(Reco-True)'}
+
+[[figure]]
+name = 'efficiency_test'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+figsize = [6.0, 5.5]
+[[figure.artists]]
+type = 'SpineEfficiency'
+variable = 'true_edep'
+cuts = {'fiducial_cut' = 'Fiducial', 'containment_cut' = 'Containment', 'flash_cut' = 'Flash Time'}
+draw_kwargs = {'show_option' = 'table', 'show_seqeff' = true, 'show_unseqeff' = true, 'groups' = ['2e', '1e1$\gamma$', '1shower']}
 
 [[figure]]
 name = 'reco_visible_energy'
@@ -211,6 +252,94 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'energy_asymmetry_true'
 yvariable = 'energy_asymmetry_reco'
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+
+[[figure]]
+name = 'leading_shower_energy_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'leading_shower_energy_true'
+yvariable = 'leading_shower_energy_reco'
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+
+[[figure]]
+name = 'true_vertex_x'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_vertex_x'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'reco_vertex_x'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_vertex_x'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'vertex_x_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_vertex_x'
+yvariable = 'reco_vertex_x'
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+
+[[figure]]
+name = 'true_vertex_y'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_vertex_y'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'reco_vertex_y'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_vertex_y'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'vertex_y_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_vertex_y'
+yvariable = 'reco_vertex_y'
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+
+[[figure]]
+name = 'true_vertex_z'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_vertex_z'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'reco_vertex_z'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_vertex_z'},]
+style = 'selected_electrons'
+
+[[figure]]
+name = 'reco_max_vertex_distance'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_vertex_distance'},]
+style = 'unstacked'
+
+[[figure]]
+name = 'true_max_vertex_distance'
+type = 'SimpleFigure'
+artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_vertex_distance'},]
+style = 'unstacked'
+
+[[figure]]
+name = 'vertex_z_proj'
+type = 'SimpleFigure'
+style = 'selected_electrons'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xvariable = 'true_vertex_z'
+yvariable = 'reco_vertex_z'
 draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
 
 [analysis]

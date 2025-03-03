@@ -38,10 +38,10 @@
 
 void electron2025()
 {
-    ana::Analysis analysis("electron2025_rev1_icarus_boosted_testbenchmark");
+    ana::Analysis analysis("electron2025_rev1_icarus_testbenchmark");
 
-    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spineprod/mpv_boostedshower/mpv_boosted_ee.flat.root");
-    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/production/simulation/mpv_ee_showers/mpv_ee_showers.flat.root");
+    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/spineprod/mpv_boostedshower/mpv_boosted_ee.flat.root");
+    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/production/simulation/mpv_ee_showers/mpv_ee_showers.flat.root");
     analysis.AddLoader("mc", &mc, true);
 
     /**
@@ -146,6 +146,10 @@ void electron2025()
     vars_signal.insert({"fiducial_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::fiducial_cut), &SIGCUT, &SIGCUT)});
     vars_signal.insert({"containment_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::containment_cut), &SIGCUT, &SIGCUT)});
     vars_signal.insert({"flash_cut", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::flash_cut), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"has_one_shower", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::electron2025::topological_1shower_cut), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"has_no_tracks", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::electron2025::has_no_tracks), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"has_two_showers", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::electron2025::has_two_showers), &SIGCUT, &SIGCUT)});
+    vars_signal.insert({"has_two_electrons", SpineVar<RTYPE,TTYPE>(WRAP_BOOL(cuts::electron2025::has_two_electrons), &SIGCUT, &SIGCUT)});
 
     analysis.AddTree("signal", vars_signal, true);
 
