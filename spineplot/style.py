@@ -7,6 +7,8 @@ class Style:
 
     Attributes
     ----------
+    _name : str
+        The name of the Style object.
     _style : str
         The name of the style sheet to use for the plot.
     _markers : list
@@ -25,12 +27,14 @@ class Style:
         A dictionary containing the keyword arguments to be passed
         to the plotting function.
     """
-    def __init__(self, style_sheet, markers, default_figsize, title, mark_pot, mark_preliminary, plot_kwargs) -> None:
+    def __init__(self, name, style_sheet, markers, default_figsize, title, mark_pot, mark_preliminary, plot_kwargs) -> None:
         """
         Initializes the Style object with the given kwargs.
 
         Parameters
         ----------
+        name : str
+            The name of the style object.
         style_sheet : str
             The name of the style sheet to use for the plot.
         markers : list
@@ -53,6 +57,7 @@ class Style:
         -------
         None
         """
+        self._name = name
         self._style = style_sheet
         self._markers = markers
         self._default_figsize = default_figsize

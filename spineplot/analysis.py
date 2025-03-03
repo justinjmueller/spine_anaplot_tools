@@ -71,9 +71,9 @@ class Analysis:
         self._samples = {name: Sample(name, rf, self._config['analysis']['category_branch'], **self._config['samples'][name]) for name in self._config['samples']}
 
         # Load the plot styles table
-        if 'styles' not in self._config.keys():
+        if 'style' not in self._config.keys():
             raise ConfigException(f"No plot styles defined in the TOML file. Please check for a valid plot style configuration block (table='styles') in the TOML file ('{toml_path}').")
-        self._styles = {name: Style(**self._config['styles'][name]) for name in self._config['styles'].keys()}
+        self._styles = {x['name'] : Style(**x) for x in self._config['style']}
 
         # Load the variable table
         if 'variables' not in self._config.keys():

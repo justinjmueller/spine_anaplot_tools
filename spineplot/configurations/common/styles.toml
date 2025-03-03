@@ -25,6 +25,8 @@ invert_stack_order = false
 plot_kwargs = {'histtype' = 'step', 'stacked' = false}
 
 [styles.selected_icarus]
+[[style]]
+name = 'selected_icarus'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
@@ -33,7 +35,8 @@ mark_pot = true
 mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
-[styles.signal_icarus]
+[[style]]
+name = 'signal_icarus'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
@@ -42,7 +45,8 @@ mark_pot = true
 mark_preliminary = '$\bf{ICARUS}$ Simulation Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
-[styles.selected_sbnd]
+[[style]]
+name = 'selected_sbnd'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
@@ -51,7 +55,8 @@ mark_pot = true
 mark_preliminary = '$\bf{SBND}$ Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
-[styles.signal_sbnd]
+[[style]]
+name = 'signal_sbnd'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
