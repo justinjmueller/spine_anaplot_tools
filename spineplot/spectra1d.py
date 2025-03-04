@@ -164,7 +164,7 @@ class SpineSpectra1D(SpineSpectra):
             counts = [x for x in self._onebincount.values()]
 
             if fit_type is not None:
-                super().fit_with_function(ax, bincenters, data, self._binedges[labels[0]], fit_type, range=self._variable._range)
+                super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges[labels[0]], fit_type, range=self._variable._range)
 
             if show_component_number and show_component_percentage:
                 hlabel = lambda x : f'{np.sum(x):.1f}, {np.sum(x)/denominator:.2%}'

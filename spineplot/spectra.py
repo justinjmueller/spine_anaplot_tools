@@ -159,7 +159,7 @@ class SpineSpectra(SpineArtist):
             cb_alpha = 1.5
             cb_n = 5
             initial_guess = [cb_alpha, cb_n, cb_mean, cb_sigma, np.sum(cb_norm)]
-            popt, pcov = curve_fit(self.crystal_ball, bin_centers[0], data[0], p0=initial_guess)
+            popt, pcov = curve_fit(self.crystal_ball, bin_centers, data, p0=initial_guess)
             
             # Label with estimated parameters and +/- 1 sigma
             cb_label = f'Crystal Ball Fit\n'
@@ -181,7 +181,7 @@ class SpineSpectra(SpineArtist):
             g_sigma = np.sqrt(np.average((bin_centers - g_mean)**2, weights=data))
             g_norm = data * np.diff(bin_edges)
             initial_guess = [g_mean, g_sigma, np.sum(g_norm)]
-            popt, pcov = curve_fit(self.gaussian, bin_centers[0], data[0], p0=initial_guess)
+            popt, pcov = curve_fit(self.gaussian, bin_centers, data, p0=initial_guess)
             
             # Label with estimated parameters and +/- 1 sigma
             g_label = f'Gaussian Fit\n'

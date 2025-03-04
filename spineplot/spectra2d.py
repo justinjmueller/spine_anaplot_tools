@@ -193,7 +193,7 @@ class SpineSpectra2D(SpineSpectra):
             ax.set_ylabel('Entries')
 
             if fit_type is not None:
-                super().fit_with_function(ax, bincenters, data, self._binedges_diagonal[labels[0]], fit_type)
+                super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges_diagonal[labels[0]], fit_type)
 
             if invert_stack_order:
                 h, l = ax.get_legend_handles_labels()
