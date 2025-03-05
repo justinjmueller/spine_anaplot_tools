@@ -359,7 +359,7 @@ class SpineEfficiency(SpineArtist):
         # cuts. The data is returned as a dictionary with the key
         # being the category and the value consisting of the variable
         # and the cuts.
-        data, _ = sample.get_data([self._variable._key, *self._cuts.keys()])
+        data, _ = sample.get_data([self._variable._key, *self._cuts.keys()], with_mask=self._variable.mask)
         for category, values in data.items():
             if category not in self._categories:
                 continue

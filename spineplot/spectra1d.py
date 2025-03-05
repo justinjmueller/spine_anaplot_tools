@@ -93,7 +93,7 @@ class SpineSpectra1D(SpineSpectra):
             self._plotdata = {}
             self._binedges = {}
             self._onebincount = {}
-        data, weights = sample.get_data([self._variable._key,])
+        data, weights = sample.get_data([self._variable._key,], with_mask=self._variable.mask)
         for category, values in data.items():
             values = values[0]
             if category not in self._categories.keys():

@@ -19,6 +19,8 @@ class Variable:
         The number of bins for the variable.
     _xlabel : str
         The x-axis label for the variable.
+    _mask : string
+        A mask formula to apply to the variable.
     _bin_edges : numpy.ndarray
         The bin edges for the variable.
     _bin_centers : numpy.ndarray
@@ -32,7 +34,9 @@ class Variable:
         sample. This is intended to be checked before using the
         variable in the analysis.
     """
-    def __init__(self, name, key, range, nbins, binning_scheme='equal_width', xlabel=None) -> None:
+    def __init__(self, name, key, range, nbins,
+                 binning_scheme='equal_width', xlabel=None,
+                 mask=None) -> None:
         """
         Initializes the Variable object with the given kwargs.
 
@@ -54,6 +58,8 @@ class Variable:
             irrespective of the number of entries in each bin.
         xlabel : str
             The x-axis label for the variable.
+        mask : string, optional
+            A mask formula to apply to the variable. The default is None.
 
         Returns
         -------
@@ -65,6 +71,7 @@ class Variable:
         self._nbins = nbins
         self._binning_scheme = binning_scheme
         self._xlabel = xlabel
+        self._mask = mask
         self._validity_check = {}
         self._bin_edges = {}
         self._bin_centers = {}
@@ -105,7 +112,7 @@ class Variable:
         if all(self._validity_check.values()):
             groups = {v: [] for v in categories.values()}
             for s in samples.values():
-                for k, v in s.get_data([self._key])[0].items():
+                for k, v in s.get_data([self._key], self._mask)[0].items():
                     if k in categories.keys():
                         groups[categories[k]].append(v[0])
 
@@ -120,3 +127,19 @@ class Variable:
                     self._bin_edges[g] = np.linspace(self._range[0], self._range[1], self._nbins+1)
                     self._bin_centers[g] = 0.5*(self._bin_edges[g][1:] + self._bin_edges[g][:-1])
                     self._bin_widths[g] = self._bin_edges[g][1:] - self._bin_edges[g][:-1]
+
+    @property
+    def mask(self):
+        """
+        Getter method for the mask attribute.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        string
+            The mask formula for the variable.
+        """
+        return self._mask

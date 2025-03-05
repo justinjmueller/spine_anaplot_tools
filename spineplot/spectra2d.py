@@ -101,7 +101,18 @@ class SpineSpectra2D(SpineSpectra):
             self._binedges_absdiag = {}
         
 
-        data, weights = sample.get_data([self._variables[0]._key, self._variables[1]._key])        
+        # Check if a mask is present for the variables. If so, we need
+        # to combine the masks for the two variables.
+        if self._variables[0].mask is not None and self._variables[1].mask is not None:
+            joint_mask = f'{self._variables[0].mask} and {self._variables[1].mask}'
+        elif self._variables[0].mask is not None:
+            joint_mask = self._variables[0].mask
+        elif self._variables[1].mask is not None:
+            joint_mask = self._variables[1].mask
+        else:
+            joint_mask = None
+
+        data, weights = sample.get_data([self._variables[0]._key, self._variables[1]._key], joint_mask)        
         for category, values in data.items():
             if category not in self._categories.keys():
                 continue

@@ -135,7 +135,7 @@ class Sample:
             self._data['weight'] = (target._exposure_livetime / self._exposure_livetime)
             print(f"Setting weight for {self._name} to {target._exposure_livetime / self._exposure_livetime:.2e}")
 
-    def get_data(self, variables) -> dict:
+    def get_data(self, variables, with_mask=None) -> dict:
         """
         Returns the data for the given variable(s) in the sample. The
         data is returned as a dictionary with the category as the key
@@ -156,15 +156,21 @@ class Sample:
             The weights for the requested variable in the sample. The
             weights are stored as a dictionary with the category as the
             key and the weights (a pandas Series) as the value.
+        with_mask : str, optional
+            A mask formula to apply to the variable. The default is None.
         """
         data = {}
         weights = {}
+        if with_mask is not None:
+            mask = self._data.eval(with_mask).to_numpy(dtype=bool)
+        else:
+            mask = np.ones(len(self._data), dtype=bool)
         for category in np.unique(self._data[self._category_branch]):
             data[int(category)] = list()
             for v in variables:
-                data[int(category)].append(self._data[self._data[self._category_branch] == category][v])  
+                data[int(category)].append(self._data[((self._data[self._category_branch] == category) & mask)][v])  
             if 'weight' in self._data.columns:  
-                weights[int(category)] = self._data[self._data[self._category_branch] == category]['weight']
+                weights[int(category)] = self._data[((self._data[self._category_branch] == category) & mask)]['weight']
             else:
                 weights[int(category)] = None
         return data, weights
@@ -186,3 +192,18 @@ class Sample:
         res += f'\n{"POT:":<15}{self._exposure_pot:.2e}'
         res += f'\n{"Livetime:":<15}{self._exposure_livetime:.2e}'
         return res
+
+    def evaluate_formula(self, formula) -> pd.Series:
+        """
+        Evaluates the given formula for the sample data.
+
+        Parameters
+        ----------
+        formula : str
+            The formula to evaluate.
+
+        Returns
+        -------
+        result : pd.Series
+        """
+        return self._data.eval(formula)
