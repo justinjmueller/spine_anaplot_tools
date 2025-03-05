@@ -110,8 +110,8 @@ class Variable:
                         groups[categories[k]].append(v[0])
 
             for g, v in groups.items():
-                all_entries = pd.concat(v)
-                if self._binning_scheme == 'equal_population':
+                if v and self._binning_scheme == 'equal_population':
+                    all_entries = pd.concat(v)
                     range_mask = ((all_entries >= self._range[0]) & (all_entries <= self._range[1]))
                     self._bin_edges[g] = np.percentile(all_entries[range_mask], np.linspace(0, 100, self._nbins+1))
                     self._bin_centers[g] = 0.5*(self._bin_edges[g][1:] + self._bin_edges[g][:-1])
