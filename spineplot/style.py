@@ -160,7 +160,8 @@ class Style:
         """
         return self._default_figsize
 
-    def get_title(self) -> str:
+    @property
+    def default_title(self) -> str:
         """
         Returns the value of the title attribute.
 

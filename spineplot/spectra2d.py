@@ -14,6 +14,9 @@ class SpineSpectra2D(SpineSpectra):
 
     Attributes
     ----------
+    _title : str
+        The title of the artist. This will be placed at the top of the
+        axis assigned to the artist.
     _variables : list
         The list of Variable objects for the spectrum.
     _categories : dict
@@ -32,7 +35,7 @@ class SpineSpectra2D(SpineSpectra):
         the category label for the spectrum and the histogram data for
         that category.
     """
-    def __init__(self, variables, categories, colors, category_types) -> None:
+    def __init__(self, variables, categories, colors, category_types, title=None) -> None:
         """
         Initializes the SpineSpectra2D object.
 
@@ -58,12 +61,15 @@ class SpineSpectra2D(SpineSpectra):
             use for the histogram. The type should be either 'histogram' or
             'scatter' to correspond to a stacked histogram or scatter plot,
             respectively.
+        title : str, optional
+            The title of the artist. This will be placed at the top of
+            the axis assigned to the artist. The default is None.
 
         Returns
         -------
         None.
         """
-        super().__init__(variables, categories, colors)
+        super().__init__(variables, categories, colors, title)
         self._category_types = category_types
         self._plotdata_diagonal = None
         self._binedges_diagonal = None
@@ -179,6 +185,8 @@ class SpineSpectra2D(SpineSpectra):
         -------
         None.
         """
+        ax.set_title(self._title)
+        
         if show_option == '2d' and self._plotdata is not None:
             values = np.sum([v for v in self._plotdata.values()], axis=0)
             binedges = self._binedges[list(self._plotdata.keys())[0]]
@@ -245,6 +253,3 @@ class SpineSpectra2D(SpineSpectra):
             ax.set_xscale('log')
         if logy:
             ax.set_yscale('log')
-
-        if style.get_title() is not None:
-            ax.set_title(style.get_title())

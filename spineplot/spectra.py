@@ -17,6 +17,9 @@ class SpineSpectra(SpineArtist):
 
     Attributes
     ----------
+    _title : str
+        The title of the spectra. This will be placed at the top of the
+        axis assigned to the spectra.
     _variables : list
         The list of Variable objects for the spectra.
     _categories : dict
@@ -24,12 +27,26 @@ class SpineSpectra(SpineArtist):
         a map between the category label in the input TTree and the
         category label for the aggregated data (and therefore what is
         shown in a single legend entry).
+    _colors : dict
+        A dictionary of the colors for the categories in the spectra.
+        This serves as a map between the category label for the
+        spectra (value in the `_categories` dictionary) and the color
+        to use for the histogram. The color can be any valid matplotlib
+        color string or a cycle indicator (e.g. 'C0', 'C1', etc.).
     _plotdata : dict
         A dictionary of the data for the spectra. This is a map between
         the category label for the spectra and the histogram data for
         that category.
+    _binedges : dict
+        A dictionary of the bin edges for the spectra. This is a map
+        between the category label for the spectra and the bin edges
+        for the histogram data for that category.
+    _onebincount : dict
+        A dictionary of the bin counts for the spectra. This is a map
+        between the category label for the spectra and the bin counts
+        for the histogram data for that category.
     """
-    def __init__(self, variables, categories, colors) -> None:
+    def __init__(self, variables, categories, colors, title=None) -> None:
         """
         Initializes the SpineSpectra object with the given kwargs.
 
@@ -48,11 +65,15 @@ class SpineSpectra(SpineArtist):
             spectra (value in the `_categories` dictionary) and the color
             to use for the histogram. The color can be any valid matplotlib
             color string or a cycle indicator (e.g. 'C0', 'C1', etc.).
+        title : str, optional
+            The title of the spectra. This will be placed at the top of
+            the axis assigned to the spectra. The default is None.
 
         Returns
         -------
         None.
         """
+        super().__init__(title)
         self._variables = variables
         self._categories = categories
         self._colors = colors

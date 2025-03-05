@@ -9,9 +9,27 @@ class SpineArtist(ABC):
     class; this class will not be used directly and only contains
     abstract methods that must be implemented by any derived classes.
 
+    Attributes
+    ----------
+    _title : str
+        The title of the artist. This will be placed at the top of the
+        axis assigned to the artist.
+    _exposure : float
+        The exposure of the artist. This is the total POT or livetime
+        for the samples that the artist is representing.
+    _exposure_type : str
+        The type of exposure for the artist. This can be either 'pot'
+        or 'livetime'.
     """
-    def __init__(self):
-        pass
+    def __init__(self, title=None):
+        """
+        Parameters
+        ----------
+        title : str, optional
+            The title of the artist. This will be placed at the top of
+            the axis assigned to the artist. The default is None.
+        """
+        self._title = title
 
     @abstractmethod
     def draw(self, ax, style=None):

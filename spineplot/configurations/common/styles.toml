@@ -25,7 +25,7 @@ name = 'basic_icarus'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
-title = '$\bf{ICARUS}$'
+title = ''
 mark_pot = true
 mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
@@ -55,7 +55,7 @@ name = 'basic_sbnd'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
 default_figsize = [6.4,4.8]
-title = '$\bf{SBND}$'
+title = ''
 mark_pot = true
 mark_preliminary = '$\bf{SBND}$ Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}

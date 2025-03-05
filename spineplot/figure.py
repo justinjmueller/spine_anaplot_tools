@@ -19,6 +19,8 @@ class SpineFigure:
         The size of the figure to create.
     _style : Style
         The style to use when drawing the figure.
+    _title : str
+        The title of the figure.
     _axs : list
         A list of axes objects that will be used to plot the figure.
     _artists : list
@@ -28,7 +30,7 @@ class SpineFigure:
         of the SpineArtists.
 
     """
-    def __init__(self, figsize, style):
+    def __init__(self, figsize, style, title=None):
         """
         Parameters
         ----------
@@ -36,10 +38,13 @@ class SpineFigure:
             The size of the figure to create.
         style : Style
             The style to use when drawing the figure.
+        title : str, optional
+            The title of the figure. The default is None.
         """
         self._figure = None
         self._figsize = figsize
         self._style = style
+        self._title = title
         self._axs = []
         self._artists = []
         self._draw_kwargs = []
@@ -73,6 +78,7 @@ class SpineFigure:
         with self._style as style:
             for axi, ax in enumerate(self._axs):
                 self._artists[axi].draw(ax, **self._draw_kwargs[axi], style=style)
+            self._figure.suptitle(self._title)
     
     def close(self):
         """
@@ -112,7 +118,7 @@ class SimpleFigure(SpineFigure):
     a single plot with a single set of data. The class is a subclass
     of SpineFigure.
     """
-    def __init__(self, style, figsize=(8, 6)):
+    def __init__(self, figsize, style, title=None):
         """
         Parameters
         ----------
@@ -121,7 +127,7 @@ class SimpleFigure(SpineFigure):
         figsize : tuple, optional
             The size of the figure to create. The default is (8, 6).
         """
-        super().__init__(figsize=figsize, style=style)
+        super().__init__(figsize=figsize, style=style, title=title)
 
     def create(self):
         """

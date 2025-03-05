@@ -18,6 +18,9 @@ class SpineEfficiency(SpineArtist):
 
     Attributes
     ----------
+    _title : str
+        The title of the artist. This will be placed at the top of the
+        axis assigned to the artist.
     _variable : Variable
         The variable to calculate the efficiency with respect to.
     _samples : list
@@ -40,7 +43,7 @@ class SpineEfficiency(SpineArtist):
         A dictionary containing the number of successful events in each
         bin of the variable.
     """
-    def __init__(self, variable, categories, cuts, show_option='table', npts=1e6):
+    def __init__(self, variable, categories, cuts, title, show_option='table', npts=1e6):
         """
         Parameters
         ----------
@@ -50,6 +53,8 @@ class SpineEfficiency(SpineArtist):
             A dictionary mapping the category key to the category name.
         cuts : dict
             A dictionary mapping the cut key to the cut label.
+        title : str
+            The title of the artist.
         show_option : str, optional
             The option to use when showing the artist. The default is
             'table.'
@@ -57,6 +62,7 @@ class SpineEfficiency(SpineArtist):
             The number of points to use when calculating the efficiency.
             The default is 1e6.
         """
+        super().__init__(title)
         self._variable = variable
         self._samples = list()
         self._categories = categories
@@ -68,9 +74,9 @@ class SpineEfficiency(SpineArtist):
         self._totals = dict()
         self._successes = dict()
 
-    def draw(   self, ax, show_option, percentage=True, override_title=None,
-                show_seqeff=True, show_unseqeff=True, yrange=None, npts=1e6,
-                style=None, logx=False, logy=False):
+    def draw(self, ax, show_option, percentage=True, show_seqeff=True,
+             show_unseqeff=True, yrange=None, npts=1e6, style=None,
+             logx=False, logy=False):
         """
         Draw the artist on the given axis.
 
@@ -86,10 +92,6 @@ class SpineEfficiency(SpineArtist):
         percentage : bool, optional
             A flag to indicate if the efficiency should be displayed
             as a percentage. The default is True.
-        override_title : str, optional
-            A string to use as the title of the plot. The default is
-            None. If None, the title will be set to the natural title
-            of the artist.
         show_seqeff : bool, optional
             A flag to indicate if the sequential (cumulative)
             efficiency should be shown. The default is True.
@@ -116,6 +118,8 @@ class SpineEfficiency(SpineArtist):
         -------
         None.
         """
+        ax.set_title(self._title)
+
         groups = list(set([v for v in self._categories.values()]))
 
         if show_option == 'table':
@@ -183,9 +187,6 @@ class SpineEfficiency(SpineArtist):
                         table[i, j].visible_edges = 'open'
                     if i in group_endpoint.values():
                         table[i, 0].visible_edges = 'B'
-            
-            if override_title is not None:
-                ax.set_title(override_title)
 
         elif show_option == 'differential':
             # Lambda formatter to round the values to two decimal
@@ -203,13 +204,10 @@ class SpineEfficiency(SpineArtist):
             # sequential efficiency.
             if show_seqeff:
                 key_base = 'binned_seq_'
-                title = 'Cumulative Efficiency'
             elif show_unseqeff:
                 key_base = 'binned_unseq_'
-                title = 'Differential Efficiency'
             else:
                 key_base = 'binned_seq_'
-                title = 'Cumulative Efficiency'
 
             # Note: if the user requests a differential plot, the
             # clarity of the plot is highly dependent on the number
@@ -262,7 +260,6 @@ class SpineEfficiency(SpineArtist):
                 ax.set_yscale('log')
 
             ax.legend()
-            ax.set_title(title if override_title is None else override_title)
 
     def add_sample(self, sample, is_ordinate):
         """

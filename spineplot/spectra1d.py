@@ -15,6 +15,9 @@ class SpineSpectra1D(SpineSpectra):
 
     Attributes
     ----------
+    _title : str
+        The title of the spectrum. This will be placed at the top of
+        the axis assigned to the artist.
     _variable : Variable
         The Variable object for the spectrum.
     _categories : dict
@@ -33,7 +36,7 @@ class SpineSpectra1D(SpineSpectra):
         the category label for the spectrum and the histogram data for
         that category.
     """
-    def __init__(self, variable, categories, colors, category_types) -> None:
+    def __init__(self, variable, categories, colors, category_types, title=None) -> None:
         """
         Initializes the SpineSpectra1D.
 
@@ -60,12 +63,15 @@ class SpineSpectra1D(SpineSpectra):
             and the type of plot to use for the histogram. The type
             should be either 'histogram' or 'scatter' to correspond to
             a stacked histogram or scatter plot, respectively.
+        title : str, optional
+            The title of the spectrum. This will be placed at the top
+            of the axis assigned to the artist. The default is None.
 
         Returns
         -------
         None.
         """
-        super().__init__([variable,], categories, colors)
+        super().__init__([variable,], categories, colors, title)
         self._variable = self._variables[0]
         self._category_types = category_types
 
@@ -151,6 +157,7 @@ class SpineSpectra1D(SpineSpectra):
         ax.set_xlabel(self._variable._xlabel if override_xlabel is None else override_xlabel)
         ax.set_ylabel('Candidates')
         ax.set_xlim(*self._variable._range)
+        ax.set_title(self._title)
 
         if self._plotdata is not None:
             labels, data = zip(*self._plotdata.items())
@@ -209,6 +216,3 @@ class SpineSpectra1D(SpineSpectra):
             ax.set_xscale('log')
         if logy:
             ax.set_yscale('log')
-        
-        if style.get_title() is not None:
-            ax.set_title(style.get_title())
