@@ -21,6 +21,16 @@ mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
 plot_kwargs = {'histtype' = 'step', 'stacked' = false}
 
 [[style]]
+name = 'basic_icarus'
+style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
+default_figsize = [6.4,4.8]
+title = '$\bf{ICARUS}$'
+mark_pot = true
+mark_preliminary = '$\bf{ICARUS}$ Work-in-Progress'
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
+
+[[style]]
 name = 'selected_icarus'
 style_sheet = "styles/muon2024.mplstyle"
 markers = ['o', '^', 's', 'P', 'D']
@@ -38,6 +48,16 @@ default_figsize = [6.4,4.8]
 title = '$\bf{ICARUS}$ $1\mu Np$ CC0$\pi$'
 mark_pot = true
 mark_preliminary = '$\bf{ICARUS}$ Simulation Work-in-Progress'
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
+
+[[style]]
+name = 'basic_sbnd'
+style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
+default_figsize = [6.4,4.8]
+title = '$\bf{SBND}$'
+mark_pot = true
+mark_preliminary = '$\bf{SBND}$ Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
 
 [[style]]
