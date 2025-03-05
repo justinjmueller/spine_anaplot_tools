@@ -21,6 +21,12 @@ class SpineEfficiency(SpineArtist):
     _title : str
         The title of the artist. This will be placed at the top of the
         axis assigned to the artist.
+    _xrange : tuple
+        The range of the x-axis. If None, the range is taken from the
+        Variable object.
+    _xtitle : str
+        The title of the x-axis. If None, the title is taken from the
+        Variable object.
     _variable : Variable
         The variable to calculate the efficiency with respect to.
     _samples : list
@@ -43,7 +49,9 @@ class SpineEfficiency(SpineArtist):
         A dictionary containing the number of successful events in each
         bin of the variable.
     """
-    def __init__(self, variable, categories, cuts, title, show_option='table', npts=1e6):
+    def __init__(self, variable, categories, cuts, title,
+                 xrange=None, xtitle=None, show_option='table',
+                 npts=1e6):
         """
         Parameters
         ----------
@@ -55,6 +63,12 @@ class SpineEfficiency(SpineArtist):
             A dictionary mapping the cut key to the cut label.
         title : str
             The title of the artist.
+        xrange : tuple, optional
+            The range of the x-axis. If None, the range is taken from
+            the Variable object. The default is None.
+        xtitle : str, optional
+            The title of the x-axis. If None, the title is taken from
+            the Variable object. The default is None.
         show_option : str, optional
             The option to use when showing the artist. The default is
             'table.'
@@ -63,6 +77,8 @@ class SpineEfficiency(SpineArtist):
             The default is 1e6.
         """
         super().__init__(title)
+        self._xrange = xrange
+        self._xtitle = xtitle
         self._variable = variable
         self._samples = list()
         self._categories = categories
@@ -239,9 +255,9 @@ class SpineEfficiency(SpineArtist):
                                     fmt=style.get_marker(ci), color=style.get_color(gi),
                                     label=f'{group} : {cutname}')
 
-            ax.set_xlabel(self._variable._xlabel)
+            ax.set_xlabel(self._variable._xlabel if self._xtitle is None else self._xtitle)
             ax.set_ylabel('Efficiency [%]' if percentage else 'Efficiency')
-            ax.set_xlim(self._variable._range)
+            ax.set_xlim(self._variable._range if self._xrange is None else self._xrange)
             if yrange is not None:
                 ax.set_ylim(yrange)
 
@@ -251,10 +267,11 @@ class SpineEfficiency(SpineArtist):
                 # is greater than zero. The lower edge needs to be at least
                 # 3 orders of magnitude less than the maximum value in the
                 # plot.
-                if self._variable._range[0] == 0:    
-                    xhigh_exporder = np.floor(np.log10(self._variable._range[1]))
+                xr = self._variable._range if self._xrange is None else self._xrange
+                if xr == 0:    
+                    xhigh_exporder = np.floor(np.log10(xr[1]))
                     xlow = xhigh_exporder - 3
-                    ax.set_xlim(10**xlow, self._variable._range[1])
+                    ax.set_xlim(10**xlow, xr[1])
                 ax.set_xscale('log')
             if logy:
                 ax.set_yscale('log')

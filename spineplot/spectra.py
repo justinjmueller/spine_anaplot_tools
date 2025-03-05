@@ -20,6 +20,13 @@ class SpineSpectra(SpineArtist):
     _title : str
         The title of the spectra. This will be placed at the top of the
         axis assigned to the spectra.
+    _xrange : tuple
+        The range of the x-axis for the spectra. This is a tuple of the
+        form (xmin, xmax). If None, the range will be defaulted to the
+        standard settings for the SpineSpectra.
+    _xtitle : str
+        The title of the x-axis for the spectra. If None, the title will
+        be set to the default title for the SpineSpectra.
     _variables : list
         The list of Variable objects for the spectra.
     _categories : dict
@@ -46,7 +53,8 @@ class SpineSpectra(SpineArtist):
         between the category label for the spectra and the bin counts
         for the histogram data for that category.
     """
-    def __init__(self, variables, categories, colors, title=None) -> None:
+    def __init__(self, variables, categories, colors, title=None,
+                 xrange=None, xtitle=None) -> None:
         """
         Initializes the SpineSpectra object with the given kwargs.
 
@@ -74,6 +82,8 @@ class SpineSpectra(SpineArtist):
         None.
         """
         super().__init__(title)
+        self._xrange = xrange
+        self._xtitle = xtitle
         self._variables = variables
         self._categories = categories
         self._colors = colors

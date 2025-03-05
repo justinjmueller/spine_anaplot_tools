@@ -17,6 +17,28 @@ class SpineSpectra2D(SpineSpectra):
     _title : str
         The title of the artist. This will be placed at the top of the
         axis assigned to the artist.
+    _xrange : tuple
+        The range of the x-axis for the spectrum. This is a tuple of
+        the minimum and maximum values for the x-axis. If None, the
+        range will be determined by Variable object assigned to the
+        x-axis (show_option='2d') or set to (-1,1)
+        (show_option='projection').
+    _xtitle : str
+        The label for the x-axis of the spectrum. If None, the label
+        will be determined by the Variable object assigned to the
+        x-axis (show_option='2d') or set to '(Y-X)/X'
+        (show_option='projection').
+    _yrange : tuple
+        The range of the y-axis for the spectrum. This is a tuple of
+        the minimum and maximum values for the y-axis. If None, the
+        range will be determined by Variable object assigned to the
+        y-axis (show_option='2d') or set to None
+        (show_option='projection').
+    _ytitle : str
+        The label for the y-axis of the spectrum. If None, the label
+        will be determined by the Variable object assigned to the
+        y-axis (show_option='2d') or set to 'Entries'
+        (show_option='projection').
     _variables : list
         The list of Variable objects for the spectrum.
     _categories : dict
@@ -35,7 +57,9 @@ class SpineSpectra2D(SpineSpectra):
         the category label for the spectrum and the histogram data for
         that category.
     """
-    def __init__(self, variables, categories, colors, category_types, title=None) -> None:
+    def __init__(self, variables, categories, colors, category_types,
+                 title=None, xrange=None, xtitle=None, yrange=None,
+                 ytitle=None) -> None:
         """
         Initializes the SpineSpectra2D object.
 
@@ -64,12 +88,36 @@ class SpineSpectra2D(SpineSpectra):
         title : str, optional
             The title of the artist. This will be placed at the top of
             the axis assigned to the artist. The default is None.
+        xrange : tuple, optional
+            The range of the x-axis for the spectrum. This is a tuple of
+            the minimum and maximum values for the x-axis. If None, the
+            range will be determined by Variable object assigned to the
+            x-axis (show_option='2d') or set to (-1,1)
+            (show_option='projection'). The default is None.
+        xtitle : str, optional
+            The label for the x-axis of the spectrum. If None, the label
+            will be determined by the Variable object assigned to the
+            x-axis (show_option='2d') or set to '(Y-X)/X'
+            (show_option='projection'). The default is None.
+        yrange : tuple, optional
+            The range of the y-axis for the spectrum. This is a tuple of
+            the minimum and maximum values for the y-axis. If None, the
+            range will be determined by Variable object assigned to the
+            y-axis (show_option='2d') or set to None
+            (show_option='projection'). The default is None.
+        ytitle : str, optional
+            The label for the y-axis of the spectrum. If None, the label
+            will be determined by the Variable object assigned to the
+            y-axis (show_option='2d') or set to 'Entries'
+            (show_option='projection'). The default is None.
 
         Returns
         -------
         None.
         """
-        super().__init__(variables, categories, colors, title)
+        super().__init__(variables, categories, colors, title, xrange, xtitle)
+        self._yrange = yrange
+        self._ytitle = ytitle
         self._category_types = category_types
         self._plotdata_diagonal = None
         self._binedges_diagonal = None
@@ -124,14 +172,17 @@ class SpineSpectra2D(SpineSpectra):
                 continue
             if self._categories[category] not in self._plotdata:
                 self._plotdata[self._categories[category]] = np.zeros((self._variables[0]._nbins, self._variables[1]._nbins))
-            h = np.histogram2d(values[0], values[1], bins=(self._variables[0]._nbins, self._variables[1]._nbins), range=(self._variables[0]._range, self._variables[1]._range), weights=weights[category])
+            xr = self._variables[0]._range if self._xrange is None else self._xrange
+            yr = self._variables[1]._range if self._yrange is None else self._yrange
+            h = np.histogram2d(values[0], values[1], bins=(self._variables[0]._nbins, self._variables[1]._nbins), range=(xr, yr), weights=weights[category])
             self._plotdata[self._categories[category]] += h[0]
             self._binedges[self._categories[category]] = h[1]
 
             if self._categories[category] not in self._plotdata_diagonal:
                 self._plotdata_diagonal[self._categories[category]] = np.zeros(self._variables[0]._nbins)
             diag = np.divide(values[1] - values[0], values[0])
-            h = np.histogram(diag, bins=self._variables[0]._nbins, range=(-1,1), weights=weights[category])
+            xr = (-1, 1) if self._xrange is None else self._xrange
+            h = np.histogram(diag, bins=self._variables[0]._nbins, range=xr, weights=weights[category])
             self._plotdata_diagonal[self._categories[category]] += h[0]
             self._binedges_diagonal[self._categories[category]] = h[1]
 
@@ -143,7 +194,7 @@ class SpineSpectra2D(SpineSpectra):
             self._binedges_absdiag[self._categories[category]] = h[1]
 
     def draw(self, ax, style, show_option='2d', draw_identity=True,
-             override_xlabel=None, invert_stack_order=False, fit_type=None,
+             invert_stack_order=False, fit_type=None,
              logx=False, logy=False) -> None:
         """
         Plots the data for the SpineSpectra2D object.
@@ -164,8 +215,6 @@ class SpineSpectra2D(SpineSpectra):
         draw_identity : bool
             A flag to indicate if the identity line should be drawn on
             the plot. The default is True.
-        override_xlabel : str
-            An optional override for the x-axis label.
         invert_stack_order : bool
             A flag to indicate if the stack order in the legend should
             be inverted. The default is False.
@@ -191,7 +240,7 @@ class SpineSpectra2D(SpineSpectra):
             values = np.sum([v for v in self._plotdata.values()], axis=0)
             binedges = self._binedges[list(self._plotdata.keys())[0]]
             ax.imshow(values.T, extent=(binedges[0], binedges[-1], binedges[0], binedges[-1]), aspect='auto', origin='lower')
-            ax.set_xlabel(self._variables[0]._xlabel if override_xlabel is None else override_xlabel)
+            ax.set_xlabel(self._variables[0]._xlabel if self._xtitle is None else self._xtitle)
             ax.set_ylabel(self._variables[1]._xlabel)
             
             # Draw the identity line. This must span the full range
@@ -207,12 +256,14 @@ class SpineSpectra2D(SpineSpectra):
             colors = [self._colors[label] for label in labels]
             bincenters = [self._binedges_diagonal[l][:-1] + np.diff(self._binedges_diagonal[l]) / 2 for l in labels]
 
-            ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-1,1), histtype='barstacked', label=labels, color=colors, stacked=True)
-            ax.set_xlabel('(Y-X)/X' if override_xlabel is None else override_xlabel)
+            ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins,
+                    range=(-1,1) if self._xrange is None else self._xrange,
+                    histtype='barstacked', label=labels, color=colors, stacked=True)
+            ax.set_xlabel('(Y-X)/X' if self._xtitle is None else self._xtitle)
             ax.set_ylabel('Entries')
 
             if fit_type is not None:
-                super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges_diagonal[labels[0]], fit_type)
+                super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges_diagonal[labels[0]], fit_type, range=(-1,1) if self._xrange is None else self._xrange)
 
             if invert_stack_order:
                 h, l = ax.get_legend_handles_labels()
@@ -246,10 +297,11 @@ class SpineSpectra2D(SpineSpectra):
             # is greater than zero. The lower edge needs to be at least
             # 3 orders of magnitude less than the maximum value in the
             # plot.
-            if self._variable._range[0] == 0:    
-                xhigh_exporder = np.floor(np.log10(self._variable._range[1]))
+            xr = self._variables[0]._range if self._xrange is None else self._xrange
+            if xr[0] == 0:    
+                xhigh_exporder = np.floor(np.log10(xr[1]))
                 xlow = xhigh_exporder - 3
-                ax.set_xlim(10**xlow, self._variable._range[1])
+                ax.set_xlim(10**xlow, xr[1])
             ax.set_xscale('log')
         if logy:
             ax.set_yscale('log')

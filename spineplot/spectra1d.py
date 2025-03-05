@@ -18,6 +18,13 @@ class SpineSpectra1D(SpineSpectra):
     _title : str
         The title of the spectrum. This will be placed at the top of
         the axis assigned to the artist.
+    _xrange : tuple
+        The range of the x-axis for the spectrum. This is a tuple of
+        the lower and upper limits of the x-axis. If None, the range
+        will be determined by the range set in the Variable object.
+    _xtitle : str
+        The label for the x-axis. If None, the label will be taken
+        from the Variable object.
     _variable : Variable
         The Variable object for the spectrum.
     _categories : dict
@@ -36,7 +43,8 @@ class SpineSpectra1D(SpineSpectra):
         the category label for the spectrum and the histogram data for
         that category.
     """
-    def __init__(self, variable, categories, colors, category_types, title=None) -> None:
+    def __init__(self, variable, categories, colors, category_types,
+                 title=None, xrange=None, xtitle=None) -> None:
         """
         Initializes the SpineSpectra1D.
 
@@ -66,12 +74,20 @@ class SpineSpectra1D(SpineSpectra):
         title : str, optional
             The title of the spectrum. This will be placed at the top
             of the axis assigned to the artist. The default is None.
+        xrange : tuple, optional
+            The range of the x-axis for the spectrum. This is a tuple
+            of the lower and upper limits of the x-axis. If None, the
+            range will be determined by the range set in the Variable
+            object. The default is None.
+        xtitle : str, optional
+            The label for the x-axis. If None, the label will be taken
+            from the Variable object. The default is None.
 
         Returns
         -------
         None.
         """
-        super().__init__([variable,], categories, colors, title)
+        super().__init__([variable,], categories, colors, title, xrange, xtitle)
         self._variable = self._variables[0]
         self._category_types = category_types
 
@@ -107,12 +123,13 @@ class SpineSpectra1D(SpineSpectra):
             if self._categories[category] not in self._plotdata:
                 self._plotdata[self._categories[category]] = np.zeros(self._variable._nbins)
                 self._onebincount[self._categories[category]] = 0
-            h = np.histogram(values, bins=self._variable._nbins, range=self._variable._range, weights=weights[category])
+            xr = self._variable._range if self._xrange is None else self._xrange
+            h = np.histogram(values, bins=self._variable._nbins, range=xr, weights=weights[category])
             self._onebincount[self._categories[category]] += np.sum(weights[category])
             self._plotdata[self._categories[category]] += h[0]
             self._binedges[self._categories[category]] = h[1]
 
-    def draw(self, ax, style, override_xlabel=None, show_component_number=False,
+    def draw(self, ax, style, show_component_number=False,
              show_component_percentage=False, invert_stack_order=False,
              fit_type=None, logx=False, logy=False) -> None:
         """
@@ -126,9 +143,6 @@ class SpineSpectra1D(SpineSpectra):
             The style to use when drawing the artist. The default is
             None. This is intended to be used in cases where the artist
             has some configurable style options.
-        override_xlabel : str
-            An optional override for the x-axis label. The default is
-            None, which will use the label from the Variable object.
         show_component_number : bool
             A flag to indicate if the component number should be shown
             in the legend. The default is False.
@@ -154,9 +168,9 @@ class SpineSpectra1D(SpineSpectra):
         -------
         None.
         """
-        ax.set_xlabel(self._variable._xlabel if override_xlabel is None else override_xlabel)
+        ax.set_xlabel(self._variable._xlabel if self._xtitle is None else self._xtitle)
         ax.set_ylabel('Candidates')
-        ax.set_xlim(*self._variable._range)
+        ax.set_xlim(*self._variable._range if self._xrange is None else self._xrange)
         ax.set_title(self._title)
 
         if self._plotdata is not None:
@@ -209,10 +223,11 @@ class SpineSpectra1D(SpineSpectra):
             # is greater than zero. The lower edge needs to be at least
             # 3 orders of magnitude less than the maximum value in the
             # plot.
-            if self._variable._range[0] == 0:    
-                xhigh_exporder = np.floor(np.log10(self._variable._range[1]))
+            xr = self._variable._range if self._xrange is None else self._xrange
+            if xr[0] == 0:    
+                xhigh_exporder = np.floor(np.log10(xr[1]))
                 xlow = xhigh_exporder - 3
-                ax.set_xlim(10**xlow, self._variable._range[1])
+                ax.set_xlim(10**xlow, xr[1])
             ax.set_xscale('log')
         if logy:
             ax.set_yscale('log')
