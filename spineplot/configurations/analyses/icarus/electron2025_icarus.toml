@@ -9,7 +9,7 @@ choose = {'samples' = ['mc']}
 file = 'configurations/common/styles.toml'
 
 [output]
-path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/plots_boosted'
+path = '/exp/icarus/app/users/jzettle/spineprod/spine_anaplot_tools/spineplot/plots'
 
 [[figure]]
 name = 'vertex_x_diff'
@@ -167,42 +167,49 @@ name = 'energy_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'true_edep', 'yvariable' = 'reco_edep'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'invmass_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'invariant_mass_true', 'yvariable' = 'invariant_mass'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'opening_angle_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'opening_angle', 'yvariable' = 'opening_angle_reco'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'shower_energy_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'leading_shower_energy_reco', 'yvariable' = 'subleading_shower_energy_reco'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'leading_shower_energy_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'leading_shower_energy_true', 'yvariable' = 'leading_shower_energy_reco'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'subleading_shower_energy_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'subleading_shower_energy_true', 'yvariable' = 'subleading_shower_energy_reco'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'energy_asymmetry_2d'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'energy_asymmetry_true', 'yvariable' = 'energy_asymmetry_reco'}]
 style = 'selected_electrons'
+draw_kwargs = {'draw_identity' = true}
 
 [[figure]]
 name = 'visible_energy_2d'
@@ -212,7 +219,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'true_edep'
 yvariable = 'reco_edep'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True', 'fit_type' = 'crystal_ball'}
 
 [[figure]]
 name = 'opening_angle_proj'
@@ -222,7 +229,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'opening_angle'
 yvariable = 'opening_angle_reco'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True', 'fit_type' = 'crystal_ball'}
 
 [[figure]]
 name = 'invariant_mass_proj'
@@ -232,7 +239,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'invariant_mass_true'
 yvariable = 'invariant_mass'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True', 'fit_type' = 'crystal_ball'}
 
 [[figure]]
 name = 'energy_asymmetry_proj'
@@ -242,7 +249,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'energy_asymmetry_true'
 yvariable = 'energy_asymmetry_reco'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True', 'fit_type' = 'crystal_ball'}
 
 [[figure]]
 name = 'leading_shower_energy_proj'
@@ -252,7 +259,7 @@ style = 'selected_electrons'
 type = 'SpineSpectra2D'
 xvariable = 'leading_shower_energy_true'
 yvariable = 'leading_shower_energy_reco'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
+draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True', 'fit_type' = 'crystal_ball'}
 
 [[figure]]
 name = 'true_vertex_x'
@@ -267,16 +274,6 @@ artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_vertex_x'},]
 style = 'selected_electrons'
 
 [[figure]]
-name = 'vertex_x_proj'
-type = 'SimpleFigure'
-style = 'selected_electrons'
-[[figure.artists]]
-type = 'SpineSpectra2D'
-xvariable = 'true_vertex_x'
-yvariable = 'reco_vertex_x'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
-
-[[figure]]
 name = 'true_vertex_y'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_vertex_y'},]
@@ -287,16 +284,6 @@ name = 'reco_vertex_y'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'reco_vertex_y'},]
 style = 'selected_electrons'
-
-[[figure]]
-name = 'vertex_y_proj'
-type = 'SimpleFigure'
-style = 'selected_electrons'
-[[figure.artists]]
-type = 'SpineSpectra2D'
-xvariable = 'true_vertex_y'
-yvariable = 'reco_vertex_y'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
 
 [[figure]]
 name = 'true_vertex_z'
@@ -321,16 +308,6 @@ name = 'true_max_vertex_distance'
 type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra1D', 'variable' = 'true_vertex_distance'},]
 style = 'unstacked'
-
-[[figure]]
-name = 'vertex_z_proj'
-type = 'SimpleFigure'
-style = 'selected_electrons'
-[[figure.artists]]
-type = 'SpineSpectra2D'
-xvariable = 'true_vertex_z'
-yvariable = 'reco_vertex_z'
-draw_kwargs = {'show_option' = 'projection', 'override_xlabel' = '(Reco-True)/True'}
 
 [analysis]
 ordinate_sample = 'mc'
