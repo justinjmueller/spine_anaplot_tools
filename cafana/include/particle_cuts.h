@@ -76,6 +76,20 @@ namespace pcuts
                     passes = true;
             }
             return passes;
+    /**
+     * @brief Check if the particle is throughgoing.
+     * @details This function checks if the particle is throughgoing. A
+     * throughgoing particle is defined as a particle which has both ends
+     * of the track near the boundary of the detector. This is only applicable
+     * to tracks as it is somewhat nonsensical for showers.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to check.
+     * @return true if the particle is throughgoing.
+     */
+    template<class T>
+        bool throughgoing(const T & p)
+        {
+            return PIDFUNC(p) > 1 && utilities::near_boundary(p.start) && utilities::near_boundary(p.end);
         }
 }
 #endif // PARTICLE_CUTS_H

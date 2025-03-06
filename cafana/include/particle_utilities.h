@@ -11,6 +11,14 @@
 #ifndef PARTICLE_UTILITIES_H
 #define PARTICLE_UTILITIES_H
 
+#define MARGIN 5.0
+#define SBND_XMIN -201.3
+#define SBND_XMAX  201.3
+#define SBND_YMIN -200.008
+#define SBND_YMAX  200.008
+#define SBND_ZMIN  4.94238
+#define SBND_ZMAX  504.458
+
 namespace utilities
 {
     /**
@@ -85,6 +93,23 @@ namespace utilities
     {
         double mag = magnitude(a);
         return std::make_tuple(std::get<0>(a)/mag, std::get<1>(a)/mag, std::get<2>(a)/mag);
+    }
+
+    /**
+     * @brief Determines if a point is near a boundary of the detector.
+     * @details This function determines if a point is near a boundary of the
+     * detector by checking if the point is within a certain distance of any
+     * of the boundaries of the detector. The boundaries of the detector are
+     * defined by preprocessor macros which specify the minimum and maximum
+     * values of the x, y, and z coordinates of the detector.
+     * @param vtx the position of the point as a tuple (three-vector).
+     * @return true if the point is near a boundary, false otherwise.
+     */
+    bool near_boundary(const three_vector & vtx)
+    {
+        return std::get<0>(vtx) < SBND_XMIN + MARGIN || std::get<0>(vtx) > SBND_XMAX - MARGIN ||
+               std::get<1>(vtx) < SBND_YMIN + MARGIN || std::get<1>(vtx) > SBND_YMAX - MARGIN ||
+               std::get<2>(vtx) < SBND_ZMIN + MARGIN || std::get<2>(vtx) > SBND_ZMAX - MARGIN;
     }
 
     /**
