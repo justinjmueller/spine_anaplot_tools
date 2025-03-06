@@ -177,6 +177,7 @@ class SpineSpectra1D(SpineSpectra):
             labels, data = zip(*self._plotdata.items())
             colors = [self._colors[label] for label in labels]
             bincenters = [self._binedges[l][:-1] + np.diff(self._binedges[l]) / 2 for l in labels]
+            xr = self._variable._range if self._xrange is None else self._xrange
 
             histogram_mask = [li for li, label in enumerate(labels) if self._category_types[label] == 'histogram']
             scatter_mask = [li for li, label in enumerate(labels) if self._category_types[label] == 'scatter']
@@ -185,7 +186,7 @@ class SpineSpectra1D(SpineSpectra):
             counts = [x for x in self._onebincount.values()]
 
             if fit_type is not None:
-                super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges[labels[0]], fit_type, range=self._variable._range)
+                super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges[labels[0]], fit_type, range=xr)
 
             if show_component_number and show_component_percentage:
                 hlabel = lambda x : f'{np.sum(x):.1f}, {np.sum(x)/denominator:.2%}'
@@ -201,7 +202,7 @@ class SpineSpectra1D(SpineSpectra):
             else:
                 reduce = lambda x : [x[i] for i in histogram_mask]
             
-            ax.hist(reduce(bincenters), weights=reduce(data), bins=self._variable._nbins, range=self._variable._range, label=reduce(labels), color=reduce(colors), **style.plot_kwargs)
+            ax.hist(reduce(bincenters), weights=reduce(data), bins=self._variable._nbins, range=xr, label=reduce(labels), color=reduce(colors), **style.plot_kwargs)
 
             reduce = lambda x : [x[i] for i in scatter_mask]
             for i, label in enumerate(reduce(labels)):
