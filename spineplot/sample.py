@@ -86,6 +86,12 @@ class Sample:
         if presel is not None:
             self._data = self._data[self._data.eval(presel)]
 
+        # Check category branch for NaNs
+        if np.isnan(self._data[self._category_branch]).any():
+            occurrences = len(self._data[self._data[self._category_branch].isna()])
+            print(f'Found NaN category in Sample `{self._name}` with {occurrences} occurrence(s). Masking NaNs...')
+            self._data = self._data[~self._data[self._category_branch].isna()]
+
     def override_exposure(self, exposure, exposure_type='pot') -> None:
         """
         Overrides the exposure for the sample. This is useful for
@@ -166,6 +172,10 @@ class Sample:
         else:
             mask = np.ones(len(self._data), dtype=bool)
         for category in np.unique(self._data[self._category_branch]):
+            if np.isnan(category):
+                occurrences = len(self._data[self._data[self._category_branch].isna()])
+                print(f'Found NaN category in {self._name} ({occurrences} occurrences). Masking NaNs...')
+                continue
             data[int(category)] = list()
             for v in variables:
                 data[int(category)].append(self._data[((self._data[self._category_branch] == category) & mask)][v])  
