@@ -427,15 +427,17 @@ class SpineEfficiency(SpineArtist):
                     indices = np.digitize(values[0][np.all(values[1:ci+2], axis=0)], bin_edges, right=False)
                     success = np.bincount(indices, minlength=len(bin_edges)+1)[1:-1]
                     self._successes[self._categories[category]][f'binned_seq_{cut}'] += success
-                    binomialpmf = [binom.pmf(success[i], self._totals[self._categories[category]][i], efficiencies) for i in range(nbins)]
-                    self._posteriors[self._categories[category]][f'binned_seq_{cut}'] = SpineEfficiency.multiply_posteriors(self._posteriors[self._categories[category]][f'binned_seq_{cut}'], binomialpmf)
+                    binomialpmf = [binom.pmf(self._successes[self._categories[category]][f'binned_seq_{cut}'][i],
+                                             self._totals[self._categories[category]][i], efficiencies) for i in range(nbins)]
+                    self._posteriors[self._categories[category]][f'binned_seq_{cut}'] = np.array(binomialpmf)
 
                     # Non-sequential cuts (binned)
                     indices = np.digitize(values[0][values[ci+1] == 1], bin_edges, right=False)
                     success = np.bincount(indices, minlength=len(bin_edges)+1)[1:-1]
                     self._successes[self._categories[category]][f'binned_unseq_{cut}'] += success
-                    binomialpmf = [binom.pmf(success[i], self._totals[self._categories[category]][i], efficiencies) for i in range(nbins)]
-                    self._posteriors[self._categories[category]][f'binned_unseq_{cut}'] = SpineEfficiency.multiply_posteriors(self._posteriors[self._categories[category]][f'binned_unseq_{cut}'], binomialpmf)
+                    binomialpmf = [binom.pmf(self._successes[self._categories[category]][f'binned_unseq_{cut}'][i],
+                                             self._totals[self._categories[category]][i], efficiencies) for i in range(nbins)]
+                    self._posteriors[self._categories[category]][f'binned_unseq_{cut}'] = np.array(binomialpmf)
 
     def reduce(self, group, significance=0.6827):
         """
