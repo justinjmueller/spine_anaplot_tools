@@ -3,7 +3,7 @@ import uproot
 from matplotlib import pyplot as plt
 
 from sample import Sample
-from figure import SimpleFigure
+from figure import SpineFigure, SimpleFigure
 from spectra1d import SpineSpectra1D
 from spectra2d import SpineSpectra2D
 from efficiency import SpineEfficiency
@@ -194,6 +194,34 @@ class Analysis:
             print(figname)
             figure.figure.savefig(f"{self._output_path}/{figname}.png")
             figure.close()
+
+    def run_interactively(self, figure) -> SpineFigure:
+        """
+        Runs the analysis on the samples and creates the figure. This
+        method is useful for interactive plotting in a Jupyter notebook.
+
+        Parameters
+        ----------
+        figure : str
+            The name of the figure to create.
+        
+        Returns
+        -------
+        SpineFigure
+            The figure object.
+        """
+        if self._config['analysis']['ordinate_sample'] not in self._samples.keys():
+            raise ConfigException(f"Ordinate sample '{self._config['analysis']['ordinate_sample']}' not found in sample list. Please check the sample configuration block (table='samples') in the TOML file ('{self._toml_path}').")
+        ordinate = self._samples[self._config['analysis']['ordinate_sample']]
+        for s in self._samples.values():
+            s.set_weight(target=ordinate)
+
+        for artist in self._artists:
+            for sample in self._samples.values():
+                artist.add_sample(sample, sample==ordinate)
+
+        self._figures[figure].create()
+        return self._figures[figure].figure
 
     @staticmethod
     def handle_include(config, table):
