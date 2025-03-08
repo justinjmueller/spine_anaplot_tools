@@ -202,6 +202,34 @@ class SpineSpectra(SpineArtist):
             # Plot the fit
             x = np.linspace(*range, 1000)
             ax.plot(x, self.crystal_ball(x, *popt), 'r-', label=cb_label)
+
+        elif fit_type == 'crystal_ball_mxb':
+            # Crystal Ball fit with a mx+b background
+            # First, estimate the parameters "reasonably" well to avoid
+            # the fit getting stuck in a weird place.
+            cb_mean = np.average(bin_centers, weights=data)
+            cb_sigma = np.sqrt(np.average((bin_centers - cb_mean)**2, weights=data))
+            cb_norm = data * np.diff(bin_edges)
+            cb_alpha = 1.5
+            cb_n = 5
+            m = 0
+            b = np.sum(data) / len(data)
+            initial_guess = [cb_alpha, cb_n, cb_mean, cb_sigma, np.sum(cb_norm), m, b]
+            popt, pcov = curve_fit(self.crystal_ball_mxb, bin_centers, data, p0=initial_guess)
+            print(popt)
+
+            # Label with estimated parameters and +/- 1 sigma
+            cb_label = f'Crystal Ball Fit\n'
+            cb_label += f'$\\mu$={popt[2]:.2f}$\\pm${np.sqrt(pcov[2,2]):.2f}\n'
+            cb_label += f'$\\sigma$={popt[3]:.2f}$\\pm${np.sqrt(pcov[3,3]):.2f}\n'
+            cb_label += f'$\\alpha$={popt[0]:.2f}$\\pm${np.sqrt(pcov[0,0]):.2f}\n'
+            cb_label += f'n={popt[1]:.2f}$\\pm${np.sqrt(pcov[1,1]):.2f}\n'
+            cb_label += f'm={popt[5]:.2f}$\\pm${np.sqrt(pcov[5,5]):.2f}\n'
+            cb_label += f'b={popt[6]:.2f}$\\pm${np.sqrt(pcov[6,6]):.2f}'
+
+            # Plot the fit
+            x = np.linspace(*range, 1000)
+            ax.plot(x, self.crystal_ball_mxb(x, *popt), 'r-', label=cb_label)
         
         elif fit_type == 'gaussian':
             # Gaussian fit
@@ -280,6 +308,38 @@ class SpineSpectra(SpineArtist):
 
         # Normalize to N
         return N * result
+
+    @staticmethod
+    def crystal_ball_mxb(x, alpha, n, mean, sigma, N, m, b):
+        """
+        Crystal Ball probability density function.
+
+        Parameters:
+        -----------
+        x : array-like
+            Input values where the function is evaluated.
+        alpha : float
+            Parameter defining the point where the Gaussian core transitions to the power-law tail.
+            (alpha > 0 typically)
+        n : float
+            Parameter that defines the power of the tail.
+        mean : float
+            Mean (peak location) of the Gaussian core.
+        sigma : float
+            Standard deviation (width) of the Gaussian core.
+        N : float
+            Normalization factor (area under the curve).
+        m : float, optional
+            Slope of the background. The default is 0.
+        b : float, optional
+            Intercept of the background. The default is 0.
+
+        Returns:
+        --------
+        array-like
+            Function values evaluated at x.
+        """
+        return SpineSpectra.crystal_ball(x, alpha, n, mean, sigma, N) + m*x + b
 
     @staticmethod
     def gaussian(x, mean, sigma, N):
