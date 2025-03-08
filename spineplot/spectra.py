@@ -3,6 +3,8 @@ from scipy.optimize import curve_fit
 from scipy.special import erf
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from matplotlib.collections import PatchCollection
 
 from artists import SpineArtist
 from style import Style
@@ -153,6 +155,34 @@ class SpineSpectra(SpineArtist):
         xrange = ax.get_xlim()
         usex = xrange[0] + 0.025*(xrange[1] - xrange[0])
         ax.text(x=usex, y=usey, s=label, fontsize=14, color='#d67a11')
+
+    @staticmethod
+    def draw_error_boxes(ax, x, y, xerr, yerr, **kwargs):
+        """
+        Adds error boxes to the input axis.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            The axis to which the error boxes are to be added.
+        x : numpy.array
+            The x-coordinates of the error boxes.
+        y : numpy.array
+            The y-coordinates of the error boxes.
+        xerr : numpy.array
+            The x-error values of the error boxes.
+        yerr : numpy.array
+            The y-error values of the error boxes.
+        kwargs: dict
+            Keyword arguments to be passed to the errorbar function.
+
+        Returns
+        -------
+        None.
+        """
+        boxes = [Rectangle((x[i] - xerr[i], y[i] - yerr[i]), 2 * np.abs(xerr[i]), 2 * yerr[i]) for i in range(len(x))]
+        pc = PatchCollection(boxes, **kwargs)
+        ax.add_collection(pc)
 
     def fit_with_function(self, ax, bin_centers, data, bin_edges, fit_type, range=(-1,1)) -> None:
         """

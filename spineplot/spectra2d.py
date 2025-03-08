@@ -194,8 +194,9 @@ class SpineSpectra2D(SpineSpectra):
             self._binedges_absdiag[self._categories[category]] = h[1]
 
     def draw(self, ax, style, show_option='2d', draw_identity=True,
-             invert_stack_order=False, fit_type=None,
-             logx=False, logy=False) -> None:
+             draw_colorbar=True, invert_stack_order=False,
+             fit_type=None, logx=False, logy=False, logz=False,
+             draw_stat_error=False) -> None:
         """
         Plots the data for the SpineSpectra2D object.
 
@@ -229,6 +230,15 @@ class SpineSpectra2D(SpineSpectra):
         logy : bool
             A flag to indicate if the y-axis should be logarithmic.
             The default is False.
+<<<<<<< HEAD
+=======
+        logz : bool
+            A flag to indicate if the z-axis (colorbar) should be
+            logarithmic. The default is False.
+        draw_stat_error : bool
+            A flag to indicate if the statistical error should be drawn
+            on the plot. The default is False.
+>>>>>>> b94aa6a (Add ability to draw statistical error boxes with a draw_kwarg)
         
         Returns
         -------
@@ -266,10 +276,21 @@ class SpineSpectra2D(SpineSpectra):
             if fit_type is not None:
                 super().fit_with_function(ax, bincenters[0], np.sum(data, axis=0), self._binedges_diagonal[labels[0]], fit_type, range=(-1,1) if self._xrange is None else self._xrange)
 
+            if draw_stat_error:
+                x = bincenters[0]
+                y = np.sum(data, axis=0)
+                xerr = np.diff(self._binedges_diagonal[labels[0]]) / 2
+                yerr = np.sqrt(y)
+                SpineSpectra.draw_error_boxes(ax, x, y, xerr, yerr, facecolor='gray', edgecolor='none', alpha=0.5, hatch='///')
+
             if invert_stack_order:
                 h, l = ax.get_legend_handles_labels()
-                ax.legend(h[::-1], l[::-1])
+                if draw_stat_error:
+                    h.append(plt.Rectangle((0, 0), 1, 1, fc='gray', alpha=0.5, hatch='///'))
+                    l.append('MC Statistical Uncertainty')
+                ax.legend(h[-2::-1]+h[-1:], l[-2::-1]+l[-1:])
             else:
+<<<<<<< HEAD
                 ax.legend()
 
         if show_option == 'absdiff' and self._plotdata_absdiag is not None:
@@ -286,6 +307,13 @@ class SpineSpectra2D(SpineSpectra):
                 ax.legend(h[::-1], l[::-1])
             else:
                 ax.legend()
+=======
+                h, l = ax.get_legend_handles_labels()
+                if draw_stat_error:
+                    h.append(plt.Rectangle((0, 0), 1, 1, fc='gray', alpha=0.5, hatch='///'))
+                    l.append('MC Statistical Uncertainty')
+                ax.legend(h, l)
+>>>>>>> b94aa6a (Add ability to draw statistical error boxes with a draw_kwarg)
         
         if style.mark_pot:
             self.mark_pot(ax)

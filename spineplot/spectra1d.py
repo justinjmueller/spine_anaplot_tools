@@ -131,7 +131,8 @@ class SpineSpectra1D(SpineSpectra):
 
     def draw(self, ax, style, show_component_number=False,
              show_component_percentage=False, invert_stack_order=False,
-             fit_type=None, logx=False, logy=False) -> None:
+             fit_type=None, logx=False, logy=False,
+             draw_stat_error=False) -> None:
         """
         Plots the data for the SpineSpectra1D object.
 
@@ -163,6 +164,9 @@ class SpineSpectra1D(SpineSpectra):
         logy : bool
             A flag to indicate if the y-axis should be logarithmic.
             The default is False.
+        draw_stat_error : bool
+            A flag to indicate if the statistical error should be drawn
+            on the histogram. The default is False.
 
         Returns
         -------
@@ -177,6 +181,7 @@ class SpineSpectra1D(SpineSpectra):
             labels, data = zip(*self._plotdata.items())
             colors = [self._colors[label] for label in labels]
             bincenters = [self._binedges[l][:-1] + np.diff(self._binedges[l]) / 2 for l in labels]
+            binwidths = [np.diff(self._binedges[l]) for l in labels]
             xr = self._variable._range if self._xrange is None else self._xrange
 
             histogram_mask = [li for li, label in enumerate(labels) if self._category_types[label] == 'histogram']
@@ -203,6 +208,12 @@ class SpineSpectra1D(SpineSpectra):
                 reduce = lambda x : [x[i] for i in histogram_mask]
             
             ax.hist(reduce(bincenters), weights=reduce(data), bins=self._variable._nbins, range=xr, label=reduce(labels), color=reduce(colors), **style.plot_kwargs)
+            if draw_stat_error:
+                x = reduce(bincenters)[0]
+                y = np.sum(reduce(data), axis=0)
+                xerr = [x / 2 for x in binwidths[0]]
+                yerr = np.sqrt(y)
+                SpineSpectra.draw_error_boxes(ax, x, y, xerr, yerr, facecolor='gray', edgecolor='none', alpha=0.5, hatch='///')
 
             reduce = lambda x : [x[i] for i in scatter_mask]
             for i, label in enumerate(reduce(labels)):
@@ -210,9 +221,16 @@ class SpineSpectra1D(SpineSpectra):
         
         if invert_stack_order:
             h, l = ax.get_legend_handles_labels()
-            ax.legend(h[::-1], l[::-1])
+            if draw_stat_error:
+                h.append(plt.Rectangle((0, 0), 1, 1, fc='gray', alpha=0.5, hatch='///'))
+                l.append('MC Statistical Uncertainty')
+            ax.legend(h[-2::-1]+h[-1:], l[-2::-1]+l[-1:])
         else:
-            ax.legend()
+            h, l = ax.get_legend_handles_labels()
+            if draw_stat_error:
+                h.append(plt.Rectangle((0, 0), 1, 1, fc='gray', alpha=0.5, hatch='///'))
+                l.append('MC Statistical Uncertainty')
+            ax.legend(h, l)
         if style.mark_pot:
             self.mark_pot(ax)
         if style.mark_preliminary is not None:
