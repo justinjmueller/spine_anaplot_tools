@@ -379,13 +379,14 @@ ana::SpillMultiVar SpineVar(double (*fvar)(const VARTYPE &), bool (*fpcut)(const
             return ana::SpillMultiVar([fvar, fpcut, ficut](const caf::Proxy<caf::StandardRecord> * sr) -> std::vector<double>
             {
                 std::vector<double> var;
+                bool is_mc(sr->ndlp_true != 0);
                 for(auto const& i : sr->dlp)
                 {
                     if(ficut(i))
                     {
                         for(auto const & j : i.particles)
                         {
-                            if(fpcut(j) && j.match_ids.size() > 0)
+                            if(fpcut(j) && (j.match_ids.size() > 0 || !is_mc))
                                 var.push_back(fvar(j));
                         }
                     }
@@ -429,6 +430,7 @@ ana::SpillMultiVar SpineVar(double (*fvar)(const VARTYPE &), bool (*fpcut)(const
             {
                 std::vector<double> var;
                 std::map<caf::Proxy<int64_t>, const caf::Proxy<caf::SRParticleDLP> *> reco_particles;
+                bool is_mc(sr->ndlp_true != 0);
                 for(auto const& i : sr->dlp)
                 {
                     for(auto const& j : i.particles)
@@ -442,7 +444,7 @@ ana::SpillMultiVar SpineVar(double (*fvar)(const VARTYPE &), bool (*fpcut)(const
                     {
                         for(auto const & j : i.particles)
                         {
-                            if(fpcut(j) && j.match_ids.size() > 0)
+                            if(fpcut(j) && (j.match_ids.size() > 0 || !is_mc))
                                 var.push_back(fvar(*reco_particles[j.match_ids[0]]));
                         }
                     }
