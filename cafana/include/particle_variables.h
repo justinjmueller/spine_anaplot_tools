@@ -80,6 +80,23 @@ namespace pvars
         }
 
     /**
+     * @brief Variable for the semantic type of the particle.
+     * @details This variable returns the semantic type of the particle. The
+     * semantic type is determined by majority-vote of the pixel-level semantic
+     * segmentation of the particle. The semantic types are defined as follows:
+     * 0: shower, 1: track, 2: Michel electron, 3: delta electron,
+     * 4: low-energy, 5: ghost, and -1: unknown.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the semantic type of the particle.
+     */
+    template<class T>
+        double semantic_type(const T & p)
+        {
+            return p.shape;
+        }
+
+    /**
      * @brief Variable for the best-match IoU of the particle.
      * @details The best-match IoU is the intersection over union of the
      * points belonging to a pair of reconstructed and true particles. The
