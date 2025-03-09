@@ -316,7 +316,7 @@ class SpineSpectra2D(SpineSpectra):
 >>>>>>> b94aa6a (Add ability to draw statistical error boxes with a draw_kwarg)
         
         if style.mark_pot:
-            self.mark_pot(ax)
+            self.mark_pot(ax, style.mark_pot_horizontal)
         if style.mark_preliminary is not None:
             self.mark_preliminary(ax, style.mark_preliminary)
 

@@ -27,7 +27,9 @@ class Style:
         A dictionary containing the keyword arguments to be passed
         to the plotting function.
     """
-    def __init__(self, name, style_sheet, markers, default_figsize, title, mark_pot, mark_preliminary, plot_kwargs) -> None:
+    def __init__(self, name, style_sheet, markers, default_figsize,
+                 title, mark_pot=True, mark_pot_horizontal=True,
+                 mark_preliminary=True, plot_kwargs=None) -> None:
         """
         Initializes the Style object with the given kwargs.
 
@@ -43,15 +45,16 @@ class Style:
             The default size of the figure to create.
         title : str
             The title to place at the top of the plot.
-        mark_pot : bool
+        mark_pot : bool, optional
             A flag toggling the display of the total POT (exposure) at the
-            top of the plot above the axis and below the title.
-        mark_preliminary : str
+            top of the plot above the axis and below the title. The default
+            is True.
+        mark_preliminary : str, optional
             A string to be used a label to indicate that the plot is
-            preliminary. If None, no label is added.
-        plot_kwargs : dict
+            preliminary. If None, no label is added. The default is True.
+        plot_kwargs : dict, optional
             A dictionary containing the keyword arguments to be passed
-            to the plotting function.
+            to the plotting function. The default is None.
 
         Returns
         -------
@@ -63,6 +66,7 @@ class Style:
         self._default_figsize = default_figsize
         self._title = None if title == 'none' else title
         self._mark_pot = mark_pot
+        self._mark_pot_horizontal = mark_pot_horizontal
         self._mark_preliminary = None if mark_preliminary == 'none' else mark_preliminary
         self._plot_kwargs = plot_kwargs
 
@@ -183,6 +187,18 @@ class Style:
             The value of the mark_pot attribute.
         """
         return self._mark_pot
+
+    @property
+    def mark_pot_horizontal(self) -> bool:
+        """
+        Returns the value of the mark_pot_horizontal attribute.
+
+        Returns
+        -------
+        bool
+            The value of the mark_pot_horizontal attribute.
+        """
+        return self._mark_pot_horizontal
     
     @property
     def mark_preliminary(self) -> str:
