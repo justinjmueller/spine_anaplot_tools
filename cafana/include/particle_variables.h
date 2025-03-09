@@ -160,6 +160,53 @@ namespace pvars
         }
 
     /**
+     * @brief Variable for the CSDA kinetic energy of the particle.
+     * @details The CSDA kinetic energy is calculated upstream in the SPINE
+     * reconstruction by relating the length of the track to the energy loss
+     * of the particle.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the CSDA kinetic energy of the particle.
+     * @note This function is only valid for particles which are contained in
+     * the detector.
+     */
+    template<class T>
+        double csda_ke(const T & p)
+        {
+            return p.csda_ke_per_pid[PIDFUNC(p)];
+        }
+
+    /**
+     * @brief Variable for the MCS kinetic energy of the particle.
+     * @details The MCS kinetic energy is calculated upstream in the SPINE
+     * reconstruction by comparing the distribution of successive angles of
+     * track segments to the expected distribution for multiple scattering.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the MCS kinetic energy of the particle.
+     */
+    template<class T>
+        double mcs_ke(const T & p)
+        {
+            return p.mcs_ke_per_pid[PIDFUNC(p)];
+        }
+
+    /**
+     * @brief Variable for the calorimetric kinetic energy of the particle.
+     * @details The calorimetric kinetic energy is calculated upstream in the
+     * SPINE reconstruction as the sum of the energy of each spacepoint in the
+     * particle.
+     * @tparam T the type of particle (true or reco).
+     * @param p the particle to apply the variable on.
+     * @return the calorimetric kinetic energy of the particle.
+     */
+    template<class T>
+        double calo_ke(const T & p)
+        {
+            return p.calo_ke;
+        }
+
+    /**
      * @brief Variable for true particle starting kinetic energy.
      * @details The starting kinetic energy is defined as the total energy
      * minus the rest mass energy of the particle.
@@ -177,11 +224,12 @@ namespace pvars
             }
             else
             {
-                if(PIDFUNC(p) < 2) energy += p.calo_ke;
+                if(PIDFUNC(p) < 2) [[likely]]
+                    energy += calo_ke(p);
                 else
                 {
-                    if(p.is_contained) energy += p.csda_ke_per_pid[PIDFUNC(p)];
-                    else energy += p.mcs_ke_per_pid[PIDFUNC(p)];
+                    if(p.is_contained) energy += csda_ke(p);
+                    else energy += mcs_ke(p);
                 }
             }
             return energy;
