@@ -230,15 +230,12 @@ class SpineSpectra2D(SpineSpectra):
         logy : bool
             A flag to indicate if the y-axis should be logarithmic.
             The default is False.
-<<<<<<< HEAD
-=======
         logz : bool
             A flag to indicate if the z-axis (colorbar) should be
             logarithmic. The default is False.
         draw_stat_error : bool
             A flag to indicate if the statistical error should be drawn
             on the plot. The default is False.
->>>>>>> b94aa6a (Add ability to draw statistical error boxes with a draw_kwarg)
         
         Returns
         -------
@@ -290,31 +287,11 @@ class SpineSpectra2D(SpineSpectra):
                     l.append('MC Statistical Uncertainty')
                 ax.legend(h[-2::-1]+h[-1:], l[-2::-1]+l[-1:])
             else:
-<<<<<<< HEAD
-                ax.legend()
-
-        if show_option == 'absdiff' and self._plotdata_absdiag is not None:
-            labels, data = zip(*self._plotdata_absdiag.items())
-            colors = [self._colors[label] for label in labels]
-            bincenters = [self._binedges_absdiag[l][:-1] + np.diff(self._binedges_absdiag[l]) / 2 for l in labels]
-
-            ax.hist(bincenters, weights=data, bins=self._variables[0]._nbins, range=(-100,100), histtype='barstacked', label=labels, color=colors, stacked=True)
-            ax.set_xlabel('(Y-X)' if self._xtitle is None else self._xtitle)
-            ax.set_ylabel('Entries')
-
-            if invert_stack_order:
-                h, l = ax.get_legend_handles_labels()
-                ax.legend(h[::-1], l[::-1])
-            else:
-                ax.legend()
-=======
                 h, l = ax.get_legend_handles_labels()
                 if draw_stat_error:
                     h.append(plt.Rectangle((0, 0), 1, 1, fc='gray', alpha=0.5, hatch='///'))
                     l.append('MC Statistical Uncertainty')
-                ax.legend(h, l)
->>>>>>> b94aa6a (Add ability to draw statistical error boxes with a draw_kwarg)
-        
+                ax.legend(h, l)        
         if style.mark_pot:
             self.mark_pot(ax, style.mark_pot_horizontal)
         if style.mark_preliminary is not None:
