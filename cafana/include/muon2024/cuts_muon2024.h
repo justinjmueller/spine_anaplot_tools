@@ -90,7 +90,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis.
      */
     template<class T>
-        bool all_1mu1p_cut(const T & obj) { return fiducial_cut<T>(obj) && containment_cut<T>(obj) && flash_cut<T>(obj) && topological_1mu1p_cut<T>(obj); }
+        bool all_1mu1p_cut(const T & obj) { return fiducial_cut<T>(obj) && noncontainment_cut<T>(obj) && flash_cut<T>(obj) && topological_1mu1p_cut<T>(obj); }
 
     /**
      * @brief Apply a fiducial volume, containment, flash time (BNB), and 1muNp
@@ -105,7 +105,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis.
      */
     template<class T>
-        bool all_1muNp_cut(const T & obj) { return fiducial_cut<T>(obj) && containment_cut<T>(obj) && flash_cut<T>(obj) && topological_1muNp_cut<T>(obj); }
+        bool all_1muNp_cut(const T & obj) { return fiducial_cut<T>(obj) && noncontainment_cut<T>(obj) && flash_cut<T>(obj) && topological_1muNp_cut<T>(obj); }
 
     /**
      * @brief Apply a fiducial volume, containment, flash time (BNB), and 1muX
@@ -120,7 +120,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis.
      */
     template<class T>
-        bool all_1muX_cut(const T & obj) { return fiducial_cut<T>(obj) && containment_cut<T>(obj) && flash_cut<T>(obj) && topological_1muX_cut<T>(obj); }
+        bool all_1muX_cut(const T & obj) { return fiducial_cut<T>(obj) && noncontainment_cut<T>(obj) && flash_cut<T>(obj) && topological_1muX_cut<T>(obj); }
 
     /**
      * @brief Apply a cut to select the 1mu1p signal.
@@ -132,7 +132,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis for
      * defining the signal.
      */
-    bool signal_1mu1p(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && containment_cut(obj) && topological_1mu1p_cut(obj); }
+    bool signal_1mu1p(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && noncontainment_cut(obj) && topological_1mu1p_cut(obj); }
 
     /**
      * @brief Apply a cut to select the 1mu1p non-signal.
@@ -145,7 +145,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis for
      * defining a complement to the signal.
      */
-    bool nonsignal_1mu1p(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && containment_cut(obj)) && topological_1mu1p_cut(obj); }
+    bool nonsignal_1mu1p(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && noncontainment_cut(obj)) && topological_1mu1p_cut(obj); }
 
     /**
      * @brief Apply a cut to select the 1muNp signal.
@@ -157,7 +157,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis for
      * defining the signal.
      */
-    bool signal_1muNp(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && containment_cut(obj) && topological_1muNp_cut(obj); }
+    bool signal_1muNp(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && noncontainment_cut(obj) && topological_1muNp_cut(obj); }
 
     /**
      * @brief Apply a cut to select the 1muNp non-signal.
@@ -170,7 +170,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis for
      * defining a complement to the signal.
      */
-    bool nonsignal_1muNp(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && containment_cut(obj)) && topological_1muNp_cut(obj); }
+    bool nonsignal_1muNp(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && noncontainment_cut(obj)) && topological_1muNp_cut(obj); }
 
     /**
      * @brief Apply a cut to select the 1muX signal.
@@ -183,7 +183,7 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis for
      * defining the signal.
      */
-    bool signal_1muX(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && containment_cut(obj) && topological_1muX_cut(obj); }
+    bool signal_1muX(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && noncontainment_cut(obj) && topological_1muX_cut(obj); }
 
     /**
      * @brief Apply a cut to select the 1muX non-signal.
@@ -196,6 +196,6 @@ namespace cuts::muon2024
      * @note This cut is intended to be used for the muon2024 analysis for
      * defining a complement to the signal.
      */
-    bool nonsignal_1muX(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && containment_cut(obj)) && topological_1muX_cut(obj); }
+    bool nonsignal_1muX(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && !(fiducial_cut(obj) && noncontainment_cut(obj)) && topological_1muX_cut(obj); }
 }
 #endif // CUTS_MUON2024_H

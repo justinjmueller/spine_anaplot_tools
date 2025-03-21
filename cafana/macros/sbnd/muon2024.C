@@ -71,7 +71,7 @@ void muon2024()
      * to calculate the variables. These names are used in the TTree that is
      * created by the Tree class to store the results of the analysis.
      */
-    #define CUT cuts::muon2024::all_1muNp_cut
+    #define CUT cuts::muon2024::all_1mu1p_cut
     #define TCUT cuts::neutrino
     std::map<std::string, ana::SpillMultiVar> vars_selected_nu;
     vars_selected_nu.insert({"nu_id", SpineVar<TTYPE,RTYPE>(&vars::neutrino_id, &CUT, &TCUT)});
@@ -374,7 +374,7 @@ void muon2024()
      * to calculate the variables. These names are used in the TTree that is
      * created by the Tree class to store the results of the analysis.
      */
-    #define SIGCUT cuts::muon2024::signal_1muNp
+    #define SIGCUT cuts::muon2024::signal_1mu1p
     std::map<std::string, ana::SpillMultiVar> vars_signal;
     vars_signal.insert({"nu_id", SpineVar<TTYPE,TTYPE>(&vars::neutrino_id, &SIGCUT, &SIGCUT)});
     vars_signal.insert({"baseline", SpineVar<MCTRUTH,TTYPE>(&mctruth::true_neutrino_baseline, &SIGCUT, &SIGCUT)});
