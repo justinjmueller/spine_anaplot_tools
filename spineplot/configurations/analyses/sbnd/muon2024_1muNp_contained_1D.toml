@@ -1,0 +1,40 @@
+[[this_includes]]
+file = 'configurations/common/variables.toml'
+
+[[this_includes]]
+file = 'configurations/common/styles.toml'
+
+[[this_includes]]
+file = 'configurations/common/samples.toml'
+choose = {'samples' = ['mc','intime']}
+
+[output]
+path = '/exp/sbnd/app/users/rlazur/spine_anaplot_tools/output/1muNp/contained'
+
+[analysis]
+ordinate_sample = 'mc'
+category_branch = 'category'
+category_assignment = [[0,2], [1,3,5,4,6], [7], [-1,8]]
+category_labels = ['1$\mu$Np Contained Muons', 'Other $\nu$ CC', 'NC $\nu$', 'Cosmic']
+category_colors = ['C0', 'C1', 'C3', 'C4']
+category_types = ['histogram', 'histogram', 'histogram', 'histogram']
+
+[[figure]]
+name = 'reco_visible_energy'
+type = 'SimpleFigure'
+style = 'basic_sbnd_1muNp'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'reco_visible_energy'
+yrange = 1.05
+draw_kwargs = {}
+
+[[figure]]
+name = 'reco_interaction_pt'
+type = 'SimpleFigure'
+style = 'basic_sbnd_1muNp'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'reco_interaction_pt'
+yrange = 1.05
+draw_kwargs = {}

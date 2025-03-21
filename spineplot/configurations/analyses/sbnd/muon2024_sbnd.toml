@@ -9,7 +9,7 @@ file = 'configurations/common/samples.toml'
 choose = {'samples' = ['mc','intime']}
 
 [output]
-path = '/exp/icarus/app/users/mueller/spineprod/plots/sbnd/allplanes/'
+path = '/exp/sbnd/app/users/rlazur/spine_anaplot_tools/spineplot/output/'
 
 [analysis]
 ordinate_sample = 'mc'

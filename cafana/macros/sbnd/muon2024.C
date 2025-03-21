@@ -56,7 +56,9 @@ void muon2024()
      * AddLoader function is used to create a directory in the output ROOT file
      * to store the results of the analysis.
      */
-    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine.flat.root");
+    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine.flat.root");
+    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/updated/flat/larcv_sbnd_bnb_cosmics_spine_updated.flat.root");
+    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine_all.flat.root");
     analysis.AddLoader("mc", &mc, true);
 
     ana::SpectrumLoader intime("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_intime_spine.flat.root");

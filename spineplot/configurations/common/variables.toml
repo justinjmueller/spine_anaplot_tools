@@ -3,31 +3,25 @@
 [variables.true_visible_energy]
 key = "true_edep"
 range = [0, 3]
-nbins = 25
+nbins = 30
 xlabel = "True Visible Energy [GeV]"
-
-[variables.reco_tmuon]
-key = "reco_tmuon"
-range = [0, 1200]
-nbins = 25
-xlabel = "Reconstructed Muon Kinetic Energy [MeV]"
 
 [variables.reco_visible_energy]
 key = "reco_edep"
 range = [0, 3]
-nbins = 25
+nbins = 30
 xlabel = "Reconstructed Visible Energy [GeV]"
 
-[variables.true_dpT]
+[variables.true_interaction_pt]
 key = "true_dpT"
 range = [0,1200]
-nbins = 25
+nbins = 30
 xlabel = 'True $\delta p_T$ [MeV/c]'
 
-[variables.reco_dpT]
+[variables.reco_interaction_pt]
 key = "reco_dpT"
 range = [0,1200]
-nbins = 25
+nbins = 30
 xlabel = 'Reconstructed $\delta p_T$ [MeV/c]'
 
 [variables.true_dpT_lp]
@@ -102,6 +96,18 @@ range = [0.0, 3.1415]
 nbins = 25
 xlabel = 'Reconstructed $d\phi_T$ [Rad.]'
 
+[variables.true_phi_mu]
+key = "true_phi_mu"
+range = [0.0, 3.1415]
+nbins = 25
+xlabel = "True Muon Azimuthal Angle [rad.]"
+
+[variables.reco_phi_mu]
+key = "reco_phi_mu"
+range = [0.0, 3.1415]
+nbins = 25
+xlabel = "Reco Muon Azimuthal Angle [rad.]"
+
 [variables.true_dalphaT]
 key = "true_dalphaT"
 range = [0.0, 3.1415]
@@ -113,6 +119,18 @@ key = "reco_dalphaT"
 range = [0.0, 3.1415]
 nbins = 25
 xlabel = 'Reconstructed $d\alpha_T$ [Rad.]'
+
+[variables.true_theta_mu]
+key = "true_theta_mu"
+range = [0.0, 3.14]
+nbins = 25
+xlabel = "True Muon Polar Angle [rad.]"
+
+[variables.reco_theta_mu]
+key = "reco_theta_mu"
+range = [0.0, 3.14]
+nbins = 25
+xlabel = "Reco Muon Polar Angle [rad.]"
 
 [variables.muon_primary_softmax]
 key = "muon_primary_softmax"

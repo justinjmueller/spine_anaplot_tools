@@ -83,6 +83,28 @@ namespace vars
         double containment(const T & obj) { return obj.is_contained; }
 
     /**
+     * @brief Variable for the (non)containment status of the interaction.
+     * @details The containment status is determined upstream in the SPINE
+     * reconstruction and is based on the set of all points in the interaction,
+     * which must be contained within the volume of the TPC that created them.
+     * (The muon is allowed to exit the detector.)
+     * @tparam T the type of interaction (true or reco).
+     * @param obj the interaction to apply the variable on.
+     * @return the containment status of the interaction.
+     */
+    template<class T>
+        double noncontainment(const T & obj) 
+        { 
+            double uncontained(0);
+            for(const auto & p : obj.particles)
+                if(pcuts::final_state_signal(p))
+                {
+                    if(!(p.pid == 2 || p.is_contained)) uncontained += 1;                   
+                }
+            return uncontained == 0; 
+        }
+
+    /**
      * @brief Variable for the fiducial volume status of the interaction.
      * @details The fiducial volume status is determined upstream in the SPINE
      * reconstruction and is a requirement that the interaction vertex is within
