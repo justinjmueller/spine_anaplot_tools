@@ -1301,3 +1301,5 @@ build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/lib/libsbnanaobj_StandardRecord
 build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/ups/Linux64bit+5.14-2.17_e20_prof
 build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/ups/sbnanaobj.table
 build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/ups/sbnanaobj.table.in
+srcs/sbnanaobj
+srcs/sbnanaobj
