@@ -13,6 +13,7 @@ srcs/.cmake_add_subdir
 srcs/.cmake_include_dirs
 srcs/.mrbversion
 srcs/CMakeLists.txt
+srcs/sbnanaobj
 localProducts_larsoft_v09_78_06_e20_prof/.base_dependency_database
 localProducts_larsoft_v09_78_06_e20_prof/.mrbversion
 localProducts_larsoft_v09_78_06_e20_prof/setup
@@ -1301,5 +1302,4 @@ build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/lib/libsbnanaobj_StandardRecord
 build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/ups/Linux64bit+5.14-2.17_e20_prof
 build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/ups/sbnanaobj.table
 build_slf7.x86_64/sbnanaobj/slf7.x86_64.e20.prof/ups/sbnanaobj.table.in
-srcs/sbnanaobj
 srcs/sbnanaobj
