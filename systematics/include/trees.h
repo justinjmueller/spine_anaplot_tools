@@ -70,6 +70,22 @@ namespace sys::trees
         TDirectory * directory = (TDirectory *) output;
         directory = create_directory(directory, table.get_string_field("destination").c_str());
         directory->cd();
+
+        /**
+         * @brief Check if the exposure information ("POT", "Livetime") has
+         * alread been copied and saved. If not, copy the exposure information
+         * to the output TTree.
+         */
+        if(!directory->GetListOfKeys()->Contains("POT"))
+        {
+            std::cout << "Copying POT and Livetime histograms." << std::endl;
+            TDirectory * parent = (TDirectory *) input;
+            parent = get_parent_directory(parent, table.get_string_field("origin").c_str());
+            TH1D * pot = (TH1D *) parent->Get("POT");
+            TH1D * livetime = (TH1D *) parent->Get("Livetime");
+            directory->WriteObject(pot, "POT");
+            directory->WriteObject(livetime, "Livetime");
+        }
         
         /**
          * @brief Create the output TTree with the name specified in the
@@ -148,6 +164,22 @@ namespace sys::trees
         directory = create_directory(directory, table.get_string_field("destination").c_str());
         directory->cd();
         
+        /**
+         * @brief Check if the exposure information ("POT", "Livetime") has
+         * alread been copied and saved. If not, copy the exposure information
+         * to the output TTree.
+         */
+        if(!directory->GetListOfKeys()->Contains("POT"))
+        {
+            std::cout << "Copying POT and Livetime histograms." << std::endl;
+            TDirectory * parent = (TDirectory *) input;
+            parent = get_parent_directory(parent, table.get_string_field("origin").c_str());
+            TH1D * pot = (TH1D *) parent->Get("POT");
+            TH1D * livetime = (TH1D *) parent->Get("Livetime");
+            directory->WriteObject(pot, "POT");
+            directory->WriteObject(livetime, "Livetime");
+        }
+
         /**
          * @brief Connect to the input TTree and associated branches.
          * @details Three are N+3 branches in the input TTree, where N is the
@@ -268,6 +300,8 @@ namespace sys::trees
             systrees[s]->Branch("Run", &run);
             systrees[s]->Branch("Subrun", &subrun);
             systrees[s]->Branch("Evt", &event);
+            systrees[s]->SetDirectory(directory);
+            systrees[s]->SetAutoFlush(1000);
         }
 
         for(sys::cfg::ConfigurationTable & t : config.get_subtables("sys"))

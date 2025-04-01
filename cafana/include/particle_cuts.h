@@ -39,7 +39,7 @@ namespace pcuts
     template<class T>
         bool is_primary(const T & p)
         {
-            return p.is_primary;
+            return PRIMARYFUNC(p) == 1;
         }
 
     /**

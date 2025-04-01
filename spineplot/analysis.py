@@ -9,6 +9,7 @@ from spectra1d import SpineSpectra1D
 from spectra2d import SpineSpectra2D
 from efficiency import SpineEfficiency
 from roc import ROCCurve
+from ternary import Ternary
 from style import Style
 from variable import Variable
 
@@ -81,8 +82,16 @@ class Analysis:
         if 'variables' not in self._config.keys():
             raise ConfigException(f"No variables defined in the TOML file. Please check for a valid variable configuration block (table='variables') in the TOML file ('{toml_path}').")
         self._variables = {name: Variable(name, **self._config['variables'][name]) for name in self._config['variables']}
-        for varname, var in self._variables.items():
-            var.check_data(self._categories, self._samples)
+
+        # Register variables with samples
+        if 'systematic_recipe' in self._config.keys():
+            recipes = self._config['systematic_recipe']
+        else:
+            recipes = list()
+        for s in self._samples.values():
+            for v in self._variables.values():
+                s.register_variable(v, self._categories)
+            s.process_systematics(recipes)
 
         # Load the artists table
         if 'figure' not in self._config.keys():
@@ -117,7 +126,9 @@ class Analysis:
                                                  self._colors, self._category_types, x.get('title', None),
                                                  x.get('xrange', None), x.get('xtitle', None),
                                                  x.get('yrange', None), x.get('ytitle', None))
-                            self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
+                            draw_kwargs = x.get('draw_kwargs', {})
+                            draw_kwargs['draw_error'] = draw_kwargs.get('draw_error', None)
+                            self._figures[fig['name']].register_spine_artist(art, draw_kwargs=draw_kwargs)
                             self._artists.append(art)
                         elif x['type'] == 'SpineSpectra2D':
                             # Check if the variables are present in all samples
@@ -159,6 +170,18 @@ class Analysis:
                             disc = {g : self._variables[x['discriminant_scores'][i]] for i, g in enumerate(x['groups'])}
                             art = ROCCurve(restrict_categories, x['labels'], x['pos_label'], disc,
                                            x.get('background', None), x.get('title', None))
+                            self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
+                            self._artists.append(art)
+
+                        elif x['type'] == 'Ternary':
+                            # Check if the variables are present in all samples
+                            if not all([self._variables[x[v]]._validity_check.values() for v in ['var0', 'var1', 'var2']]):
+                                missing_samples = [k for k, v in self._variables[x[v]]._validity_check.items() for v in ['var0', 'var1', 'var2']]
+                                raise ConfigException(f"Variable '{v}' not found in all samples ({' '.join(missing_samples)}).")
+
+                            # Create the artist
+                            art = Ternary(self._variables[x['var0']], self._variables[x['var1']], self._variables[x['var2']],
+                                          restrict_categories, x.get('title', None))
                             self._figures[fig['name']].register_spine_artist(art, draw_kwargs=x.get('draw_kwargs', {}))
                             self._artists.append(art)
                             
