@@ -175,7 +175,7 @@ namespace cuts
             if(!valid_flashmatch(obj))
                 return false;
             else if constexpr(!BEAM_IS_NUMI)
-                return (obj.flash_times[0] >= -0.5) && (obj.flash_times[0] <= 1.6);
+                return (obj.flash_times[0] >= 0) && (obj.flash_times[0] <= 1.6) && (obj.flash_total_pe > 10000);
             else
                 return (obj.flash_times[0] >= 0) && (obj.flash_times[0] <= 9.6);
         }

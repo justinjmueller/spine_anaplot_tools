@@ -14,10 +14,43 @@ path = '/exp/sbnd/app/users/rlazur/spine_anaplot_tools/output/1muX/contained/'
 [analysis]
 ordinate_sample = 'mc'
 category_branch = 'category'
-category_assignment = [[0,2], [1,3,5,4,6], [7], [-1,8]]
-category_labels = ['$\nu_\mu$ CC Contained Muons', 'Other $\nu$ CC', 'NC $\nu$', 'Cosmic']
-category_colors = ['C0', 'C1', 'C3', 'C4']
-category_types = ['histogram', 'histogram', 'histogram', 'histogram']
+category_assignment = [[0,2,4], [1], [3], [5], [6], [7], [-1,8]]
+category_labels = ['Signal', 'uncontained 1p', 'uncontained Np', 'uncontained X', 'Other $\nu$ CC', 'NC $\nu$', 'Cosmic']
+category_colors = ['C0', 'C1', 'C3', 'C4', 'C5', 'C7', 'black']
+category_types = ['histogram', 'histogram', 'histogram', 'histogram', 'histogram', 'histogram', 'histogram']
+
+
+[[figure]]
+name = 'flash_time'
+type = 'SimpleFigure'
+style = 'basic_sbnd_1muX'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'flash_time'
+yrange = 1.05
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
+
+
+[[figure]]
+name = 'flash_total_short'
+type = 'SimpleFigure'
+style = 'basic_sbnd_1muX'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'flash_total_short'
+yrange = 1.05
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
+
+
+[[figure]]
+name = 'flash_total'
+type = 'SimpleFigure'
+style = 'basic_sbnd_1muX'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'flash_total'
+yrange = 1.05
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
 
 
 [[figure]]
@@ -28,7 +61,7 @@ style = 'basic_sbnd_1muX'
 type = 'SpineSpectra1D'
 variable = 'reco_visible_energy'
 yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = false, 'show_component_percentage' = true, 'draw_stat_error' = true}
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
 
 
 [[figure]]
@@ -39,4 +72,4 @@ style = 'basic_sbnd_1muX'
 type = 'SpineSpectra1D'
 variable = 'reco_interaction_pt'
 yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = false, 'show_component_percentage' = true, 'draw_stat_error' = true}
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}

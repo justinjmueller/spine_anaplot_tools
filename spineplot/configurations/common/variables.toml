@@ -191,3 +191,21 @@ key = "reco_muon_z"
 range = [-100, 100]
 nbins = 100
 xlabel = "Reconstructed Muon End Point Z [cm]"
+
+[variables.flash_total]
+key = "flash_total"
+range = [0, 175000]
+nbins = 35
+xlabel = "Total PE"
+
+[variables.flash_total_short]
+key = "flash_total"
+range = [0, 30000]
+nbins = 35
+xlabel = "Total PE"
+
+[variables.flash_time]
+key = "flash_time"
+range = [-1, 2]
+nbins = 35
+xlabel = "Total Time"

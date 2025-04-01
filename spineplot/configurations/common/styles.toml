@@ -37,3 +37,39 @@ title = '$\bf{SBND}$ $\nu_{\mu}$ CC Inclusive'
 mark_pot = true
 mark_preliminary = '$\bf{SBND}$ Simulation Work-in-Progress'
 plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
+
+
+
+
+[[style]]
+name = 'basic_sbnd_2d_1mu1p'
+style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
+default_figsize = [7.5,6.9]
+title = '$\bf{SBND}$ $1\mu 1p0\pi$'
+mark_pot = true
+mark_pot_horizontal = true
+mark_preliminary = '$\bf{SBND}$ Simulation Work-in-Progress'
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
+
+[[style]]
+name = 'basic_sbnd_2d_1muNp'
+style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
+default_figsize = [7.5,6.9]
+title = '$\bf{SBND}$ $1\mu Np0\pi$'
+mark_pot = true
+mark_pot_horizontal = true
+mark_preliminary = '$\bf{SBND}$ Simulation Work-in-Progress'
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}
+
+[[style]]
+name = 'basic_sbnd_2d_1muX'
+style_sheet = "styles/muon2024.mplstyle"
+markers = ['o', '^', 's', 'P', 'D']
+default_figsize = [7.5,6.9]
+title = '$\bf{SBND}$ $\nu_{\mu}$ CC Inclusive'
+mark_pot = true
+mark_pot_horizontal = true
+mark_preliminary = '$\bf{SBND}$ Simulation Work-in-Progress'
+plot_kwargs = {'histtype' = 'barstacked', 'stacked' = true}

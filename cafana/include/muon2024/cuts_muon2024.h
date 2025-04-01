@@ -133,6 +133,7 @@ namespace cuts::muon2024
      * defining the signal.
      */
     bool signal_1mu1p(const caf::SRInteractionTruthDLPProxy & obj) { return neutrino(obj) && fiducial_cut(obj) && noncontainment_cut(obj) && topological_1mu1p_cut(obj); }
+    
 
     /**
      * @brief Apply a cut to select the 1mu1p non-signal.
