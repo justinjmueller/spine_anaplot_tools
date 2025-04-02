@@ -33,3 +33,31 @@ type = 'SimpleFigure'
 artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'true_interaction_pt', 'yvariable' = 'reco_interaction_pt'}]
 style = 'basic_sbnd_2d_1muX'
 draw_kwargs = {'draw_identity' = true}
+
+[[figure]]
+name = 'visible_energy_projection'
+type = 'SimpleFigure'
+style = 'basic_sbnd_2d_1muX'
+xtitle = '(Reco-True)/True'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xtitle = '(Reco-True)/True | Visible Energy'
+xvariable = 'true_visible_energy_2d'
+yvariable = 'reco_visible_energy_2d'
+xrange = [-0.6,0.2]
+draw_kwargs = {'show_option' = 'projection', 'fit_type' = 'crystal_ball'}
+
+
+[[figure]]
+name = 'deltapt_projection'
+type = 'SimpleFigure'
+style = 'basic_sbnd_2d_1muX'
+xtitle = '(Reco-True)/True'
+[[figure.artists]]
+type = 'SpineSpectra2D'
+xtitle = '(Reco-True)/True | deltaPt'
+xvariable = 'true_interaction_pt_2d'
+yvariable = 'reco_interaction_pt_2d'
+xrange = [-1, 10]
+draw_kwargs = {'show_option' = 'projection', 'fit_type' = 'gaussian'}
+

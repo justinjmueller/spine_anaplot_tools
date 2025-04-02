@@ -1,15 +1,12 @@
 [[this_includes]]
 file = 'configurations/common/variables.toml'
-
 [[this_includes]]
 file = 'configurations/common/styles.toml'
-
 [[this_includes]]
 file = 'configurations/common/samples.toml'
 choose = {'samples' = ['mc','intime']}
-
 [output]
-path = '/exp/sbnd/app/users/rlazur/spine_anaplot_tools/output/1muX/allmuons'
+path = '/exp/sbnd/app/users/rlazur/spine_anaplot_tools/output/1mu1p/contained/'
 
 [analysis]
 ordinate_sample = 'mc'
@@ -21,23 +18,9 @@ category_types = ['histogram',]
 
 
 [[figure]]
-name = '2D_visible_energy'
-type = 'SimpleFigure'
-artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'true_visible_energy', 'yvariable' = 'reco_visible_energy'}]
-style = 'basic_sbnd_2d_1muX'
-draw_kwargs = {'draw_identity' = true}
-
-[[figure]]
-name = '2D_interaction_pt'
-type = 'SimpleFigure'
-artists = [{'type' = 'SpineSpectra2D', 'xvariable' = 'true_interaction_pt', 'yvariable' = 'reco_interaction_pt'}]
-style = 'basic_sbnd_2d_1muX'
-draw_kwargs = {'draw_identity' = true}
-
-[[figure]]
 name = 'visible_energy_projection'
 type = 'SimpleFigure'
-style = 'basic_sbnd_2d_1muX'
+style = 'basic_sbnd_2d_1mu1p'
 xtitle = '(Reco-True)/True'
 [[figure.artists]]
 type = 'SpineSpectra2D'
@@ -51,7 +34,7 @@ draw_kwargs = {'show_option' = 'projection', 'fit_type' = 'crystal_ball'}
 [[figure]]
 name = 'deltapt_projection'
 type = 'SimpleFigure'
-style = 'basic_sbnd_2d_1muX'
+style = 'basic_sbnd_2d_1mu1p'
 xtitle = '(Reco-True)/True'
 [[figure.artists]]
 type = 'SpineSpectra2D'
