@@ -1,0 +1,2 @@
+source run_3_1_1D_noflash.sh
+source run_3_1_2D_noflash.sh
