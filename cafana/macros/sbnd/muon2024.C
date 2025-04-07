@@ -58,8 +58,8 @@ void muon2024()
      */
     //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine.flat.root");
     //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/updated/flat/larcv_sbnd_bnb_cosmics_spine_updated.flat.root");
-    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine_all.flat.root");
-    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/v09_89_01_MAR2025/flat/sbnd_v09_89_01_MAR2025.flat.root");
+    ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_bnb_cosmics_spine_all.flat.root");
+    //ana::SpectrumLoader mc("/pnfs/icarus/persistent/users/mueller/sbnd/v09_89_01_MAR2025/flat/sbnd_v09_89_01_MAR2025.flat.root");
     analysis.AddLoader("mc", &mc, true);
 
     ana::SpectrumLoader intime("/pnfs/icarus/persistent/users/mueller/sbnd/larcv_sbnd_intime_spine.flat.root");
@@ -72,7 +72,7 @@ void muon2024()
      * to calculate the variables. These names are used in the TTree that is
      * created by the Tree class to store the results of the analysis.
      */
-    #define CUT cuts::muon2024::all_1mu1p_cut
+    #define CUT cuts::muon2024::all_1muX_cut
     #define TCUT cuts::neutrino
     std::map<std::string, ana::SpillMultiVar> vars_selected_nu;
     vars_selected_nu.insert({"nu_id", SpineVar<TTYPE,RTYPE>(&vars::neutrino_id, &CUT, &TCUT)});
@@ -375,7 +375,7 @@ void muon2024()
      * to calculate the variables. These names are used in the TTree that is
      * created by the Tree class to store the results of the analysis.
      */
-    #define SIGCUT cuts::muon2024::signal_1mu1p
+    #define SIGCUT cuts::muon2024::signal_1muX
     std::map<std::string, ana::SpillMultiVar> vars_signal;
     vars_signal.insert({"nu_id", SpineVar<TTYPE,TTYPE>(&vars::neutrino_id, &SIGCUT, &SIGCUT)});
     vars_signal.insert({"baseline", SpineVar<MCTRUTH,TTYPE>(&mctruth::true_neutrino_baseline, &SIGCUT, &SIGCUT)});

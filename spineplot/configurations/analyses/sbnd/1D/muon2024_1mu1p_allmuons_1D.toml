@@ -20,35 +20,6 @@ category_colors = ['C0', 'C1', 'red', 'C3', 'C4', 'C5', 'C6', 'C7', 'black']
 category_types = ['histogram', 'histogram', 'histogram', 'histogram', 'histogram', 'histogram', 'histogram', 'histogram', 'histogram']
 
 
-[[figure]]
-name = 'flash_time'
-type = 'SimpleFigure'
-style = 'basic_sbnd_1mu1p'
-[[figure.artists]]
-type = 'SpineSpectra1D'
-variable = 'flash_time'
-yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
-
-[[figure]]
-name = 'flash_total_short'
-type = 'SimpleFigure'
-style = 'basic_sbnd_1mu1p'
-[[figure.artists]]
-type = 'SpineSpectra1D'
-variable = 'flash_total_short'
-yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
-
-[[figure]]
-name = 'flash_total'
-type = 'SimpleFigure'
-style = 'basic_sbnd_1mu1p'
-[[figure.artists]]
-type = 'SpineSpectra1D'
-variable = 'flash_total'
-yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
 
 [[figure]]
 name = 'reco_visible_energy'
@@ -58,7 +29,7 @@ style = 'basic_sbnd_1mu1p'
 type = 'SpineSpectra1D'
 variable = 'reco_visible_energy'
 yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true}
 
 
 [[figure]]
@@ -69,7 +40,7 @@ style = 'basic_sbnd_1mu1p'
 type = 'SpineSpectra1D'
 variable = 'reco_interaction_pt'
 yrange = 1.05
-draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true, 'draw_stat_error' = true}
+draw_kwargs = {'invert_stack_order' = true, 'show_component_number' = true, 'show_component_percentage' = true}
 
 
 

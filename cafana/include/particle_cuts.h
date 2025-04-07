@@ -9,6 +9,7 @@
 */
 #ifndef PARTICLE_CUTS_H
 #define PARTICLE_CUTS_H
+#define PRIMARYFUNC pvars::primary_classification
 #include <vector>
 #include <numeric>
 #include <cmath>
