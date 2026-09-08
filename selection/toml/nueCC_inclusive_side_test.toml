@@ -342,7 +342,7 @@ issignal = true
 #isdata = false
 isdata = false
 mode = "reco"
-add_systematics = false
+add_systematics = true
 add_exposure = true
 cut = [
     { name = "no_cut",                    type = "reco" },
@@ -909,7 +909,7 @@ sim_only = false
 issignal = false
 isdata = false
 mode = "reco"
-add_systematics = false# true
+add_systematics = true# true
 add_exposure = true
 cut = [
     { name = "no_cut",                    type = "reco" },
