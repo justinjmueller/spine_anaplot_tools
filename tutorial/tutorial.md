@@ -463,6 +463,112 @@ python3 medulla/batch/medulla.py -p <path_to_project> -e <experiment> --launch-j
 
 where `N` is some integer number of jobs to launch (e.g., `10` to launch 10 jobs). If no number is provided, all jobs will be launched. Each time this script is run, it will check for completed output files and only submit jobs that have not yet completed. This does not check for running jobs, so the user should be careful not to submit duplicate jobs.
 
+# Detector Variation Systematics (Phase 1 / Phase 2)
+Detector-variation systematics (e.g. `induction_high`, `wire_gap`, `recombination`, ...) are evaluated in two separate stages rather than folded into the main selection job, because building the response splines requires reading the full merged variation+CV sample once, while applying the resulting weights only needs the (much smaller) selected-event trees already produced by the nominal selection. Splitting the work this way means the expensive spline-building step runs once, and the per-event weight application can be parallelized across every selection output file.
+
+* **Phase 1** reads a merged detector-variation + central-value (CV) ROOT file and produces `variation_splines.root`, a file of response splines/histograms for each configured systematic.
+* **Phase 2** applies those splines to every completed `output_systematics_jobid<NNNN>.root` file from the nominal selection project, producing one `output_varsys_jobid<NNNN>.root` per input file.
+
+Both phases are driven through `medulla/batch/medulla.py`, using the same `project_dir` as the nominal selection project — the project must already exist (create it first with `--create-project` as described above).
+
+## Prerequisites
+* A selection project at `<project_dir>` created with a selection TOML that has `add_systematics = true` on the relevant `[[tree]]` block, with at least some `nominal`-tagged jobs already completed. Phase 2 reads `<project_dir>/output/output_systematics_jobid<NNNN>.root`.
+* A variation systematics TOML (e.g. `variation_systematics.toml`) with `[[sys]]` blocks of `type = "variation"`, plus `[input]`, `[output]`, and `[variations]` blocks (`keys`, `variable`, `bins`, `nuniverses`, etc.).
+* For Phase 1 only: a merged variation+CV ROOT file to pass as `--variation-input` — see [Merging Output Files](#merging-output-files) below.
+
+## Phase 1 — Building the Splines
+Phase 1 strips any `[[tree]]` blocks from the TOML (spline-building only — no event trees are written) and runs `run_systematics` over the merged variation input.
+
+**Interactively**, on the current node (requires a local build, i.e. `medulla/build/systematics/run_systematics` must exist):
+
+```bash
+python3 medulla/batch/medulla.py -p <path_to_project> -e <experiment> \
+    --variation-phase1 --variation-interactive \
+    -V <variation_systematics.toml> \
+    -I /path/or/root://.../merged_variation_cv.root
+```
+
+This prompts for confirmation, runs `run_systematics` in a temporary directory, and stages the resulting `variation_splines.root` to `<project_dir>/variation_splines.root` via `ifdh cp`.
+
+**On the grid** (submits a single batch job — recommended for large merged inputs):
+
+```bash
+python3 medulla/batch/medulla.py -p <path_to_project> -e <experiment> \
+    --variation-phase1 \
+    -V <variation_systematics.toml> \
+    -I /pnfs/.../merged_variation_cv.root \
+    --tag <medulla_branch> --memory 8000 --disk 80 --lifetime 8h
+```
+
+This copies `variation_systematics.toml` to `<project_dir>/variation_systematics.toml`, then submits `batch/submit_variation_phase1.sh` via `jobsub_submit`. The grid worker clones and builds `medulla`, stages the merged input (or reads it directly if an `xrootd` path is given), strips `[[tree]]` blocks, runs `run_systematics`, and stages `variation_splines.root` back to `<project_dir>`.
+
+Either way, Phase 1 must complete — and `<project_dir>/variation_splines.root` must exist — before Phase 2 can run.
+
+## Phase 2 — Applying Splines to Selection Outputs
+Phase 2 submits one grid job per pending `output_systematics_jobid<NNNN>.root` file (jobs that already have a corresponding `output_varsys_jobid<NNNN>.root` are skipped automatically). There is no interactive mode for Phase 2 — it always submits through `jobsub_submit` — but `--test-job` submits a single job as a smoke test before launching the rest.
+
+```bash
+# Smoke test: submit exactly one Phase 2 job
+python3 medulla/batch/medulla.py -p <path_to_project> -e <experiment> \
+    --variation-phase2 -V <variation_systematics.toml> --test-job
+
+# Submit all remaining pending jobs
+python3 medulla/batch/medulla.py -p <path_to_project> -e <experiment> \
+    --variation-phase2 -V <variation_systematics.toml> \
+    --tag <medulla_branch> --memory 4000 --disk 25 --lifetime 4h
+```
+
+Some notes:
+* `--dataset-tag <tag>` restricts submission to jobs whose sample carries a given `tag` in the selection TOML (e.g. `nominal`, `data`, `detector_variation`) — useful when a project mixes multiple sample types and only one needs variation weights.
+* `--check-zombies` opens each existing `output_varsys_jobid<NNNN>.root` with PyROOT and flags zombie/recovered files as bad, then prompts to delete (and thereby resubmit) them.
+* Before submitting, the splines file is staged locally and tarred up for CVMFS/dropbox distribution, so every grid node reads the same cached copy instead of each issuing its own `ifdh cp` of the full splines file.
+* A manifest (`<project_dir>/variation_phase2_manifest.txt`) mapping `$PROCESS` to job ID is staged alongside a rewritten `variation_systematics_phase2.toml`; each worker looks up its own input file through this manifest.
+* Output lands at `<project_dir>/output/output_varsys_jobid<NNNN>.root`.
+
+### Debugging a Phase 2 Job Interactively
+Because Phase 2 has no `--variation-interactive` flag, reproduce a single job by hand using the sandbox pattern. `batch/sandbox.sh` stages the base project config and input files for one job ID, but it doesn't know about the variation-specific inputs (splines file, Phase 2 TOML, manifest), so stage those manually alongside it:
+
+```bash
+mkdir sandbox && cd sandbox
+
+# Build medulla and stage the base selection output for one job ID
+bash ../medulla/batch/sandbox.sh --project=<project_dir> --jobid=<N>
+
+# Stage the Phase-2-specific inputs
+ifdh cp <project_dir>/variation_systematics_phase2.toml .
+ifdh cp <project_dir>/variation_splines.root .
+ifdh cp <project_dir>/output/output_systematics_jobid<NNNN>.root input_selection.root
+
+# Fill in the placeholders that launch_variation_phase2_jobsub() leaves for the grid worker
+sed -i 's|__INPUT_FILE__|input_selection.root|g' variation_systematics_phase2.toml
+sed -i 's|__SPLINES_FILE__|variation_splines.root|g' variation_systematics_phase2.toml
+
+./systematics/run_systematics variation_systematics_phase2.toml
+```
+
+This produces `output_varsys.root` locally, containing the `events/NuMIFull/selected_variationTree` tree — the same tree `submit_variation_phase2.sh` validates after each grid job.
+
+## Merging Output Files
+`medulla/batch/merge_list.py` builds a flat list of output files to merge for a project by reading `project.db` directly, so it always uses the same jobid-to-filename convention as the batch scripts (`output_jobid<NNNN>.root` for `data`/`detector_variation`-tagged jobs, `output_systematics_jobid<NNNN>.root` for `nominal`-tagged jobs), and it automatically appends any `output_varsys_jobid<NNNN>.root` files it finds under `output/`:
+
+```bash
+python3 medulla/batch/merge_list.py <project_dir> --output merge_list.txt
+```
+
+Merge the listed files with `hadd`'s `@listfile` syntax:
+
+```bash
+hadd -f merged.root @merge_list.txt
+```
+
+For ad hoc merges that don't need `project.db` — for example, building the merged variation+CV file used as `--variation-input` for Phase 1 — a pattern-based `hadd` wrapper is also available:
+
+```bash
+./mergeFiles.sh <project_dir>/output "output_jobid*.root" merged_variation_cv.root
+```
+
+It stages the merge in chunks (subdirectory-by-subdirectory, then a final pass) when more than 100 files match, to avoid `hadd` command-line length limits. A related script, `mergeSysFiles.sh <directory> <n> [output_file]`, merges `output_systematics_jobid<NNNN>.root` (job numbers `<= n`) together with `output_jobid<NNNN>.root` (job numbers `> n`) in one pass — useful when MC-with-systematics and data outputs share a project but need to land in a single merged file, split at a known job-number boundary rather than by reading `project.db`.
+
 # Running a Campaign
 The single-project batch workflow described above works well for individual analyses, but a typical SBN physics analysis requires running the same selection over many different samples across two experiments (SBND and ICARUS), often with multiple selection roles (e.g., a primary MC selection, a data-blind-safe sample, and a data quality sample). The **campaign layer** automates this by coordinating all of those combinations in a single tracked operation.
 
