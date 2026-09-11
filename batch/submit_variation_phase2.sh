@@ -121,29 +121,33 @@ cat > "$VALIDATE_MACRO" <<'MACRO'
         std::cerr << "[ERROR] Failed to open output_varsys.root" << std::endl;
         gSystem->Exit(1);
     }
-    // Collect all _variationTree paths from the output file rather than
-    // checking a hardcoded list — tree names vary by TOML configuration.
+    // Scan events/<sample>/ for any _variationTree — name varies by TOML config.
+    const std::string suffix = "_variationTree";
     int n_found = 0;
-    std::function<void(TDirectory*, std::string)> scan = [&](TDirectory* d, std::string prefix) {
-        TIter next(d->GetListOfKeys());
-        TKey *k;
-        while ((k = (TKey*)next())) {
-            std::string name = k->GetName();
-            std::string cls  = k->GetClassName();
-            if (cls.find("Directory") != std::string::npos) {
-                TDirectory *sub = dynamic_cast<TDirectory*>(k->ReadObj());
-                if (sub) scan(sub, prefix + name + "/");
-            } else if (cls == "TTree" || cls == "TNtuple") {
-                if (name.size() > 13 && name.substr(name.size()-13) == "_variationTree") {
-                    TTree *t = dynamic_cast<TTree*>(k->ReadObj());
-                    std::cout << "[INFO] " << prefix << name << " has "
-                              << (t ? t->GetEntries() : -1) << " entries" << std::endl;
+    TDirectory *events_dir = dynamic_cast<TDirectory*>(f->Get("events"));
+    if (events_dir) {
+        TIter next_sub(events_dir->GetListOfKeys());
+        TKey *ksub;
+        while ((ksub = (TKey*)next_sub())) {
+            TString scls = ksub->GetClassName();
+            if (!scls.Contains("Directory")) continue;
+            TDirectory *sub = dynamic_cast<TDirectory*>(ksub->ReadObj());
+            if (!sub) continue;
+            TIter next_tree(sub->GetListOfKeys());
+            TKey *kt;
+            while ((kt = (TKey*)next_tree())) {
+                std::string tname = kt->GetName();
+                if (tname.size() >= suffix.size() &&
+                    tname.substr(tname.size() - suffix.size()) == suffix) {
+                    TTree *t = dynamic_cast<TTree*>(kt->ReadObj());
+                    std::cout << "[INFO] events/" << ksub->GetName() << "/" << tname
+                              << " has " << (t ? t->GetEntries() : -1LL)
+                              << " entries" << std::endl;
                     ++n_found;
                 }
             }
         }
-    };
-    scan(f, "");
+    }
     if (n_found == 0) {
         std::cerr << "[ERROR] No _variationTree found in output_varsys.root" << std::endl;
         f->Close();
