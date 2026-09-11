@@ -79,7 +79,7 @@ name = "NuMI_nue"
 path = "/pnfs/icarus/persistent/users/dcarber/spine/NuMI_Nue_CV_flat_cafs/*.flat.root"
 # path = "/pnfs/icarus/persistent/users/dcarber/spine/NuMI_Nue_CV_flat_cafs/prodcorsika_genie_protononly_icarus_numi_nue_gen_g4_59172983_0_SBN_production_v09_89_01_01p02_2024A_ICARUS_NuMI_nue_MC_FRFIX_larcv_caf.root.flat.root"
 ismc = true
-tag = "nue_enhanced"
+tag = "nominal"
 disable = false # Optional: default = false
 
 # # ICARUS var01 Induction gain high

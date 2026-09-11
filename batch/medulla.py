@@ -281,6 +281,8 @@ if __name__ == '__main__':
         '--dataset-tag', type=str, default=None,
         help='Only submit Phase 2 jobs for samples with this tag in the '
              'selection TOML (e.g. "nominal", "data", "detector_variation"). '
+             'Defaults to "nominal" if omitted; if no jobs carry that tag, '
+             'submission is aborted rather than guessing which sample to use. '
              'Only valid with --variation-phase2.'
     )
 

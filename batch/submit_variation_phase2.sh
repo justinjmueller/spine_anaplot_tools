@@ -121,18 +121,33 @@ cat > "$VALIDATE_MACRO" <<'MACRO'
         std::cerr << "[ERROR] Failed to open output_varsys.root" << std::endl;
         gSystem->Exit(1);
     }
-    const char* expected_trees[] = {
-        "events/NuMIFull/selected_variationTree",
-        "events/NuMIFull/all_signal_variationTree"
-    };
-    for (const char* path : expected_trees) {
-        TTree *t = dynamic_cast<TTree*>(f->Get(path));
-        if (!t) {
-            std::cerr << "[ERROR] " << path << " not found in output_varsys.root" << std::endl;
-            f->Close();
-            gSystem->Exit(1);
+    // Collect all _variationTree paths from the output file rather than
+    // checking a hardcoded list — tree names vary by TOML configuration.
+    int n_found = 0;
+    std::function<void(TDirectory*, std::string)> scan = [&](TDirectory* d, std::string prefix) {
+        TIter next(d->GetListOfKeys());
+        TKey *k;
+        while ((k = (TKey*)next())) {
+            std::string name = k->GetName();
+            std::string cls  = k->GetClassName();
+            if (cls.find("Directory") != std::string::npos) {
+                TDirectory *sub = dynamic_cast<TDirectory*>(k->ReadObj());
+                if (sub) scan(sub, prefix + name + "/");
+            } else if (cls == "TTree" || cls == "TNtuple") {
+                if (name.size() > 13 && name.substr(name.size()-13) == "_variationTree") {
+                    TTree *t = dynamic_cast<TTree*>(k->ReadObj());
+                    std::cout << "[INFO] " << prefix << name << " has "
+                              << (t ? t->GetEntries() : -1) << " entries" << std::endl;
+                    ++n_found;
+                }
+            }
         }
-        std::cout << "[INFO] " << path << " has " << t->GetEntries() << " entries" << std::endl;
+    };
+    scan(f, "");
+    if (n_found == 0) {
+        std::cerr << "[ERROR] No _variationTree found in output_varsys.root" << std::endl;
+        f->Close();
+        gSystem->Exit(1);
     }
     f->Close();
 }

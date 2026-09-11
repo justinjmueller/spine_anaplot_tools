@@ -880,9 +880,12 @@ def launch_variation_phase2_jobsub(
     njobs : int
         Maximum number of jobs to submit. -1 submits all pending files.
     dataset_tag : str | None
-        If provided, only submit jobs whose sample carries this tag in the
-        selection TOML (e.g. "nominal", "data", "detector_variation").
-        Requires project.db to be present in project_dir.
+        Only submit jobs whose sample carries this tag in the selection TOML
+        (e.g. "nominal", "data", "detector_variation"). If omitted, defaults
+        to "nominal". If no jobs carry that tag (e.g. this project's nominal
+        sample uses a different tag string), submission is aborted with a
+        list of the tags actually present, rather than guessing. Requires
+        project.db to be present in project_dir.
     check_zombies : bool
         If True, open each existing varsys ROOT file that passes the size
         check and flag it as bad if ROOT reports it as a zombie or recovered.
@@ -909,25 +912,50 @@ def launch_variation_phase2_jobsub(
         print(f"{_ERROR} -- Run Phase 1 first (--variation-phase1).")
         return False
 
-    # Build the set of job IDs whose sample carries the requested tag.
-    tagged_jobids = None
+    # Build the set of job IDs eligible for Phase 2. Phase 2 applies detsys
+    # splines to the nominal analysis sample only -- never to the
+    # detector_variation-tagged productions (those exist solely to build the
+    # Phase-1 splines) and never to any other non-nominal sample (e.g. data).
+    # Rather than guess which non-"detector_variation" tag is the intended
+    # target, the default is an explicit allow-list on tag == "nominal". If
+    # this project doesn't use that literal tag, nothing will match and the
+    # caller must pass --dataset-tag explicitly.
+    effective_tag = dataset_tag if dataset_tag is not None else 'nominal'
+
+    db_path = project_dir / 'project.db'
+    if not db_path.exists():
+        print(f"{_ERROR} -- project.db not found at {db_path}; cannot determine eligible jobs.")
+        return False
+    print(f"{_INFO} -- Reading {db_path} to resolve sample tags (this may take a moment)...")
+    subprocess.run(['cp', db_path, './project_p2.db'], check=True)
+    conn = sqlite3.connect('./project_p2.db')
+    curs = conn.cursor()
+    command(curs, "SELECT jobid, cfg FROM configuration")
+    rows = curs.fetchall()
+    conn.close()
+    os.unlink('./project_p2.db')
+
+    jobid_tags = {
+        jobid: {s.get('tag') for s in toml.loads(cfg_str).get('sample', [])}
+        for jobid, cfg_str in rows
+    }
+
+    tagged_jobids = {jid for jid, tags in jobid_tags.items() if effective_tag in tags}
     if dataset_tag is not None:
-        db_path = project_dir / 'project.db'
-        if not db_path.exists():
-            print(f"{_ERROR} -- project.db not found at {db_path}; cannot filter by dataset_tag.")
+        print(f"{_INFO} -- Filtering Phase 2 to {len(tagged_jobids)} job(s) with dataset tag '{effective_tag}'.")
+    else:
+        print(
+            f"{_INFO} -- No --dataset-tag given; defaulting to tag 'nominal' "
+            f"({len(tagged_jobids)} job(s) match)."
+        )
+        if not tagged_jobids:
+            available_tags = sorted({t for tags in jobid_tags.values() for t in tags if t})
+            print(
+                f"{_ERROR} -- No jobs are tagged 'nominal' in project.db. Tags present: "
+                f"{available_tags}. Re-run with --dataset-tag <tag> to select the intended "
+                "sample explicitly."
+            )
             return False
-        subprocess.run(['cp', db_path, './project_p2.db'], check=True)
-        conn = sqlite3.connect('./project_p2.db')
-        curs = conn.cursor()
-        command(curs, "SELECT jobid, cfg FROM configuration")
-        rows = curs.fetchall()
-        conn.close()
-        os.unlink('./project_p2.db')
-        tagged_jobids = {
-            jobid for jobid, cfg_str in rows
-            if any(s.get('tag') == dataset_tag for s in toml.loads(cfg_str).get('sample', []))
-        }
-        print(f"{_INFO} -- Filtering Phase 2 to {len(tagged_jobids)} job(s) with dataset tag '{dataset_tag}'.")
 
     all_output_files = sorted(glob(str(project_dir / 'output' / 'output_systematics_jobid*.root')))
     if not all_output_files:
@@ -986,8 +1014,15 @@ def launch_variation_phase2_jobsub(
         else:
             print(f"{_INFO} -- Keeping {label} varsys files; they will not be resubmitted.")
 
-    n_sys = len(all_output_files)
-    n_done = len(already_done)
+    if tagged_jobids is not None:
+        n_sys = sum(
+            1 for f in all_output_files
+            if int(Path(f).stem.split('jobid')[-1]) in tagged_jobids
+        )
+        n_done = len(already_done & tagged_jobids)
+    else:
+        n_sys = len(all_output_files)
+        n_done = len(already_done)
     print(f"{_INFO} -- Varsys status: {n_done}/{n_sys} complete, {n_sys - n_done} pending/missing.")
 
     pending_files = [
