@@ -121,13 +121,19 @@ cat > "$VALIDATE_MACRO" <<'MACRO'
         std::cerr << "[ERROR] Failed to open output_varsys.root" << std::endl;
         gSystem->Exit(1);
     }
-    TTree *t = dynamic_cast<TTree*>(f->Get("events/NuMIFull/selected_variationTree"));
-    if (!t) {
-        std::cerr << "[ERROR] selected_variationTree not found in output_varsys.root" << std::endl;
-        f->Close();
-        gSystem->Exit(1);
+    const char* expected_trees[] = {
+        "events/NuMIFull/selected_variationTree",
+        "events/NuMIFull/all_signal_variationTree"
+    };
+    for (const char* path : expected_trees) {
+        TTree *t = dynamic_cast<TTree*>(f->Get(path));
+        if (!t) {
+            std::cerr << "[ERROR] " << path << " not found in output_varsys.root" << std::endl;
+            f->Close();
+            gSystem->Exit(1);
+        }
+        std::cout << "[INFO] " << path << " has " << t->GetEntries() << " entries" << std::endl;
     }
-    std::cout << "[INFO] selected_variationTree has " << t->GetEntries() << " entries" << std::endl;
     f->Close();
 }
 MACRO
